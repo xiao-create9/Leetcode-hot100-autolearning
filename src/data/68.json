@@ -1,0 +1,36 @@
+{
+  "id": 68,
+  "leetcode_id": 739,
+  "title": "每日温度",
+  "title_en": "Daily Temperatures",
+  "difficulty": "medium",
+  "tags": ["栈", "单调栈", "数组"],
+  "description": "给定一个整数数组 temperatures，表示每天的温度，返回一个数组 answer，其中 answer[i] 是指对于第 i 天，下一个更高温度出现在几天后。如果气温在这之后都不会升高，请在该位置用 0 来代替。\n\n示例 1：\n输入：temperatures = [73,74,75,71,69,72,76,73]\n输出：[1,1,4,2,1,1,0,0]\n\n示例 2：\n输入：temperatures = [30,40,50,60]\n输出：[1,1,1,0]\n\n示例 3：\n输入：temperatures = [30,60,90]\n输出：[1,1,0]\n\n约束条件：\n- 1 <= temperatures.length <= 10^5\n- 30 <= temperatures[i] <= 100",
+  "examples": [
+    {
+      "input": "temperatures = [73,74,75,71,69,72,76,73]",
+      "output": "[1,1,4,2,1,1,0,0]",
+      "explanation": "第0天73度，第1天74度更高，间隔1天。第2天75度，第6天76度更高，间隔4天。"
+    },
+    {
+      "input": "temperatures = [30,40,50,60]",
+      "output": "[1,1,1,0]",
+      "explanation": "每天的温度都比前一天高，最后一天之后没有更高温度。"
+    }
+  ],
+  "hints": {
+    "keywords": ["单调栈", "栈", "逆序遍历"],
+    "approach": "使用单调递减栈。从后往前遍历，维护一个存储索引的栈，栈中元素对应的温度是单调递减的。对于每个温度，弹出栈中所有小于等于当前温度的元素，栈顶即为下一个更高温度的位置。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  "solution": {
+    "explanation": "使用单调栈从后往前遍历。栈中存储温度的索引，保持栈中索引对应的温度单调递减。对于每个位置 i，不断弹出栈顶元素直到栈顶对应的温度大于 temperatures[i]，此时栈顶索引与 i 的差值就是答案。如果栈为空，说明之后没有更高温度。",
+    "code": {
+      "python": "class Solution:\n    def dailyTemperatures(self, temperatures: list[int]) -> list[int]:\n        n = len(temperatures)\n        answer = [0] * n\n        stack = []  # stack of indices\n        \n        for i in range(n - 1, -1, -1):\n            while stack and temperatures[stack[-1]] <= temperatures[i]:\n                stack.pop()\n            if stack:\n                answer[i] = stack[-1] - i\n            stack.append(i)\n        \n        return answer"
+    },
+    "complexity_analysis": "时间复杂度 O(n)，每个元素最多入栈和出栈各一次。空间复杂度 O(n)，栈的空间。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

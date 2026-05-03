@@ -1,0 +1,36 @@
+{
+  "id": 21,
+  "leetcode_id": 141,
+  "title": "环形链表",
+  "title_en": "Linked List Cycle",
+  "difficulty": "easy",
+  "tags": ["哈希表", "链表", "双指针"],
+  "description": "给你一个链表的头节点 head，判断链表中是否有环。\n\n如果链表中存在环，则返回 true。否则，返回 false。\n\n链表节点定义如下：\n```\nclass ListNode:\n    def __init__(self, x):\n        self.val = x\n        self.next = None\n```\n\n**示例 1：**\n输入：head = [3,2,0,-4]，pos = 1（尾节点连接到第二个节点）\n输出：true\n解释：链表中存在一个环，其尾部连接到第二个节点。\n\n**示例 2：**\n输入：head = [1,2]，pos = 0（尾节点连接到第一个节点）\n输出：true\n\n**示例 3：**\n输入：head = [1]，pos = -1\n输出：false\n解释：链表中没有环。",
+  "examples": [
+    {
+      "input": "head = [3,2,0,-4], pos = 1",
+      "output": "true",
+      "explanation": "链表中存在环，尾节点连接到索引为 1 的节点（值为 2）。"
+    },
+    {
+      "input": "head = [1], pos = -1",
+      "output": "false",
+      "explanation": "链表只有一个节点，没有环。"
+    }
+  ],
+  "hints": {
+    "keywords": ["快慢指针", "Floyd判圈"],
+    "approach": "使用快慢指针法（Floyd 判圈算法）：快指针每次走两步，慢指针每次走一步，如果链表有环，两个指针终会相遇。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  "solution": {
+    "explanation": "使用快慢指针：slow 每次前进一步，fast 每次前进两步。如果链表中存在环，fast 指针最终会追上 slow 指针（两者相遇）；如果不存在环，fast 指针会先到达链表末尾（None）。",
+    "code": {
+      "python": "class Solution:\n    def hasCycle(self, head: ListNode) -> bool:\n        if not head or not head.next:\n            return False\n        slow = head\n        fast = head.next\n        while slow != fast:\n            if not fast or not fast.next:\n                return False\n            slow = slow.next\n            fast = fast.next.next\n        return True"
+    },
+    "complexity_analysis": "时间复杂度 O(n)，其中 n 是链表中节点的数量。空间复杂度 O(1)，只使用了两个指针。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

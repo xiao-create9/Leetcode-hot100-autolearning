@@ -1,0 +1,36 @@
+{
+  "id": 4,
+  "leetcode_id": 11,
+  "title": "盛最多水的容器",
+  "title_en": "Container With Most Water",
+  "difficulty": "medium",
+  "tags": ["数组", "双指针", "贪心"],
+  "description": "给定一个长度为 n 的整数数组 height。有 n 条垂线，第 i 条线的两个端点是 (i, 0) 和 (i, height[i])。\n\n找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。\n\n返回容器可以储存的最大水量。\n\n说明：你不能倾斜容器。\n\n示例 1：\n输入：[1,8,6,2,5,4,8,3,7]\n输出：49\n解释：选择第 1 条线（高度 8）和第 8 条线（高度 7），宽度为 7，容量为 min(8,7) * 7 = 49。\n\n示例 2：\n输入：height = [1,1]\n输出：1\n\n约束条件：\n- n == height.length\n- 2 <= n <= 10^5\n- 0 <= height[i] <= 10^4",
+  "examples": [
+    {
+      "input": "height = [1,8,6,2,5,4,8,3,7]",
+      "output": "49",
+      "explanation": "选择下标 1（高度 8）和下标 8（高度 7）的两条线，宽度为 8-1=7，水量为 min(8,7) * 7 = 49。"
+    },
+    {
+      "input": "height = [1,1]",
+      "output": "1",
+      "explanation": "只有两条线，宽度为 1，高度取较小值 1，面积为 1。"
+    }
+  ],
+  "hints": {
+    "keywords": ["双指针", "贪心", "面积最大化"],
+    "approach": "使用左右双指针分别指向数组两端。面积由较短线的高度和两线间距决定。移动较短的那一侧指针，尝试找到更高的线来增大面积。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  "solution": {
+    "explanation": "使用双指针法：左指针 left 指向数组开头，右指针 right 指向数组末尾。计算当前面积 min(height[left], height[right]) * (right - left)，并与最大面积比较更新。关键决策：移动高度较小的那个指针。因为面积受限于较短的那条线，如果移动较长的那条线，宽度减小且高度不会增加（仍受限于较短线），面积必然减小。只有移动较短线才有可能找到更高的线来增大面积。重复此过程直到两指针相遇。",
+    "code": {
+      "python": "class Solution:\n    def maxArea(self, height: list[int]) -> int:\n        left, right = 0, len(height) - 1\n        max_water = 0\n        while left < right:\n            w = right - left\n            h = min(height[left], height[right])\n            max_water = max(max_water, w * h)\n            if height[left] < height[right]:\n                left += 1\n            else:\n                right -= 1\n        return max_water"
+    },
+    "complexity_analysis": "时间复杂度：O(n)，其中 n 是数组长度，左右指针总共最多移动 n 次。空间复杂度：O(1)，只使用了常数级别的额外空间。"
+  },
+  "related_problems": [42, 84],
+  "frequency": "high"
+}

@@ -1,0 +1,36 @@
+{
+  "id": 9,
+  "leetcode_id": 560,
+  "title": "和为 K 的子数组",
+  "title_en": "Subarray Sum Equals K",
+  "difficulty": "medium",
+  "tags": ["数组", "哈希表", "前缀和"],
+  "description": "给你一个整数数组 nums 和一个整数 k ，请你统计并返回该数组中和为 k 的子数组的个数。\n\n子数组是数组中元素的连续非空序列。\n\n示例 1：\n输入：nums = [1,1,1], k = 2\n输出：2\n\n示例 2：\n输入：nums = [1,2,3], k = 3\n输出：2\n\n约束条件：\n- 1 <= nums.length <= 2 * 10^4\n- -1000 <= nums[i] <= 1000\n- -10^7 <= k <= 10^7",
+  "examples": [
+    {
+      "input": "nums = [1,1,1], k = 2",
+      "output": "2",
+      "explanation": "子数组 [1,1] 和 [1,1] 的和都等于 2。"
+    },
+    {
+      "input": "nums = [1,2,3], k = 3",
+      "output": "2",
+      "explanation": "子数组 [1,2] 和 [3] 的和都等于 3。"
+    }
+  ],
+  "hints": {
+    "keywords": ["前缀和", "哈希表", "子数组和"],
+    "approach": "使用前缀和配合哈希表。维护一个前缀和到出现次数的映射，对于当前位置的前缀和 sum，查找 (sum - k) 在哈希表中出现的次数，即为以当前位置结尾的和为 k 的子数组个数。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  "solution": {
+    "explanation": "核心思路是利用前缀和与哈希表。\n\n1. 定义前缀和 sum[i] 表示 nums[0..i-1] 的和。\n2. 如果存在两个位置 i 和 j (i < j)，使得 sum[j] - sum[i] = k，则 nums[i..j-1] 就是一个和为 k 的子数组。\n3. 用哈希表记录每个前缀和出现的次数。遍历数组时，对于当前前缀和 sum，查找 (sum - k) 在哈希表中的计数，累加到结果中。\n4. 初始时将前缀和 0 的计数设为 1（处理从索引 0 开始的子数组）。",
+    "code": {
+      "python": "class Solution:\n    def subarraySum(self, nums: List[int], k: int) -> int:\n        count = 0\n        prefix_sum = 0\n        sum_count = {0: 1}\n        \n        for num in nums:\n            prefix_sum += num\n            if prefix_sum - k in sum_count:\n                count += sum_count[prefix_sum - k]\n            sum_count[prefix_sum] = sum_count.get(prefix_sum, 0) + 1\n        \n        return count"
+    },
+    "complexity_analysis": "时间复杂度 O(n)：遍历数组一次，哈希表操作均为 O(1)。空间复杂度 O(n)：哈希表最多存储 n 个不同的前缀和。"
+  },
+  "related_problems": [523, 525, 974],
+  "frequency": "high"
+}

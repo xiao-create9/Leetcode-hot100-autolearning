@@ -1,0 +1,36 @@
+{
+  "id": 22,
+  "leetcode_id": 142,
+  "title": "环形链表 II",
+  "title_en": "Linked List Cycle II",
+  "difficulty": "medium",
+  "tags": ["哈希表", "链表", "双指针"],
+  "description": "给定一个链表的头节点 head，返回链表开始入环的第一个节点。如果链表无环，则返回 null。\n\n如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。为了表示给定链表中的环，评测系统使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。如果 pos 是 -1，则在该链表中没有环。\n\n链表节点定义如下：\n```\nclass ListNode:\n    def __init__(self, x):\n        self.val = x\n        self.next = None\n```\n\n**示例 1：**\n输入：head = [3,2,0,-4]，pos = 1\n输出：返回索引为 1 的链表节点\n解释：链表中有一个环，其尾部连接到第二个节点。\n\n**示例 2：**\n输入：head = [1,2]，pos = 0\n输出：返回索引为 0 的链表节点\n\n**示例 3：**\n输入：head = [1]，pos = -1\n输出：返回 null\n解释：链表中没有环。",
+  "examples": [
+    {
+      "input": "head = [3,2,0,-4], pos = 1",
+      "output": "节点索引为 1（值为 2）",
+      "explanation": "链表中有一个环，尾节点连接到第二个节点（索引 1）。"
+    },
+    {
+      "input": "head = [1], pos = -1",
+      "output": "null",
+      "explanation": "链表中没有环。"
+    }
+  ],
+  "hints": {
+    "keywords": ["快慢指针", "Floyd判圈", "数学推导"],
+    "approach": "先用快慢指针找到相遇点，然后将一个指针移到头部，两个指针同速前进，再次相遇点即为环的入口。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  "solution": {
+    "explanation": "设链表头到环入口距离为 a，环入口到相遇点距离为 b，环长为 c。慢指针走了 a+b 步，快指针走了 a+b+nc 步。因为快指针速度是慢指针两倍，所以 a+b+nc = 2(a+b)，即 a = nc-b = (n-1)c + (c-b)。令一个指针从头部出发走 a 步，另一个从相遇点出发走 (n-1)c+(c-b) 步，两者会在环入口相遇。",
+    "code": {
+      "python": "class Solution:\n    def detectCycle(self, head: ListNode) -> ListNode:\n        if not head or not head.next:\n            return None\n        slow = fast = head\n        # 找相遇点\n        while fast and fast.next:\n            slow = slow.next\n            fast = fast.next.next\n            if slow == fast:\n                # 找环入口\n                ptr = head\n                while ptr != slow:\n                    ptr = ptr.next\n                    slow = slow.next\n                return ptr\n        return None"
+    },
+    "complexity_analysis": "时间复杂度 O(n)，快慢指针找相遇点和从头部找入口各需 O(n)。空间复杂度 O(1)，只使用了常数个指针。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

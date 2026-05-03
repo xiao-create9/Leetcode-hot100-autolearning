@@ -1,0 +1,36 @@
+{
+  "id": 36,
+  "leetcode_id": 543,
+  "title": "二叉树的直径",
+  "title_en": "Diameter of Binary Tree",
+  "difficulty": "easy",
+  "tags": ["树", "深度优先搜索", "二叉树"],
+  "description": "给你一棵二叉树的根节点，返回该树的直径。\n\n二叉树的直径是指树中任意两个节点之间最长路径的长度。这条路径可能经过也可能不经过根节点 root。\n\n两节点之间路径的长度是以它们之间边的数目表示。\n\n二叉树节点定义如下：\n```\nclass TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n```\n\n**示例 1：**\n输入：root = [1,2,3,4,5]\n输出：3\n解释：3，取路径 [4,2,1,3] 或 [5,2,1,3] 的长度。\n\n**示例 2：**\n输入：root = [1,2]\n输出：1",
+  "examples": [
+    {
+      "input": "root = [1,2,3,4,5]",
+      "output": "3",
+      "explanation": "最长路径是 4->2->1->3 或 5->2->1->3，长度为 3。"
+    },
+    {
+      "input": "root = [1,2]",
+      "output": "1",
+      "explanation": "最长路径是 1->2，长度为 1。"
+    }
+  ],
+  "hints": {
+    "keywords": ["DFS", "后序遍历", "深度"],
+    "approach": "对于每个节点，经过该节点的最长路径 = 左子树深度 + 右子树深度。在递归计算深度的同时，更新全局最大直径。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(h)"
+  },
+  "solution": {
+    "explanation": "使用 DFS 后序遍历。对于每个节点，计算其左子树深度和右子树深度，经过该节点的直径为 left_depth + right_depth。在遍历过程中维护全局最大直径。节点的深度 = max(左子树深度, 右子树深度) + 1。",
+    "code": {
+      "python": "class Solution:\n    def diameterOfBinaryTree(self, root: TreeNode) -> int:\n        self.ans = 0\n        \n        def depth(node):\n            if not node:\n                return 0\n            left = depth(node.left)\n            right = depth(node.right)\n            self.ans = max(self.ans, left + right)\n            return max(left, right) + 1\n        \n        depth(root)\n        return self.ans"
+    },
+    "complexity_analysis": "时间复杂度 O(n)，每个节点被访问一次。空间复杂度 O(h)，其中 h 是树的高度，递归栈的空间。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

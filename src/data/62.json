@@ -1,0 +1,36 @@
+{
+  "id": 62,
+  "leetcode_id": 33,
+  "title": "搜索旋转排序数组",
+  "title_en": "Search in Rotated Sorted Array",
+  "difficulty": "medium",
+  "tags": ["二分查找", "数组"],
+  "description": "整数数组 nums 按升序排列，数组中的值互不相同。在传递给函数之前，nums 在预先未知的某个下标 k（0 <= k < nums.length）上进行了旋转，使数组变为 [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标从 0 开始计数）。例如，[0,1,2,4,5,6,7] 在下标 3 处经旋转后可能变为 [4,5,6,7,0,1,2]。\n\n给你旋转后的数组 nums 和一个整数 target，如果 nums 中存在这个目标值 target，则返回它的下标，否则返回 -1。你必须设计一个时间复杂度为 O(log n) 的算法解决此问题。\n\n示例 1：\n输入：nums = [4,5,6,7,0,1,2], target = 0\n输出：4\n\n示例 2：\n输入：nums = [4,5,6,7,0,1,2], target = 3\n输出：-1\n\n示例 3：\n输入：nums = [1], target = 0\n输出：-1\n\n约束条件：\n- 1 <= nums.length <= 5000\n- -10^4 <= nums[i] <= 10^4\n- nums 中的每个值都独一无二\n- 题目数据保证 nums 在预先未知的某个下标上进行了旋转\n- -10^4 <= target <= 10^4",
+  "examples": [
+    {
+      "input": "nums = [4,5,6,7,0,1,2], target = 0",
+      "output": "4",
+      "explanation": "目标值 0 在数组中的索引为 4。"
+    },
+    {
+      "input": "nums = [4,5,6,7,0,1,2], target = 3",
+      "output": "-1",
+      "explanation": "目标值 3 不在数组中。"
+    }
+  ],
+  "hints": {
+    "keywords": ["二分查找", "旋转数组", "分段有序"],
+    "approach": "二分查找时，先判断哪一半是有序的。如果左半部分有序且 target 在左半部分范围内，在左半部分搜索；否则在右半部分搜索。反之亦然。",
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
+  },
+  "solution": {
+    "explanation": "在旋转排序数组中进行二分查找。关键观察是：二分后，至少有一半是有序的。判断哪一半有序：如果 nums[left] <= nums[mid]，则左半部分有序。在有序的那一半中判断 target 是否在范围内，如果在则在该半搜索，否则在另一半搜索。",
+    "code": {
+      "python": "class Solution:\n    def search(self, nums: list[int], target: int) -> int:\n        left, right = 0, len(nums) - 1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            \n            if nums[left] <= nums[mid]:  # left half is sorted\n                if nums[left] <= target < nums[mid]:\n                    right = mid - 1\n                else:\n                    left = mid + 1\n            else:  # right half is sorted\n                if nums[mid] < target <= nums[right]:\n                    left = mid + 1\n                else:\n                    right = mid - 1\n        \n        return -1"
+    },
+    "complexity_analysis": "时间复杂度 O(log n)，每次将搜索范围缩小一半。空间复杂度 O(1)，只使用常数额外空间。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

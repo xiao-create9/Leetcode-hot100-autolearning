@@ -1,0 +1,41 @@
+{
+  "id": 93,
+  "leetcode_id": 1312,
+  "title": "让字符串成为回文串的最少操作数",
+  "title_en": "Minimum Insertion Steps to Make a String Palindrome",
+  "difficulty": "hard",
+  "tags": ["动态规划", "字符串", "最长公共子序列"],
+  "description": "给你一个字符串 s，每一次操作你都可以在字符串的任意位置插入任意字符。请你返回让 s 成为回文串的最少操作次数。\n\n约束条件：\n- 1 <= s.length <= 500\n- s 中所有字符都是小写字母",
+  "examples": [
+    {
+      "input": "s = \"zzazz\"",
+      "output": "0",
+      "explanation": "\"zzazz\" 已经是回文串，不需要任何操作。"
+    },
+    {
+      "input": "s = \"mbadm\"",
+      "output": "2",
+      "explanation": "可以得到 \"mbdadbm\" 或 \"madam\"，最少需要 2 次插入操作。"
+    },
+    {
+      "input": "s = \"leetcode\"",
+      "output": "5",
+      "explanation": "插入 5 个字符使得 \"leetcode\" 变为回文串，例如 \"edocteelteetcode\" 等。最少需要 5 次操作。"
+    }
+  ],
+  "hints": {
+    "keywords": ["动态规划", "最长回文子序列", "LCS"],
+    "approach": "最少插入次数 = 字符串长度 - 最长回文子序列长度。最长回文子序列可以通过求 s 和 reverse(s) 的最长公共子序列得到。",
+    "time_complexity": "O(n^2)",
+    "space_complexity": "O(n)"
+  },
+  "solution": {
+    "explanation": "核心思路：字符串长度减去最长回文子序列（LPS）长度即为最少插入次数。求 LPS 的方法：将 s 反转得到 s_rev，求 s 和 s_rev 的最长公共子序列（LCS）。使用动态规划求解 LCS，然后 n - LCS 即为答案。",
+    "code": {
+      "python": "class Solution:\n    def minInsertions(self, s: str) -> int:\n        n = len(s)\n        s_rev = s[::-1]\n        # 求 s 和 s_rev 的 LCS（滚动数组优化）\n        prev = [0] * (n + 1)\n        curr = [0] * (n + 1)\n        for i in range(1, n + 1):\n            for j in range(1, n + 1):\n                if s[i-1] == s_rev[j-1]:\n                    curr[j] = prev[j-1] + 1\n                else:\n                    curr[j] = max(prev[j], curr[j-1])\n            prev, curr = curr, [0] * (n + 1)\n        return n - prev[n]"
+    },
+    "complexity_analysis": "时间复杂度 O(n^2)，其中 n 为字符串长度。空间复杂度 O(n)，使用滚动数组优化 LCS 计算空间。"
+  },
+  "related_problems": [516, 5, 1143],
+  "frequency": "medium"
+}

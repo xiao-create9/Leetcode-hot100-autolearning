@@ -1,0 +1,36 @@
+{
+  "id": 20,
+  "leetcode_id": 234,
+  "title": "回文链表",
+  "title_en": "Palindrome Linked List",
+  "difficulty": "easy",
+  "tags": ["栈", "递归", "链表", "双指针"],
+  "description": "给你一个单链表的头节点 head，请你判断该链表是否为回文链表。如果是，返回 true；否则，返回 false。\n\n链表节点定义如下：\n```\nclass ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n```\n\n**示例 1：**\n输入：head = [1,2,2,1]\n输出：true\n\n**示例 2：**\n输入：head = [1,2]\n输出：false\n\n**提示：**\n- 链表中节点数目在范围 [1, 10^5] 内\n- 0 <= Node.val <= 9",
+  "examples": [
+    {
+      "input": "head = [1,2,2,1]",
+      "output": "true",
+      "explanation": "链表从前往后读和从后往前读都是 1,2,2,1。"
+    },
+    {
+      "input": "head = [1,2]",
+      "output": "false",
+      "explanation": "链表从前往后读是 1,2，从后往前读是 2,1，不相同。"
+    }
+  ],
+  "hints": {
+    "keywords": ["快慢指针", "反转链表", "中点"],
+    "approach": "使用快慢指针找到链表中点，然后反转后半部分链表，再比较前后两半是否相同。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  "solution": {
+    "explanation": "1. 使用快慢指针找到链表中点：快指针每次走两步，慢指针每次走一步，当快指针到达末尾时，慢指针在中点。2. 反转后半部分链表。3. 比较前半部分和反转后的后半部分是否相同。4. （可选）恢复链表结构。",
+    "code": {
+      "python": "class Solution:\n    def isPalindrome(self, head: ListNode) -> bool:\n        if not head or not head.next:\n            return True\n        \n        # 找中点\n        slow = fast = head\n        while fast and fast.next:\n            slow = slow.next\n            fast = fast.next.next\n        \n        # 反转后半部分\n        prev = None\n        curr = slow\n        while curr:\n            next_temp = curr.next\n            curr.next = prev\n            prev = curr\n            curr = next_temp\n        \n        # 比较前后两半\n        left, right = head, prev\n        while right:\n            if left.val != right.val:\n                return False\n            left = left.next\n            right = right.next\n        return True"
+    },
+    "complexity_analysis": "时间复杂度 O(n)，需要遍历链表两次（找中点和比较）。空间复杂度 O(1)，只使用了常数个指针变量。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

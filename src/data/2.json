@@ -1,0 +1,41 @@
+{
+  "id": 2,
+  "leetcode_id": 49,
+  "title": "字母异位词分组",
+  "title_en": "Group Anagrams",
+  "difficulty": "medium",
+  "tags": ["数组", "哈希表", "字符串", "排序"],
+  "description": "给你一个字符串数组，请你将字母异位词组合在一起。可以按任意顺序返回答案。\n\n字母异位词是由重新排列源单词的所有字母得到的一个新单词。\n\n示例 1：\n输入：strs = [\"eat\",\"tea\",\"tan\",\"ate\",\"nat\",\"bat\"]\n输出：[[\"bat\"],[\"nat\",\"tan\"],[\"ate\",\"eat\",\"tea\"]]\n\n示例 2：\n输入：strs = [\"\"]\n输出：[[\"\"]]\n\n示例 3：\n输入：strs = [\"a\"]\n输出：[[\"a\"]]\n\n约束条件：\n- 1 <= strs.length <= 10^4\n- 0 <= strs[i].length <= 100\n- strs[i] 仅包含小写英文字母",
+  "examples": [
+    {
+      "input": "strs = [\"eat\",\"tea\",\"tan\",\"ate\",\"nat\",\"bat\"]",
+      "output": "[[\"bat\"],[\"nat\",\"tan\"],[\"ate\",\"eat\",\"tea\"]]",
+      "explanation": "\"bat\" 独自一组；\"nat\" 和 \"tan\" 是异位词分为一组；\"ate\"、\"eat\"、\"tea\" 是异位词分为一组。"
+    },
+    {
+      "input": "strs = [\"\"]",
+      "output": "[[\"\"]]",
+      "explanation": "空字符串单独成为一组。"
+    },
+    {
+      "input": "strs = [\"a\"]",
+      "output": "[[\"a\"]]",
+      "explanation": "单个字符独自成为一组。"
+    }
+  ],
+  "hints": {
+    "keywords": ["哈希表", "排序键", "字符计数"],
+    "approach": "核心思路是为每个字符串找到一个唯一的「签名」，使得异位词具有相同的签名。可以将字符串排序后作为键，或者使用字符频率数组作为键。",
+    "time_complexity": "O(n * k * log k)",
+    "space_complexity": "O(n * k)"
+  },
+  "solution": {
+    "explanation": "方法一（排序法）：遍历字符串数组，对每个字符串进行排序，将排序后的字符串作为哈希表的键，原字符串加入对应键的列表中。排序后的字符串相同的原字符串互为异位词。方法二（计数法）：使用每个字符串的字符频率元组作为键，避免排序操作。这里给出排序法的实现。",
+    "code": {
+      "python": "class Solution:\n    def groupAnagrams(self, strs: list[str]) -> list[list[str]]:\n        from collections import defaultdict\n        anagram_map = defaultdict(list)\n        for s in strs:\n            key = ''.join(sorted(s))\n            anagram_map[key].append(s)\n        return list(anagram_map.values())"
+    },
+    "complexity_analysis": "时间复杂度：O(n * k * log k)，其中 n 是字符串数组长度，k 是字符串的最大长度。对每个字符串排序需要 O(k * log k)。空间复杂度：O(n * k)，哈希表存储所有字符串。"
+  },
+  "related_problems": [242, 438],
+  "frequency": "high"
+}

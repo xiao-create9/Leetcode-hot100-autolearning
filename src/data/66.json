@@ -1,0 +1,36 @@
+{
+  "id": 66,
+  "leetcode_id": 155,
+  "title": "最小栈",
+  "title_en": "Min Stack",
+  "difficulty": "medium",
+  "tags": ["栈", "设计"],
+  "description": "设计一个支持 push、pop、top 操作，并能在常数时间内检索到最小元素的栈。实现 MinStack 类：\n- MinStack() 初始化堆栈对象。\n- void push(int val) 将元素推入堆栈。\n- void pop() 删除堆栈顶部的元素。\n- int top() 获取堆栈顶部的元素。\n- int getMin() 获取堆栈中的最小元素。\n\n示例：\n输入：\n[\"MinStack\",\"push\",\"push\",\"push\",\"getMin\",\"pop\",\"top\",\"getMin\"]\n[[],[-2],[0],[-3],[],[],[],[]]\n输出：\n[null,null,null,null,-3,null,0,-2]\n\n解释：\nMinStack minStack = new MinStack();\nminStack.push(-2);\nminStack.push(0);\nminStack.push(-3);\nminStack.getMin();   --> 返回 -3.\nminStack.pop();\nminStack.top();      --> 返回 0.\nminStack.getMin();   --> 返回 -2.\n\n约束条件：\n- -2^31 <= val <= 2^31 - 1\n- pop、top 和 getMin 操作总是在非空栈上调用\n- 最多调用 3 * 10^4 次 push、pop、top 和 getMin",
+  "examples": [
+    {
+      "input": "[\"MinStack\",\"push\",\"push\",\"push\",\"getMin\",\"pop\",\"top\",\"getMin\"]\n[[],[-2],[0],[-3],[],[],[],[]]",
+      "output": "[null,null,null,null,-3,null,0,-2]",
+      "explanation": "依次压入 -2, 0, -3，最小值为 -3。弹出 -3 后栈顶为 0，最小值为 -2。"
+    },
+    {
+      "input": "[\"MinStack\",\"push\",\"push\",\"getMin\",\"pop\",\"getMin\"]\n[[],[1],[2],[],[],[]]",
+      "output": "[null,null,null,1,null,1]",
+      "explanation": "压入 1 和 2 后，最小值为 1。弹出 2 后，最小值仍为 1。"
+    }
+  ],
+  "hints": {
+    "keywords": ["辅助栈", "栈设计", "O(1)查询"],
+    "approach": "使用一个辅助栈来维护当前栈中的最小值。每次 push 时，将当前最小值同步压入辅助栈。pop 时同步弹出辅助栈栈顶。getMin 直接返回辅助栈栈顶。",
+    "time_complexity": "O(1)",
+    "space_complexity": "O(n)"
+  },
+  "solution": {
+    "explanation": "使用两个栈：一个主栈用于存储所有元素，一个辅助栈用于维护每个状态下的最小值。push 时，主栈压入 val，辅助栈压入 min(val, 辅助栈栈顶)。pop 时两个栈同时弹出。getMin 返回辅助栈栈顶。这样所有操作都是 O(1)。",
+    "code": {
+      "python": "class MinStack:\n    def __init__(self):\n        self.stack = []\n        self.min_stack = []\n\n    def push(self, val: int) -> None:\n        self.stack.append(val)\n        if not self.min_stack:\n            self.min_stack.append(val)\n        else:\n            self.min_stack.append(min(val, self.min_stack[-1]))\n\n    def pop(self) -> None:\n        self.stack.pop()\n        self.min_stack.pop()\n\n    def top(self) -> int:\n        return self.stack[-1]\n\n    def getMin(self) -> int:\n        return self.min_stack[-1]"
+    },
+    "complexity_analysis": "所有操作的时间复杂度均为 O(1)。空间复杂度 O(n)，辅助栈需要与主栈相同大小的空间。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

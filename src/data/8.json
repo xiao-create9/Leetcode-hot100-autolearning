@@ -1,0 +1,41 @@
+{
+  "id": 8,
+  "leetcode_id": 76,
+  "title": "最小覆盖子串",
+  "title_en": "Minimum Window Substring",
+  "difficulty": "hard",
+  "tags": ["哈希表", "字符串", "滑动窗口"],
+  "description": "给你一个字符串 s 、一个字符串 t。返回 s 中涵盖 t 所有字符的最小子串。如果 s 中不存在涵盖 t 所有字符的子串，则返回空字符串 \"\"。\n\n注意：\n- 对于 t 中重复字符，我们寻找的子字符串中该字符数量必须不少于 t 中该字符数量。\n- 如果 s 中存在这样的子串，我们保证它是唯一的答案。\n\n示例 1：\n输入：s = \"ADOBECODEBANC\", t = \"ABC\"\n输出：\"BANC\"\n解释：最小覆盖子串 \"BANC\" 包含来自字符串 t 的 'A'、'B' 和 'C'。\n\n示例 2：\n输入：s = \"a\", t = \"a\"\n输出：\"a\"\n解释：整个字符串 s 就是最小覆盖子串。\n\n示例 3：\n输入：s = \"a\", t = \"aa\"\n输出：\"\"\n解释：t 中有两个 'a'，但 s 中只有一个 'a'，无法覆盖，返回空字符串。\n\n约束条件：\n- m == s.length\n- n == t.length\n- 1 <= m, n <= 10^5\n- s 和 t 由英文字母组成\n\n进阶：你能设计一个在 o(m+n) 时间内解决此问题的算法吗？",
+  "examples": [
+    {
+      "input": "s = \"ADOBECODEBANC\", t = \"ABC\"",
+      "output": "\"BANC\"",
+      "explanation": "\"BANC\" 是包含 'A'、'B'、'C' 的最短子串，长度为 4。"
+    },
+    {
+      "input": "s = \"a\", t = \"a\"",
+      "output": "\"a\"",
+      "explanation": "整个字符串 s 就是最小子串。"
+    },
+    {
+      "input": "s = \"a\", t = \"aa\"",
+      "output": "\"\"",
+      "explanation": "s 中只有一个 'a'，无法覆盖 t 中的两个 'a'，返回空字符串。"
+    }
+  ],
+  "hints": {
+    "keywords": ["滑动窗口", "字符频率", "双指针"],
+    "approach": "使用可变大小的滑动窗口。右指针扩展窗口直到窗口包含 t 的所有字符，然后收缩左指针寻找最小窗口。用计数器跟踪还需要匹配的字符数。",
+    "time_complexity": "O(m + n)",
+    "space_complexity": "O(1)"
+  },
+  "solution": {
+    "explanation": "使用滑动窗口法：\n1. 用哈希表 need 记录 t 中每个字符需要的次数，变量 missing 记录还需要匹配的字符总数。\n2. 右指针 right 向右扩展窗口，每加入一个字符，如果该字符在 need 中且还需要，则 missing 减 1。\n3. 当 missing == 0 时，说明当前窗口已包含 t 的所有字符。此时尝试收缩左指针 left：\n   - 如果当前最小窗口比已记录的更短，更新结果。\n   - 移除左边字符，如果该字符在 need 中且移除后不够了，missing 加 1，停止收缩。\n4. 重复步骤 2-3 直到 right 遍历完 s。\n5. 返回记录的最小子串。",
+    "code": {
+      "python": "class Solution:\n    def minWindow(self, s: str, t: str) -> str:\n        from collections import Counter\n        \n        need = Counter(t)  # t 中每个字符需要的数量\n        missing = len(t)   # 还需要匹配的字符总数\n        left = 0\n        start, end = 0, float('inf')  # 记录最小窗口的起止位置\n        \n        for right, char in enumerate(s):\n            # 右指针扩展窗口\n            if need[char] > 0:\n                missing -= 1\n            need[char] -= 1\n            \n            # 当所有字符都匹配时，收缩左指针\n            while missing == 0:\n                # 更新最小窗口\n                if right - left < end - start:\n                    start, end = left, right\n                \n                # 移除左边字符\n                left_char = s[left]\n                need[left_char] += 1\n                if need[left_char] > 0:\n                    missing += 1\n                left += 1\n        \n        return s[start:end + 1] if end != float('inf') else \"\""
+    },
+    "complexity_analysis": "时间复杂度：O(m + n)，其中 m 是字符串 s 的长度，n 是字符串 t 的长度。右指针遍历 s 一次 O(m)，左指针最多遍历 s 一次 O(m)，统计 t 的频率 O(n)。空间复杂度：O(1)，因为字符集大小固定（英文字母），哈希表的空间是常数级。"
+  },
+  "related_problems": [3, 30, 209, 239],
+  "frequency": "high"
+}

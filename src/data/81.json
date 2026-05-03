@@ -1,0 +1,36 @@
+{
+  "id": 81,
+  "leetcode_id": 279,
+  "title": "完全平方数",
+  "title_en": "Perfect Squares",
+  "difficulty": "medium",
+  "tags": ["动态规划", "广度优先搜索", "数学"],
+  "description": "给你一个整数 n，返回和为 n 的完全平方数的最少数量。完全平方数是一个整数，其值等于另一个整数的平方。换句话说，其值等于一个整数自乘的积。例如，1、4、9 和 16 都是完全平方数，而 3 和 11 不是。\n\n约束条件：\n- 1 <= n <= 10^4",
+  "examples": [
+    {
+      "input": "n = 12",
+      "output": "3",
+      "explanation": "12 = 4 + 4 + 4，由 3 个完全平方数组成。"
+    },
+    {
+      "input": "n = 13",
+      "output": "2",
+      "explanation": "13 = 4 + 9，由 2 个完全平方数组成。"
+    }
+  ],
+  "hints": {
+    "keywords": ["动态规划", "完全背包", "BFS"],
+    "approach": "将问题转化为完全背包问题：物品为所有完全平方数 1, 4, 9, ...，背包容量为 n，求装满背包的最少物品数。",
+    "time_complexity": "O(n * sqrt(n))",
+    "space_complexity": "O(n)"
+  },
+  "solution": {
+    "explanation": "动态规划：设 dp[i] 表示和为 i 的完全平方数的最少数量。对于每个 i，枚举所有完全平方数 j*j <= i，dp[i] = min(dp[i], dp[i - j*j] + 1)。初始化 dp[0] = 0。",
+    "code": {
+      "python": "class Solution:\n    def numSquares(self, n: int) -> int:\n        dp = [float('inf')] * (n + 1)\n        dp[0] = 0\n        for i in range(1, n + 1):\n            j = 1\n            while j * j <= i:\n                dp[i] = min(dp[i], dp[i - j * j] + 1)\n                j += 1\n        return dp[n]"
+    },
+    "complexity_analysis": "时间复杂度 O(n * sqrt(n))，外层遍历 n，内层最多 sqrt(n) 个完全平方数。空间复杂度 O(n)，dp 数组大小。"
+  },
+  "related_problems": [322, 343],
+  "frequency": "high"
+}

@@ -1,0 +1,36 @@
+{
+  "id": 43,
+  "leetcode_id": 105,
+  "title": "从前序与中序遍历序列构造二叉树",
+  "title_en": "Construct Binary Tree from Preorder and Inorder Traversal",
+  "difficulty": "medium",
+  "tags": ["树", "数组", "哈希表", "分治", "二叉树"],
+  "description": "给定两个整数数组 preorder 和 inorder，其中 preorder 是二叉树的前序遍历，inorder 是同一棵树的中序遍历，请构造二叉树并返回其根节点。\n\n二叉树节点定义如下：\n```\nclass TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n```\n\n**示例 1：**\n输入：preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]\n输出：[3,9,20,null,null,15,7]\n\n**示例 2：**\n输入：preorder = [-1], inorder = [-1]\n输出：[-1]\n\n**提示：**\n- 1 <= preorder.length <= 3000\n- inorder.length == preorder.length\n- -3000 <= preorder[i], inorder[i] <= 3000\n- preorder 和 inorder 均无重复元素\n- inorder 均出现在 preorder 中\n- preorder 保证为二叉树的前序遍历序列\n- inorder 保证为二叉树的中序遍历序列",
+  "examples": [
+    {
+      "input": "preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]",
+      "output": "[3,9,20,null,null,15,7]",
+      "explanation": "前序的第一个元素 3 是根节点，在中序中 3 左边是左子树 [9]，右边是右子树 [15,20,7]。"
+    },
+    {
+      "input": "preorder = [-1], inorder = [-1]",
+      "output": "[-1]",
+      "explanation": "只有一个节点的树。"
+    }
+  ],
+  "hints": {
+    "keywords": ["前序遍历", "中序遍历", "分治", "哈希表"],
+    "approach": "前序遍历的第一个元素是根节点。在中序遍历中找到根节点的位置，左边是左子树，右边是右子树。递归构建左右子树。使用哈希表加速在中序数组中查找根节点位置。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  "solution": {
+    "explanation": "1. 前序遍历的第一个元素是根节点。2. 在中序遍历中找到根节点的索引，左边是左子树的中序，右边是右子树的中序。3. 根据左子树的节点数，可以确定前序遍历中左右子树的范围。4. 递归构建左右子树。使用哈希表存储中序遍历中值到索引的映射，将查找时间从 O(n) 降到 O(1)。",
+    "code": {
+      "python": "class Solution:\n    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:\n        inorder_map = {val: idx for idx, val in enumerate(inorder)}\n        \n        def build(pre_start, pre_end, in_start, in_end):\n            if pre_start > pre_end:\n                return None\n            root_val = preorder[pre_start]\n            root = TreeNode(root_val)\n            root_idx = inorder_map[root_val]\n            left_size = root_idx - in_start\n            root.left = build(pre_start + 1, pre_start + left_size, in_start, root_idx - 1)\n            root.right = build(pre_start + left_size + 1, pre_end, root_idx + 1, in_end)\n            return root\n        \n        return build(0, len(preorder) - 1, 0, len(inorder) - 1)"
+    },
+    "complexity_analysis": "时间复杂度 O(n)，每个节点被访问一次，哈希表查找为 O(1)。空间复杂度 O(n)，哈希表和递归栈的空间。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

@@ -1,0 +1,36 @@
+{
+  "id": 73,
+  "leetcode_id": 121,
+  "title": "买卖股票的最佳时机",
+  "title_en": "Best Time to Buy and Sell Stock",
+  "difficulty": "easy",
+  "tags": ["贪心算法", "数组", "动态规划"],
+  "description": "给定一个数组 prices，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。你只能选择某一天买入这只股票，并选择在未来的某一个不同的日子卖出。设计一个算法来计算你所能获取的最大利润。返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0。\n\n约束条件：\n- 1 <= prices.length <= 10^5\n- 0 <= prices[i] <= 10^4",
+  "examples": [
+    {
+      "input": "prices = [7,1,5,3,6,4]",
+      "output": "5",
+      "explanation": "在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 = 6）的时候卖出，最大利润 = 6 - 1 = 5。注意利润不能是 7 - 1 = 6, 因为卖出价格需要大于买入价格。"
+    },
+    {
+      "input": "prices = [7,6,4,3,1]",
+      "output": "0",
+      "explanation": "在这种情况下, 没有交易完成, 所以最大利润为 0。"
+    }
+  ],
+  "hints": {
+    "keywords": ["贪心", "一次遍历", "维护最小值"],
+    "approach": "遍历数组，维护当前遇到的最小价格，同时计算当前价格与最小价格的差值，更新最大利润。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  "solution": {
+    "explanation": "核心思路是贪心算法：维护一个变量 min_price 记录到目前为止的最低价格，同时维护 max_profit 记录最大利润。遍历价格数组，对于每一天的价格，计算 price - min_price 作为当天卖出的利润，更新最大利润。如果当天价格低于 min_price，则更新 min_price。",
+    "code": {
+      "python": "class Solution:\n    def maxProfit(self, prices: list[int]) -> int:\n        min_price = float('inf')\n        max_profit = 0\n        for price in prices:\n            if price < min_price:\n                min_price = price\n            elif price - min_price > max_profit:\n                max_profit = price - min_price\n        return max_profit"
+    },
+    "complexity_analysis": "时间复杂度 O(n)，只需遍历一次数组。空间复杂度 O(1)，只使用了常数额外空间。"
+  },
+  "related_problems": [122, 123, 188, 309],
+  "frequency": "high"
+}

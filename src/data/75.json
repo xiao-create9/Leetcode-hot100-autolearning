@@ -1,0 +1,36 @@
+{
+  "id": 75,
+  "leetcode_id": 45,
+  "title": "跳跃游戏 II",
+  "title_en": "Jump Game II",
+  "difficulty": "medium",
+  "tags": ["贪心算法", "数组", "广度优先搜索"],
+  "description": "给定一个长度为 n 的非负整数数组 nums，初始位置为 nums[0]。每个元素 nums[i] 代表在位置 i 可以向前跳跃的最大长度。目标是使用最少的跳跃次数到达数组的最后一个位置。假设总是可以到达最后一个位置。\n\n约束条件：\n- 1 <= nums.length <= 10^4\n- 0 <= nums[i] <= 1000",
+  "examples": [
+    {
+      "input": "nums = [2,3,1,1,4]",
+      "output": "2",
+      "explanation": "从下标 0 跳 1 步到下标 1，然后跳 3 步到数组最后一个位置。共 2 步。"
+    },
+    {
+      "input": "nums = [2,3,0,1,4]",
+      "output": "2",
+      "explanation": "从下标 0 跳 2 步到下标 2，然后跳 2 步到数组最后一个位置。共 2 步。"
+    }
+  ],
+  "hints": {
+    "keywords": ["贪心", "BFS思想", "最远覆盖"],
+    "approach": "使用贪心策略，在当前跳跃能覆盖的范围内，找出下一次跳跃能到达的最远位置，以此类推。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  "solution": {
+    "explanation": "贪心算法：维护当前跳跃的边界 end 和能到达的最远位置 farthest。遍历到 end 时，跳跃次数加 1，并将 end 更新为 farthest。这相当于 BFS 的层级遍历思想，每次跳跃看作一层。",
+    "code": {
+      "python": "class Solution:\n    def jump(self, nums: list[int]) -> int:\n        jumps = 0\n        end = 0\n        farthest = 0\n        for i in range(len(nums) - 1):\n            farthest = max(farthest, i + nums[i])\n            if i == end:\n                jumps += 1\n                end = farthest\n        return jumps"
+    },
+    "complexity_analysis": "时间复杂度 O(n)，只遍历一次数组。空间复杂度 O(1)，只用了常数额外空间。"
+  },
+  "related_problems": [55, 1306, 1871],
+  "frequency": "high"
+}

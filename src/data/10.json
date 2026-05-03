@@ -1,0 +1,36 @@
+{
+  "id": 10,
+  "leetcode_id": 239,
+  "title": "滑动窗口最大值",
+  "title_en": "Sliding Window Maximum",
+  "difficulty": "hard",
+  "tags": ["队列", "数组", "滑动窗口", "单调队列", "堆"],
+  "description": "给你一个整数数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。窗口每次向右移动一位。\n\n返回滑动窗口中的最大值。\n\n示例 1：\n输入：nums = [1,3,-1,-3,5,3,6,7], k = 3\n输出：[3,3,5,5,6,7]\n解释：\n滑动窗口的位置                最大值\n---------------               -----\n[1  3  -1] -3  5  3  6  7       3\n 1 [3  -1  -3] 5  3  6  7       3\n 1  3 [-1  -3  5] 3  6  7       5\n 1  3  -1 [-3  5  3] 6  7       5\n 1  3  -1  -3 [5  3  6] 7       6\n 1  3  -1  -3  5 [3  6  7]      7\n\n示例 2：\n输入：nums = [1], k = 1\n输出：[1]\n\n约束条件：\n- 1 <= nums.length <= 10^5\n- -10^4 <= nums[i] <= 10^4\n- 1 <= k <= nums.length",
+  "examples": [
+    {
+      "input": "nums = [1,3,-1,-3,5,3,6,7], k = 3",
+      "output": "[3,3,5,5,6,7]",
+      "explanation": "滑动窗口从左到右移动，每个位置取窗口内的最大值。"
+    },
+    {
+      "input": "nums = [1], k = 1",
+      "output": "[1]",
+      "explanation": "只有一个元素，窗口大小为 1，最大值就是 1。"
+    }
+  ],
+  "hints": {
+    "keywords": ["单调队列", "双端队列", "滑动窗口"],
+    "approach": "使用单调递减的双端队列。队列中存储元素的索引，保持队列头部始终是当前窗口最大值的索引。当新元素入队时，移除队列尾部所有比它小的元素（因为它们不可能是窗口最大值）。当队列头部索引超出窗口范围时移除。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(k)"
+  },
+  "solution": {
+    "explanation": "使用单调递减双端队列（deque）解决：\n\n1. 维护一个双端队列，队列中存储数组索引，保证队列中索引对应的元素值是单调递减的。\n2. 遍历数组，对于每个新元素 nums[i]：\n   - 移除队列尾部所有小于 nums[i] 的索引（它们不可能成为后续窗口的最大值）。\n   - 将 i 加入队列尾部。\n   - 如果队列头部索引已超出窗口范围（小于 i-k+1），移除头部。\n   - 当 i >= k-1 时，队列头部索引对应的值就是当前窗口的最大值。\n\n每个元素最多入队和出队各一次，因此时间复杂度为 O(n)。",
+    "code": {
+      "python": "from collections import deque\n\nclass Solution:\n    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:\n        result = []\n        dq = deque()  # 存储索引\n        \n        for i in range(len(nums)):\n            # 移除超出窗口的元素\n            while dq and dq[0] < i - k + 1:\n                dq.popleft()\n            \n            # 移除队列尾部比当前元素小的\n            while dq and nums[dq[-1]] < nums[i]:\n                dq.pop()\n            \n            dq.append(i)\n            \n            # 窗口形成后记录最大值\n            if i >= k - 1:\n                result.append(nums[dq[0]])\n        \n        return result"
+    },
+    "complexity_analysis": "时间复杂度 O(n)：每个元素最多入队和出队各一次。空间复杂度 O(k)：双端队列中最多存储 k 个元素。"
+  },
+  "related_problems": [155, 480, 1438],
+  "frequency": "high"
+}

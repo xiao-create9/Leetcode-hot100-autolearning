@@ -1,0 +1,36 @@
+{
+  "id": 71,
+  "leetcode_id": 347,
+  "title": "前 K 个高频元素",
+  "title_en": "Top K Frequent Elements",
+  "difficulty": "medium",
+  "tags": ["堆", "哈希表", "桶排序"],
+  "description": "给你一个整数数组 nums 和一个整数 k，请你返回其中出现频率前 k 高的元素。你可以按任意顺序返回答案。\n\n示例 1：\n输入：nums = [1,1,1,2,2,3], k = 2\n输出：[1,2]\n\n示例 2：\n输入：nums = [1], k = 1\n输出：[1]\n\n约束条件：\n- 1 <= nums.length <= 10^5\n- k 的取值范围是 [1, 数组中不相同的元素的个数]\n- 题目数据保证答案唯一，换句话说，数组中前 k 个高频元素的集合是唯一的\n\n进阶：你所设计算法的时间复杂度必须优于 O(n log n)，其中 n 是数组大小。",
+  "examples": [
+    {
+      "input": "nums = [1,1,1,2,2,3], k = 2",
+      "output": "[1,2]",
+      "explanation": "1 出现 3 次，2 出现 2 次，3 出现 1 次。前 2 个高频元素是 1 和 2。"
+    },
+    {
+      "input": "nums = [1], k = 1",
+      "output": "[1]",
+      "explanation": "只有元素 1，出现 1 次。"
+    }
+  ],
+  "hints": {
+    "keywords": ["最小堆", "哈希表", "桶排序"],
+    "approach": "先用哈希表统计每个元素的频率，然后使用大小为 k 的最小堆维护频率最高的 k 个元素。或者使用桶排序，以频率为桶的索引。",
+    "time_complexity": "O(n log k)",
+    "space_complexity": "O(n)"
+  },
+  "solution": {
+    "explanation": "首先使用哈希表统计每个数字出现的频率。然后使用大小为 k 的最小堆，遍历频率哈希表，将元素按频率加入堆中。当堆大小超过 k 时弹出频率最小的元素。最终堆中剩余的 k 个元素就是频率最高的 k 个元素。",
+    "code": {
+      "python": "import heapq\nfrom collections import Counter\n\nclass Solution:\n    def topKFrequent(self, nums: list[int], k: int) -> list[int]:\n        count = Counter(nums)\n        min_heap = []\n        \n        for num, freq in count.items():\n            heapq.heappush(min_heap, (freq, num))\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n        \n        return [num for freq, num in min_heap]"
+    },
+    "complexity_analysis": "时间复杂度 O(n log k)，统计频率需要 O(n)，堆操作需要 O(n log k)。空间复杂度 O(n)，哈希表和堆的空间。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

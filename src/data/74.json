@@ -1,0 +1,36 @@
+{
+  "id": 74,
+  "leetcode_id": 55,
+  "title": "跳跃游戏",
+  "title_en": "Jump Game",
+  "difficulty": "medium",
+  "tags": ["贪心算法", "数组"],
+  "description": "给你一个非负整数数组 nums，你最初位于数组的第一个下标。数组中的每个元素代表你在该位置可以跳跃的最大长度。判断你是否能够到达最后一个下标，如果可以返回 true，否则返回 false。\n\n约束条件：\n- 1 <= nums.length <= 10^4\n- 0 <= nums[i] <= 10^5",
+  "examples": [
+    {
+      "input": "nums = [2,3,1,1,4]",
+      "output": "true",
+      "explanation": "可以先跳 1 步，从下标 0 到达下标 1，然后再从下标 1 跳 3 步到达最后一个下标。"
+    },
+    {
+      "input": "nums = [3,2,1,0,4]",
+      "output": "false",
+      "explanation": "无论怎样总会到达下标 3 的位置，但该位置的跳跃长度为 0，所以永远不可能到达最后一个下标。"
+    }
+  ],
+  "hints": {
+    "keywords": ["贪心", "最远可达位置", "覆盖范围"],
+    "approach": "维护一个变量表示当前能到达的最远位置，遍历数组更新最远位置。如果最远位置大于等于最后一个下标则返回 true。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  "solution": {
+    "explanation": "使用贪心算法，维护一个 max_reach 变量表示当前能到达的最远下标。遍历数组，如果当前位置 i 超过了 max_reach，说明无法到达当前位置，返回 false。否则更新 max_reach = max(max_reach, i + nums[i])。遍历结束后返回 true。",
+    "code": {
+      "python": "class Solution:\n    def canJump(self, nums: list[int]) -> bool:\n        max_reach = 0\n        for i in range(len(nums)):\n            if i > max_reach:\n                return False\n            max_reach = max(max_reach, i + nums[i])\n            if max_reach >= len(nums) - 1:\n                return True\n        return True"
+    },
+    "complexity_analysis": "时间复杂度 O(n)，遍历一次数组。空间复杂度 O(1)，只用了常数额外空间。"
+  },
+  "related_problems": [45, 1306, 1871],
+  "frequency": "high"
+}

@@ -1,0 +1,36 @@
+{
+  "id": 12,
+  "leetcode_id": 56,
+  "title": "合并区间",
+  "title_en": "Merge Intervals",
+  "difficulty": "medium",
+  "tags": ["数组", "排序"],
+  "description": "以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi]。请你合并所有重叠的区间，并返回一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间。\n\n示例 1：\n输入：intervals = [[1,3],[2,6],[8,10],[15,18]]\n输出：[[1,6],[8,10],[15,18]]\n解释：区间 [1,3] 和 [2,6] 重叠，将它们合并为 [1,6]。\n\n示例 2：\n输入：intervals = [[1,4],[4,5]]\n输出：[[1,5]]\n解释：区间 [1,4] 和 [4,5] 可被视为重叠区间。\n\n约束条件：\n- 1 <= intervals.length <= 10^4\n- intervals[i].length == 2\n- 0 <= starti <= endi <= 10^4",
+  "examples": [
+    {
+      "input": "intervals = [[1,3],[2,6],[8,10],[15,18]]",
+      "output": "[[1,6],[8,10],[15,18]]",
+      "explanation": "区间 [1,3] 和 [2,6] 重叠，合并为 [1,6]。"
+    },
+    {
+      "input": "intervals = [[1,4],[4,5]]",
+      "output": "[[1,5]]",
+      "explanation": "区间 [1,4] 和 [4,5] 相邻，视为重叠，合并为 [1,5]。"
+    }
+  ],
+  "hints": {
+    "keywords": ["排序", "贪心", "区间合并"],
+    "approach": "先按区间的起始位置排序，然后遍历区间列表，如果当前区间与前一个区间有重叠（当前起始 <= 前一个结束），则合并（更新结束位置为两者结束位置的较大值）；否则将当前区间加入结果。",
+    "time_complexity": "O(n log n)",
+    "space_complexity": "O(n)"
+  },
+  "solution": {
+    "explanation": "排序 + 线性扫描：\n\n1. 将所有区间按起始位置排序。\n2. 初始化结果列表，将第一个区间加入。\n3. 遍历后续每个区间：\n   - 如果当前区间的起始位置 <= 结果列表最后一个区间的结束位置，说明有重叠，合并（更新结束位置为两者的较大值）。\n   - 否则，将当前区间直接加入结果列表。\n4. 返回结果列表。",
+    "code": {
+      "python": "class Solution:\n    def merge(self, intervals: List[List[int]]) -> List[List[int]]:\n        intervals.sort(key=lambda x: x[0])\n        merged = [intervals[0]]\n        \n        for start, end in intervals[1:]:\n            if start <= merged[-1][1]:\n                merged[-1][1] = max(merged[-1][1], end)\n            else:\n                merged.append([start, end])\n        \n        return merged"
+    },
+    "complexity_analysis": "时间复杂度 O(n log n)：排序的时间复杂度为 O(n log n)，遍历合并为 O(n)。空间复杂度 O(n)：存储结果的空间，排序所需空间为 O(log n)。"
+  },
+  "related_problems": [57, 252, 253, 435, 452, 1288],
+  "frequency": "high"
+}

@@ -1,0 +1,36 @@
+{
+  "id": 50,
+  "leetcode_id": 208,
+  "title": "实现 Trie (前缀树)",
+  "title_en": "Implement Trie (Prefix Tree)",
+  "difficulty": "medium",
+  "tags": ["设计", "字典树", "字符串"],
+  "description": "Trie（发音类似 「try」）或者说 前缀树 是一种树形数据结构，用于高效地存储和检索字符串。这种数据结构有相当多的应用场景，例如自动补完和拼写检查。\n\n请你实现 Trie 类：\n- Trie() 初始化前缀树对象。\n- void insert(String word) 向前缀树中插入字符串 word。\n- boolean search(String word) 如果字符串 word 在前缀树中，返回 true（即，在检索之前已经插入）；否则返回 false。\n- boolean startsWith(String prefix) 如果之前插入的字符串 word 的前缀之一为 prefix，返回 true；否则返回 false。\n\n示例：\n输入：\n[\"Trie\", \"insert\", \"search\", \"search\", \"startsWith\", \"insert\", \"search\"]\n[[], [\"apple\"], [\"apple\"], [\"app\"], [\"app\"], [\"app\"], [\"app\"]]\n输出：\n[null, null, true, false, true, null, true]\n\n约束条件：\n- 1 <= word.length, prefix.length <= 2000\n- word 和 prefix 仅由小写英文字母组成\n- insert、search 和 startsWith 调用次数总计不超过 3 * 10^4 次",
+  "examples": [
+    {
+      "input": "[\"Trie\", \"insert\", \"search\", \"search\", \"startsWith\", \"insert\", \"search\"]\n[[], [\"apple\"], [\"apple\"], [\"app\"], [\"app\"], [\"app\"], [\"app\"]]",
+      "output": "[null, null, true, false, true, null, true]",
+      "explanation": "插入 \"apple\" 后，search(\"apple\") 返回 true，search(\"app\") 返回 false（因为 \"app\" 未被插入）。startsWith(\"app\") 返回 true。插入 \"app\" 后，search(\"app\") 返回 true。"
+    },
+    {
+      "input": "[\"Trie\", \"insert\", \"search\", \"startsWith\"]\n[[], [\"hello\"], [\"hell\"], [\"hell\"]]",
+      "output": "[null, null, false, true]",
+      "explanation": "插入 \"hello\" 后，search(\"hell\") 返回 false（\"hell\" 未被完整插入），但 startsWith(\"hell\") 返回 true（\"hello\" 以 \"hell\" 为前缀）。"
+    }
+  ],
+  "hints": {
+    "keywords": ["字典树", "前缀树", "树形结构"],
+    "approach": "使用树形结构实现，每个节点包含一个子节点字典和一个布尔标记（表示是否为某个字符串的结尾）。插入时逐字符创建节点，搜索时逐字符查找并在最后检查结束标记。",
+    "time_complexity": "O(m)，其中 m 是操作字符串的长度",
+    "space_complexity": "O(N * M)，其中 N 是插入的字符串数量，M 是字符串的平均长度"
+  },
+  "solution": {
+    "explanation": "定义 TrieNode 类，每个节点包含 children 字典和 is_end 标记。insert 操作逐字符遍历，不存在则创建新节点，最后标记 is_end。search 操作逐字符查找，最后返回 is_end。startsWith 操作与 search 类似，但只需确认前缀路径存在即可，不需要检查 is_end。",
+    "code": {
+      "python": "class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word: str) -> None:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word: str) -> bool:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def startsWith(self, prefix: str) -> bool:\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True"
+    },
+    "complexity_analysis": "每个操作的时间复杂度为 O(m)，其中 m 是字符串的长度。空间复杂度取决于插入的所有字符总数，最坏情况下为 O(N * M)，其中 N 是字符串数量，M 是平均长度。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

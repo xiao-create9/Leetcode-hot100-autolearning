@@ -1,0 +1,36 @@
+{
+  "id": 48,
+  "leetcode_id": 994,
+  "title": "腐烂的橘子",
+  "title_en": "Rotting Oranges",
+  "difficulty": "medium",
+  "tags": ["图论", "广度优先搜索", "矩阵"],
+  "description": "在给定的 m x n 网格 grid 中，每个单元格可以是以下三个值之一：\n- 值 0 代表空单元格；\n- 值 1 代表新鲜橘子；\n- 值 2 代表腐烂的橘子。\n\n每分钟，腐烂的橘子的 4 个相邻单元格中的新鲜橘子都会腐烂。返回直到单元格中没有新鲜橘子为止所必须经过的最小分钟数。如果不可能，返回 -1。\n\n示例 1：\n输入：grid = [[2,1,1],[1,1,0],[0,1,1]]\n输出：4\n\n示例 2：\n输入：grid = [[2,1,1],[0,1,1],[1,0,1]]\n输出：-1\n解释：左下角的橘子（第 2 行，第 0 列）永远不会腐烂，因为腐烂只会发生在 4 个相邻方向上。\n\n示例 3：\n输入：grid = [[0,2]]\n输出：0\n解释：因为 0 分钟时已经没有新鲜橘子了，所以答案就是 0。\n\n约束条件：\n- m == grid.length\n- n == grid[i].length\n- 1 <= m, n <= 10\n- grid[i][j] 仅为 0、1 或 2",
+  "examples": [
+    {
+      "input": "grid = [[2,1,1],[1,1,0],[0,1,1]]",
+      "output": "4",
+      "explanation": "第1分钟：(0,1)和(1,0)处的橘子腐烂。第2分钟：(0,2)和(1,1)处的橘子腐烂。第3分钟：(2,1)处的橘子腐烂。第4分钟：(2,2)处的橘子腐烂。"
+    },
+    {
+      "input": "grid = [[2,1,1],[0,1,1],[1,0,1]]",
+      "output": "-1",
+      "explanation": "左下角的橘子（第2行第0列）永远不会腐烂，因为腐烂只会向相邻的四个方向扩散。"
+    }
+  ],
+  "hints": {
+    "keywords": ["BFS", "多源广度优先搜索", "队列"],
+    "approach": "这是一个典型的多源 BFS 问题。将所有初始腐烂的橘子同时加入队列，然后逐层 BFS，每层代表一分钟，直到没有新鲜橘子可以被腐烂。",
+    "time_complexity": "O(m * n)",
+    "space_complexity": "O(m * n)"
+  },
+  "solution": {
+    "explanation": "使用多源 BFS。首先遍历网格，将所有腐烂橘子的位置加入队列，并统计新鲜橘子的数量。然后进行 BFS，每次从队列中取出当前层所有腐烂橘子，将它们相邻的新鲜橘子腐烂并加入队列，直到队列为空。最后检查是否还有新鲜橘子剩余。",
+    "code": {
+      "python": "from collections import deque\n\nclass Solution:\n    def orangesRotting(self, grid: list[list[int]]) -> int:\n        rows, cols = len(grid), len(grid[0])\n        queue = deque()\n        fresh = 0\n        \n        for i in range(rows):\n            for j in range(cols):\n                if grid[i][j] == 2:\n                    queue.append((i, j))\n                elif grid[i][j] == 1:\n                    fresh += 1\n        \n        if fresh == 0:\n            return 0\n        \n        minutes = 0\n        directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]\n        \n        while queue:\n            for _ in range(len(queue)):\n                x, y = queue.popleft()\n                for dx, dy in directions:\n                    nx, ny = x + dx, y + dy\n                    if 0 <= nx < rows and 0 <= ny < cols and grid[nx][ny] == 1:\n                        grid[nx][ny] = 2\n                        fresh -= 1\n                        queue.append((nx, ny))\n            minutes += 1\n        \n        return minutes - 1 if fresh == 0 else -1"
+    },
+    "complexity_analysis": "时间复杂度 O(m * n)，每个格子最多被访问一次。空间复杂度 O(m * n)，队列中最多存储所有格子。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

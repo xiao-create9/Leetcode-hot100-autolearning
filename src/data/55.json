@@ -1,0 +1,36 @@
+{
+  "id": 55,
+  "leetcode_id": 22,
+  "title": "括号生成",
+  "title_en": "Generate Parentheses",
+  "difficulty": "medium",
+  "tags": ["回溯", "字符串", "动态规划"],
+  "description": "数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且有效的括号组合。\n\n示例 1：\n输入：n = 3\n输出：[\"((()))\",\"(()())\",\"(())()\",\"()(())\",\"()()()\"]\n\n示例 2：\n输入：n = 1\n输出：[\"()\"]\n\n约束条件：\n- 1 <= n <= 8",
+  "examples": [
+    {
+      "input": "n = 3",
+      "output": "[\"((()))\",\"(()())\",\"(())()\",\"()(())\",\"()()()\"]",
+      "explanation": "当 n = 3 时，共有 5 种有效的括号组合。"
+    },
+    {
+      "input": "n = 1",
+      "output": "[\"()\"]",
+      "explanation": "当 n = 1 时，只有一种有效的括号组合。"
+    }
+  ],
+  "hints": {
+    "keywords": ["回溯", "括号匹配", "递归"],
+    "approach": "使用回溯法，维护左括号和右括号的数量。只有当左括号数量小于 n 时才能添加左括号，只有当右括号数量小于左括号时才能添加右括号。当字符串长度为 2n 时记录结果。",
+    "time_complexity": "O(4^n / sqrt(n))",
+    "space_complexity": "O(n)"
+  },
+  "solution": {
+    "explanation": "使用回溯法生成有效括号组合。维护两个计数器：左括号数量 left 和右括号数量 right。在每一步中，如果 left < n，可以添加左括号；如果 right < left，可以添加右括号。当字符串长度达到 2n 时，将其加入结果集。这种策略保证了生成的括号序列始终是有效的。",
+    "code": {
+      "python": "class Solution:\n    def generateParenthesis(self, n: int) -> list[str]:\n        result = []\n        \n        def backtrack(current, left, right):\n            if len(current) == 2 * n:\n                result.append(current)\n                return\n            if left < n:\n                backtrack(current + '(', left + 1, right)\n            if right < left:\n                backtrack(current + ')', left, right + 1)\n        \n        backtrack('', 0, 0)\n        return result"
+    },
+    "complexity_analysis": "时间复杂度 O(4^n / sqrt(n))，这是第 n 个卡特兰数。空间复杂度 O(n)，递归栈的深度为 2n。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

@@ -1,0 +1,36 @@
+{
+  "id": 14,
+  "leetcode_id": 238,
+  "title": "除自身以外数组的乘积",
+  "title_en": "Product of Array Except Self",
+  "difficulty": "medium",
+  "tags": ["数组", "前缀积"],
+  "description": "给你一个整数数组 nums，返回数组 answer，其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积。\n\n题目数据保证 nums 之中任意元素的全部前缀元素和后缀的乘积都在 32 位整数范围内。\n\n请不要使用除法，且在 O(n) 时间复杂度内完成此题。\n\n示例 1：\n输入: nums = [1,2,3,4]\n输出: [24,12,8,6]\n\n示例 2：\n输入: nums = [-1,1,0,-3,3]\n输出: [0,0,9,0,0]\n\n约束条件：\n- 2 <= nums.length <= 10^5\n- -30 <= nums[i] <= 30\n- 保证数组之中任意元素的全部前缀元素和后缀的乘积都在 32 位整数范围内\n\n进阶：你可以在 O(1) 的额外空间复杂度完成这个题目吗？（出于对空间复杂度分析的目的，输出数组不被视为额外空间。）",
+  "examples": [
+    {
+      "input": "nums = [1,2,3,4]",
+      "output": "[24,12,8,6]",
+      "explanation": "answer[0] = 2*3*4 = 24, answer[1] = 1*3*4 = 12, answer[2] = 1*2*4 = 8, answer[3] = 1*2*3 = 6。"
+    },
+    {
+      "input": "nums = [-1,1,0,-3,3]",
+      "output": "[0,0,9,0,0]",
+      "explanation": "因为存在 0，除了 0 所在位置外，其他位置的乘积都包含 0，因此为 0。只有 index=2 的位置乘积为 (-1)*1*(-3)*3 = 9。"
+    }
+  ],
+  "hints": {
+    "keywords": ["前缀积", "后缀积", "左右乘积"],
+    "approach": "使用两个数组分别存储左侧所有元素的乘积和右侧所有元素的乘积。answer[i] = left[i] * right[i]。进一步优化可以先用 answer 存储左侧乘积，然后从右往左乘上右侧乘积。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  "solution": {
+    "explanation": "两次遍历法（输出数组不计入空间）：\n\n1. 第一次从左到右遍历：answer[i] 存储 nums[0] 到 nums[i-1] 的乘积（左侧乘积）。\n2. 第二次从右到左遍历：用一个变量 right 维护右侧乘积，将 answer[i] 乘以 right，同时更新 right *= nums[i]。\n\n例如 nums = [1,2,3,4]：\n- 第一次遍历后：answer = [1, 1, 2, 6]\n- 第二次遍历：right 从 1 开始\n  - i=3: answer[3] = 6*1 = 6, right = 4\n  - i=2: answer[2] = 2*4 = 8, right = 12\n  - i=1: answer[1] = 1*12 = 12, right = 24\n  - i=0: answer[0] = 1*24 = 24, right = 24\n- 最终 answer = [24, 12, 8, 6]",
+    "code": {
+      "python": "class Solution:\n    def productExceptSelf(self, nums: List[int]) -> List[int]:\n        n = len(nums)\n        answer = [1] * n\n        \n        # 左侧乘积\n        left = 1\n        for i in range(n):\n            answer[i] = left\n            left *= nums[i]\n        \n        # 右侧乘积\n        right = 1\n        for i in range(n - 1, -1, -1):\n            answer[i] *= right\n            right *= nums[i]\n        \n        return answer"
+    },
+    "complexity_analysis": "时间复杂度 O(n)：两次遍历数组。空间复杂度 O(1)：输出数组不计入额外空间。"
+  },
+  "related_problems": [42, 152, 265],
+  "frequency": "high"
+}

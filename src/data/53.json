@@ -1,0 +1,36 @@
+{
+  "id": 53,
+  "leetcode_id": 17,
+  "title": "电话号码的字母组合",
+  "title_en": "Letter Combinations of a Phone Number",
+  "difficulty": "medium",
+  "tags": ["回溯", "字符串", "哈希表"],
+  "description": "给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按任意顺序返回。给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。\n\n2 -> abc\n3 -> def\n4 -> ghi\n5 -> jkl\n6 -> mno\n7 -> pqrs\n8 -> tuv\n9 -> wxyz\n\n示例 1：\n输入：digits = \"23\"\n输出：[\"ad\",\"ae\",\"af\",\"bd\",\"be\",\"bf\",\"cd\",\"ce\",\"cf\"]\n\n示例 2：\n输入：digits = \"\"\n输出：[]\n\n示例 3：\n输入：digits = \"2\"\n输出：[\"a\",\"b\",\"c\"]\n\n约束条件：\n- 0 <= digits.length <= 4\n- digits[i] 是范围 ['2', '9'] 的一个数字",
+  "examples": [
+    {
+      "input": "digits = \"23\"",
+      "output": "[\"ad\",\"ae\",\"af\",\"bd\",\"be\",\"bf\",\"cd\",\"ce\",\"cf\"]",
+      "explanation": "数字2对应abc，数字3对应def，所有组合为 abc 和 def 的笛卡尔积。"
+    },
+    {
+      "input": "digits = \"\"",
+      "output": "[]",
+      "explanation": "输入为空字符串时，没有字母组合。"
+    }
+  ],
+  "hints": {
+    "keywords": ["回溯", "哈希映射", "组合"],
+    "approach": "使用回溯法，遍历每个数字对应的字母，逐位构建组合。当组合长度等于数字长度时加入结果。",
+    "time_complexity": "O(4^n * n)",
+    "space_complexity": "O(n)"
+  },
+  "solution": {
+    "explanation": "首先用哈希表建立数字到字母的映射。使用回溯法，对于每个数字，遍历其对应的每个字母，将字母加入当前组合，然后递归处理下一个数字。当处理完所有数字时，将当前组合加入结果集。",
+    "code": {
+      "python": "class Solution:\n    def letterCombinations(self, digits: str) -> list[str]:\n        if not digits:\n            return []\n        \n        phone = {\n            '2': 'abc', '3': 'def', '4': 'ghi', '5': 'jkl',\n            '6': 'mno', '7': 'pqrs', '8': 'tuv', '9': 'wxyz'\n        }\n        result = []\n        path = []\n        \n        def backtrack(index):\n            if index == len(digits):\n                result.append(''.join(path))\n                return\n            for ch in phone[digits[index]]:\n                path.append(ch)\n                backtrack(index + 1)\n                path.pop()\n        \n        backtrack(0)\n        return result"
+    },
+    "complexity_analysis": "时间复杂度 O(4^n * n)，其中 n 是数字的个数。每个数字最多对应 4 个字母，共有 4^n 种组合，每种组合的长度为 n。空间复杂度 O(n)，递归栈的深度为 n。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

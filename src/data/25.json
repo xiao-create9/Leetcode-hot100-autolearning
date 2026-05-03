@@ -1,0 +1,36 @@
+{
+  "id": 25,
+  "leetcode_id": 19,
+  "title": "删除链表的倒数第 N 个结点",
+  "title_en": "Remove Nth Node From End of List",
+  "difficulty": "medium",
+  "tags": ["链表", "双指针"],
+  "description": "给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。\n\n链表节点定义如下：\n```\nclass ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n```\n\n**示例 1：**\n输入：head = [1,2,3,4,5], n = 2\n输出：[1,2,3,5]\n\n**示例 2：**\n输入：head = [1], n = 1\n输出：[]\n\n**示例 3：**\n输入：head = [1,2], n = 1\n输出：[1]\n\n**提示：**\n- 链表中结点的数目为 sz\n- 1 <= sz <= 30\n- 0 <= Node.val <= 100\n- 1 <= n <= sz",
+  "examples": [
+    {
+      "input": "head = [1,2,3,4,5], n = 2",
+      "output": "[1,2,3,5]",
+      "explanation": "删除倒数第 2 个节点（值为 4）。"
+    },
+    {
+      "input": "head = [1], n = 1",
+      "output": "[]",
+      "explanation": "链表只有一个节点，删除后为空链表。"
+    }
+  ],
+  "hints": {
+    "keywords": ["双指针", "快慢指针", "一次遍历"],
+    "approach": "使用双指针法：让快指针先走 n 步，然后快慢指针同时前进，当快指针到达末尾时，慢指针指向待删除节点的前一个节点。",
+    "time_complexity": "O(L)",
+    "space_complexity": "O(1)"
+  },
+  "solution": {
+    "explanation": "使用哨兵节点 dummy 指向头部。让 fast 指针先走 n+1 步（使 fast 和 slow 之间间隔 n 个节点），然后同时移动 fast 和 slow。当 fast 到达 None 时，slow 正好在待删除节点的前一个位置，将其 next 指向下下个节点即可。",
+    "code": {
+      "python": "class Solution:\n    def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:\n        dummy = ListNode(0, head)\n        fast = slow = dummy\n        # fast 先走 n+1 步\n        for _ in range(n + 1):\n            fast = fast.next\n        # 同时移动\n        while fast:\n            fast = fast.next\n            slow = slow.next\n        # 删除节点\n        slow.next = slow.next.next\n        return dummy.next"
+    },
+    "complexity_analysis": "时间复杂度 O(L)，其中 L 是链表长度，只需一次遍历。空间复杂度 O(1)，只使用了常数个指针。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

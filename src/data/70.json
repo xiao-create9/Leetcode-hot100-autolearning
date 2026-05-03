@@ -1,0 +1,36 @@
+{
+  "id": 70,
+  "leetcode_id": 215,
+  "title": "数组中的第 K 个最大元素",
+  "title_en": "Kth Largest Element in an Array",
+  "difficulty": "medium",
+  "tags": ["堆", "分治", "排序"],
+  "description": "给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。你必须设计并实现时间复杂度为 O(n) 的算法解决此问题。\n\n示例 1：\n输入：[3,2,1,5,6,4], k = 2\n输出：5\n\n示例 2：\n输入：[3,2,3,1,2,4,5,5,6], k = 4\n输出：4\n\n约束条件：\n- 1 <= k <= nums.length <= 10^5\n- -10^4 <= nums[i] <= 10^4",
+  "examples": [
+    {
+      "input": "nums = [3,2,1,5,6,4], k = 2",
+      "output": "5",
+      "explanation": "排序后数组为 [1,2,3,4,5,6]，第 2 个最大的元素是 5。"
+    },
+    {
+      "input": "nums = [3,2,3,1,2,4,5,5,6], k = 4",
+      "output": "4",
+      "explanation": "排序后数组为 [1,2,2,3,3,4,5,5,6]，第 4 个最大的元素是 4。"
+    }
+  ],
+  "hints": {
+    "keywords": ["最小堆", "快速选择", "分治"],
+    "approach": "方法一：维护一个大小为 k 的最小堆，遍历数组，堆满后只保留比堆顶大的元素，最终堆顶即为第 k 大元素。方法二：使用快速选择算法（QuickSelect），平均时间复杂度 O(n)。",
+    "time_complexity": "O(n log k)",
+    "space_complexity": "O(k)"
+  },
+  "solution": {
+    "explanation": "使用大小为 k 的最小堆。遍历数组中的每个元素，将元素加入堆中。当堆的大小超过 k 时，弹出堆顶（当前堆中的最小值）。遍历结束后，堆中保留的就是最大的 k 个元素，堆顶即为第 k 大的元素。",
+    "code": {
+      "python": "import heapq\n\nclass Solution:\n    def findKthLargest(self, nums: list[int], k: int) -> int:\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n        return min_heap[0]"
+    },
+    "complexity_analysis": "时间复杂度 O(n log k)，每个元素最多入堆和出堆一次，堆的大小为 k。空间复杂度 O(k)，堆的空间。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

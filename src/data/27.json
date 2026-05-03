@@ -1,0 +1,36 @@
+{
+  "id": 27,
+  "leetcode_id": 25,
+  "title": "K 个一组翻转链表",
+  "title_en": "Reverse Nodes in k-Group",
+  "difficulty": "hard",
+  "tags": ["递归", "链表"],
+  "description": "给你链表的头节点 head，每 k 个节点一组进行翻转，请你返回修改后的链表。\n\nk 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。\n\n你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。\n\n链表节点定义如下：\n```\nclass ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n```\n\n**示例 1：**\n输入：head = [1,2,3,4,5], k = 2\n输出：[2,1,4,3,5]\n\n**示例 2：**\n输入：head = [1,2,3,4,5], k = 3\n输出：[3,2,1,4,5]\n\n**提示：**\n- 链表中的节点数目为 n\n- 1 <= k <= n <= 5000\n- 0 <= Node.val <= 1000",
+  "examples": [
+    {
+      "input": "head = [1,2,3,4,5], k = 2",
+      "output": "[2,1,4,3,5]",
+      "explanation": "每两个节点为一组进行翻转，最后剩余的 5 保持原位。"
+    },
+    {
+      "input": "head = [1,2,3,4,5], k = 3",
+      "output": "[3,2,1,4,5]",
+      "explanation": "前三个节点翻转为 [3,2,1]，后两个节点不足 k 个，保持原序。"
+    }
+  ],
+  "hints": {
+    "keywords": ["分组翻转", "递归", "链表操作"],
+    "approach": "每 k 个节点为一组，检查是否有足够节点，若有则翻转该组，然后递归处理后续节点。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  "solution": {
+    "explanation": "1. 先检查从当前节点开始是否有 k 个节点，若不足则直接返回。2. 翻转这 k 个节点（标准链表翻转）。3. 原来的头节点变成了尾节点，将其 next 指向递归处理后续节点的结果。4. 返回翻转后的新头节点。",
+    "code": {
+      "python": "class Solution:\n    def reverseKGroup(self, head: ListNode, k: int) -> ListNode:\n        # 检查是否有 k 个节点\n        curr = head\n        count = 0\n        while curr and count < k:\n            curr = curr.next\n            count += 1\n        if count < k:\n            return head\n        \n        # 翻转 k 个节点\n        prev = None\n        curr = head\n        for _ in range(k):\n            next_temp = curr.next\n            curr.next = prev\n            prev = curr\n            curr = next_temp\n        \n        # head 现在是翻转后的尾部，连接后续部分\n        head.next = self.reverseKGroup(curr, k)\n        return prev"
+    },
+    "complexity_analysis": "时间复杂度 O(n)，每个节点只被访问一次。空间复杂度 O(1)（迭代版本），递归版本由于递归栈需要 O(n/k) 的额外空间。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

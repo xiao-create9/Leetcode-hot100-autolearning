@@ -1,0 +1,36 @@
+{
+  "id": 19,
+  "leetcode_id": 206,
+  "title": "反转链表",
+  "title_en": "Reverse Linked List",
+  "difficulty": "easy",
+  "tags": ["递归", "链表"],
+  "description": "给你单链表的头节点 head，请你反转链表，并返回反转后的链表。\n\n链表节点定义如下：\n```\nclass ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n```\n\n**示例 1：**\n输入：head = [1,2,3,4,5]\n输出：[5,4,3,2,1]\n\n**示例 2：**\n输入：head = [1,2]\n输出：[2,1]\n\n**示例 3：**\n输入：head = []\n输出：[]\n\n**提示：**\n- 链表中节点的数目范围是 [0, 5000]\n- -5000 <= Node.val <= 5000",
+  "examples": [
+    {
+      "input": "head = [1,2,3,4,5]",
+      "output": "[5,4,3,2,1]",
+      "explanation": "链表被完全反转。"
+    },
+    {
+      "input": "head = [1,2]",
+      "output": "[2,1]",
+      "explanation": "只有两个节点的链表也被反转。"
+    }
+  ],
+  "hints": {
+    "keywords": ["迭代", "递归", "前驱指针"],
+    "approach": "使用迭代法：维护三个指针 prev、curr、next，依次将每个节点的 next 指向前一个节点，从而完成链表反转。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  "solution": {
+    "explanation": "迭代法：初始化 prev = None，curr = head。遍历链表，每次先保存 curr.next 到 next_temp，然后将 curr.next 指向 prev，再移动 prev 和 curr 指针。遍历结束后 prev 就是新的头节点。",
+    "code": {
+      "python": "class Solution:\n    def reverseList(self, head: ListNode) -> ListNode:\n        prev = None\n        curr = head\n        while curr:\n            next_temp = curr.next\n            curr.next = prev\n            prev = curr\n            curr = next_temp\n        return prev"
+    },
+    "complexity_analysis": "时间复杂度 O(n)，需要遍历链表一次。空间复杂度 O(1)，只使用了常数个指针变量。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

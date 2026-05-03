@@ -1,0 +1,36 @@
+{
+  "id": 47,
+  "leetcode_id": 200,
+  "title": "岛屿数量",
+  "title_en": "Number of Islands",
+  "difficulty": "medium",
+  "tags": ["图论", "深度优先搜索", "广度优先搜索", "并查集"],
+  "description": "给你一个由 '1'（陆地）和 '0'（水）组成的二维网格，请你计算网格中岛屿的数量。岛屿总是被水包围，并且每座岛屿只能由水平方向和/或垂直方向上相邻的陆地连接形成。此外，你可以假设该网格的四条边均被水包围。\n\n示例 1：\n输入：grid = [\n  [\"1\",\"1\",\"1\",\"1\",\"0\"],\n  [\"1\",\"1\",\"0\",\"1\",\"0\"],\n  [\"1\",\"1\",\"0\",\"0\",\"0\"],\n  [\"0\",\"0\",\"0\",\"0\",\"0\"]\n]\n输出：1\n\n示例 2：\n输入：grid = [\n  [\"1\",\"1\",\"0\",\"0\",\"0\"],\n  [\"1\",\"1\",\"0\",\"0\",\"0\"],\n  [\"0\",\"0\",\"1\",\"0\",\"0\"],\n  [\"0\",\"0\",\"0\",\"1\",\"1\"]\n]\n输出：3\n\n约束条件：\n- m == grid.length\n- n == grid[i].length\n- 1 <= m, n <= 300\n- grid[i][j] 的值为 '0' 或 '1'",
+  "examples": [
+    {
+      "input": "grid = [[\"1\",\"1\",\"1\",\"1\",\"0\"],[\"1\",\"1\",\"0\",\"1\",\"0\"],[\"1\",\"1\",\"0\",\"0\",\"0\"],[\"0\",\"0\",\"0\",\"0\",\"0\"]]",
+      "output": "1",
+      "explanation": "整个网格被水包围，只有一座岛屿。"
+    },
+    {
+      "input": "grid = [[\"1\",\"1\",\"0\",\"0\",\"0\"],[\"1\",\"1\",\"0\",\"0\",\"0\"],[\"0\",\"0\",\"1\",\"0\",\"0\"],[\"0\",\"0\",\"0\",\"1\",\"1\"]]",
+      "output": "3",
+      "explanation": "网格中有三座岛屿：左上角一块、中间一块、右下角一块。"
+    }
+  ],
+  "hints": {
+    "keywords": ["DFS", "BFS", "网格遍历"],
+    "approach": "遍历整个网格，当遇到一个值为 '1' 的格子时，岛屿数量加1，然后使用 DFS 或 BFS 将与该格子相连的所有 '1' 都标记为 '0'（表示已访问），避免重复计数。",
+    "time_complexity": "O(m * n)",
+    "space_complexity": "O(m * n)"
+  },
+  "solution": {
+    "explanation": "使用深度优先搜索（DFS）遍历网格。对于每个未访问的陆地格子，启动一次 DFS，将所有与其相连的陆地标记为已访问（置为'0'），同时岛屿计数器加1。DFS 的过程中，向上下左右四个方向递归探索。",
+    "code": {
+      "python": "class Solution:\n    def numIslands(self, grid: list[list[str]]) -> int:\n        if not grid or not grid[0]:\n            return 0\n        \n        rows, cols = len(grid), len(grid[0])\n        count = 0\n        \n        def dfs(r, c):\n            if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] == '0':\n                return\n            grid[r][c] = '0'\n            dfs(r + 1, c)\n            dfs(r - 1, c)\n            dfs(r, c + 1)\n            dfs(r, c - 1)\n        \n        for i in range(rows):\n            for j in range(cols):\n                if grid[i][j] == '1':\n                    count += 1\n                    dfs(i, j)\n        \n        return count"
+    },
+    "complexity_analysis": "时间复杂度 O(m * n)，其中 m 和 n 分别为网格的行数和列数。每个格子最多被访问一次。空间复杂度 O(m * n)，在最坏情况下（整个网格都是陆地），递归调用的深度为 m * n。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

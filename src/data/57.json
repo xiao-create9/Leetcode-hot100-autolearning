@@ -1,0 +1,36 @@
+{
+  "id": 57,
+  "leetcode_id": 131,
+  "title": "分割回文串",
+  "title_en": "Palindrome Partitioning",
+  "difficulty": "medium",
+  "tags": ["回溯", "动态规划", "字符串"],
+  "description": "给你一个字符串 s，请你将 s 分割成一些子串，使每个子串都是回文串。返回 s 所有可能的分割方案。\n\n示例 1：\n输入：s = \"aab\"\n输出：[[\"a\",\"a\",\"b\"],[\"aa\",\"b\"]]\n\n示例 2：\n输入：s = \"a\"\n输出：[[\"a\"]]\n\n约束条件：\n- 1 <= s.length <= 16\n- s 仅由小写英文字母组成",
+  "examples": [
+    {
+      "input": "s = \"aab\"",
+      "output": "[[\"a\",\"a\",\"b\"],[\"aa\",\"b\"]]",
+      "explanation": "有两种方式将 \"aab\" 分割为回文子串：\"a\" + \"a\" + \"b\" 和 \"aa\" + \"b\"。"
+    },
+    {
+      "input": "s = \"a\"",
+      "output": "[[\"a\"]]",
+      "explanation": "单个字符本身就是回文串。"
+    }
+  ],
+  "hints": {
+    "keywords": ["回溯", "回文判断", "分割枚举"],
+    "approach": "使用回溯法，从字符串的每个位置开始，尝试截取不同长度的子串。如果当前子串是回文串，则将其加入当前分割方案，继续处理剩余部分。当处理完整个字符串时记录结果。",
+    "time_complexity": "O(n * 2^n)",
+    "space_complexity": "O(n)"
+  },
+  "solution": {
+    "explanation": "使用回溯法枚举所有可能的分割方式。从索引 start 开始，尝试截取 s[start:end+1] 的子串，检查是否为回文。如果是回文，则将其加入当前路径，递归处理 end+1 之后的部分。当 start 到达字符串末尾时，将当前分割方案加入结果集。为了优化，可以预处理所有子串的回文状态。",
+    "code": {
+      "python": "class Solution:\n    def partition(self, s: str) -> list[list[str]]:\n        result = []\n        path = []\n        n = len(s)\n        \n        def is_palindrome(sub):\n            return sub == sub[::-1]\n        \n        def backtrack(start):\n            if start == n:\n                result.append(path[:])\n                return\n            for end in range(start, n):\n                substr = s[start:end + 1]\n                if is_palindrome(substr):\n                    path.append(substr)\n                    backtrack(end + 1)\n                    path.pop()\n        \n        backtrack(0)\n        return result"
+    },
+    "complexity_analysis": "时间复杂度 O(n * 2^n)，每个位置有分割或不分割两种选择，共 2^n 种方案，每次需要 O(n) 检查回文和复制结果。空间复杂度 O(n)，递归栈的深度最多为 n。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

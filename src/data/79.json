@@ -1,0 +1,36 @@
+{
+  "id": 79,
+  "leetcode_id": 118,
+  "title": "杨辉三角",
+  "title_en": "Pascal's Triangle",
+  "difficulty": "easy",
+  "tags": ["动态规划", "数组", "数学"],
+  "description": "给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。在杨辉三角中，每个数是它左上方和右上方的数的和。\n\n约束条件：\n- 1 <= numRows <= 30",
+  "examples": [
+    {
+      "input": "numRows = 5",
+      "output": "[[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]",
+      "explanation": "生成杨辉三角的前 5 行。"
+    },
+    {
+      "input": "numRows = 1",
+      "output": "[[1]]",
+      "explanation": "只有第一行。"
+    }
+  ],
+  "hints": {
+    "keywords": ["动态规划", "递推", "组合数学"],
+    "approach": "逐行构建，每行的首尾元素为 1，中间元素等于上一行相邻两个元素之和。",
+    "time_complexity": "O(numRows^2)",
+    "space_complexity": "O(numRows^2)"
+  },
+  "solution": {
+    "explanation": "动态规划构建杨辉三角。第 0 行为 [1]。对于第 i 行，首尾元素为 1，第 j 个元素（1 <= j <= i-1）等于上一行的第 j-1 和第 j 个元素之和。",
+    "code": {
+      "python": "class Solution:\n    def generate(self, numRows: int) -> list[list[int]]:\n        triangle = []\n        for i in range(numRows):\n            row = [1] * (i + 1)\n            for j in range(1, i):\n                row[j] = triangle[i-1][j-1] + triangle[i-1][j]\n            triangle.append(row)\n        return triangle"
+    },
+    "complexity_analysis": "时间复杂度 O(numRows^2)，需要填充 numRows 行，每行最多 numRows 个元素。空间复杂度 O(numRows^2)，存储整个三角形。"
+  },
+  "related_problems": [119, 120],
+  "frequency": "medium"
+}

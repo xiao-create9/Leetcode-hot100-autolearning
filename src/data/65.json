@@ -1,0 +1,36 @@
+{
+  "id": 65,
+  "leetcode_id": 20,
+  "title": "有效的括号",
+  "title_en": "Valid Parentheses",
+  "difficulty": "easy",
+  "tags": ["栈", "字符串"],
+  "description": "给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s，判断字符串是否有效。有效字符串需满足：\n1. 左括号必须用相同类型的右括号闭合。\n2. 左括号必须以正确的顺序闭合。\n3. 每个右括号都有一个对应的相同类型的左括号。\n\n示例 1：\n输入：s = \"()\"\n输出：true\n\n示例 2：\n输入：s = \"()[]{}\"\n输出：true\n\n示例 3：\n输入：s = \"(]\"\n输出：false\n\n示例 4：\n输入：s = \"([])\"\n输出：true\n\n约束条件：\n- 1 <= s.length <= 10^4\n- s 仅由括号 '()[]{}' 组成",
+  "examples": [
+    {
+      "input": "s = \"()\"",
+      "output": "true",
+      "explanation": "一对匹配的括号。"
+    },
+    {
+      "input": "s = \"(]\"",
+      "output": "false",
+      "explanation": "左圆括号与右方括号不匹配。"
+    }
+  ],
+  "hints": {
+    "keywords": ["栈", "括号匹配", "哈希映射"],
+    "approach": "使用栈来匹配括号。遇到左括号时压栈，遇到右括号时弹栈检查是否匹配。最终栈为空则有效。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
+  },
+  "solution": {
+    "explanation": "遍历字符串，使用栈存储左括号。遇到右括号时，弹出栈顶元素检查是否匹配。使用哈希表建立右括号到左括号的映射关系。遍历结束后，栈为空说明所有括号都正确匹配。",
+    "code": {
+      "python": "class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []\n        mapping = {')': '(', '}': '{', ']': '['}\n        \n        for ch in s:\n            if ch in mapping:\n                if not stack or stack[-1] != mapping[ch]:\n                    return False\n                stack.pop()\n            else:\n                stack.append(ch)\n        \n        return len(stack) == 0"
+    },
+    "complexity_analysis": "时间复杂度 O(n)，遍历一次字符串。空间复杂度 O(n)，最坏情况下栈中存储所有左括号。"
+  },
+  "related_problems": [],
+  "frequency": "high"
+}

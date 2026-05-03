@@ -1,0 +1,41 @@
+{
+  "id": 97,
+  "leetcode_id": 31,
+  "title": "下一个排列",
+  "title_en": "Next Permutation",
+  "difficulty": "medium",
+  "tags": ["数组", "双指针", "排列"],
+  "description": "整数数组的一个排列就是将其所有成员以序列或线性顺序排列。例如，arr = [1,2,3]，以下这些都可以视作 arr 的排列：[1,2,3]、[1,3,2]、[3,1,2]、[2,3,1]。下一个排列是指一个整数所有排列中字典序下一个更大的排列。如果不存在下一个更大的排列，则将数组重新排列为最小的排列（即升序排列）。必须原地修改，只允许使用额外常数空间。\n\n约束条件：\n- 1 <= nums.length <= 100\n- 0 <= nums[i] <= 100",
+  "examples": [
+    {
+      "input": "nums = [1,2,3]",
+      "output": "[1,3,2]",
+      "explanation": "[1,2,3] 的下一个排列是 [1,3,2]。"
+    },
+    {
+      "input": "nums = [3,2,1]",
+      "output": "[1,2,3]",
+      "explanation": "[3,2,1] 是最大的排列，下一个排列应回到最小排列 [1,2,3]。"
+    },
+    {
+      "input": "nums = [1,1,5]",
+      "output": "[1,5,1]",
+      "explanation": "[1,1,5] 的下一个排列是 [1,5,1]。"
+    }
+  ],
+  "hints": {
+    "keywords": ["从右向左扫描", "寻找拐点", "交换与反转"],
+    "approach": "从右向左找到第一个 nums[i] < nums[i+1] 的位置 i，再从右向左找到第一个 nums[j] > nums[i] 的位置 j，交换两者，然后将 i 之后的部分反转。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
+  },
+  "solution": {
+    "explanation": "算法步骤：1）从右向左找到第一个相邻升序对 (i, i+1)，即 nums[i] < nums[i+1]。2）如果找不到，说明是降序排列，直接反转整个数组。3）从右向左找到第一个大于 nums[i] 的元素 nums[j]。4）交换 nums[i] 和 nums[j]。5）将 i+1 到末尾的部分反转（变为升序）。这个结果就是字典序下一个更大的排列。",
+    "code": {
+      "python": "class Solution:\n    def nextPermutation(self, nums: list[int]) -> None:\n        n = len(nums)\n        # 步骤1：从右向左找到第一个 nums[i] < nums[i+1]\n        i = n - 2\n        while i >= 0 and nums[i] >= nums[i + 1]:\n            i -= 1\n        \n        if i >= 0:\n            # 步骤3：从右向左找到第一个大于 nums[i] 的元素\n            j = n - 1\n            while nums[j] <= nums[i]:\n                j -= 1\n            # 步骤4：交换\n            nums[i], nums[j] = nums[j], nums[i]\n        \n        # 步骤5：反转 i+1 到末尾\n        left, right = i + 1, n - 1\n        while left < right:\n            nums[left], nums[right] = nums[right], nums[left]\n            left += 1\n            right -= 1"
+    },
+    "complexity_analysis": "时间复杂度 O(n)，最多遍历数组两次。空间复杂度 O(1)，原地修改。"
+  },
+  "related_problems": [46, 47, 60],
+  "frequency": "high"
+}
