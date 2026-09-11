@@ -1,35 +1,35 @@
 {
   "id": 28,
-  "leetcode_id": 138,
-  "title": "随机链表的复制",
-  "title_en": "Copy List with Random Pointer",
+  "leetcode_id": 2,
+  "title": "两数相加",
+  "title_en": "Add Two Numbers",
   "difficulty": "medium",
-  "tags": ["哈希表", "链表"],
-  "description": "给你一个长度为 n 的链表，每个节点包含一个额外的随机指针 random，该指针可以指向链表中的任何节点或空节点。\n\n构造这个链表的深拷贝。深拷贝应该正好由 n 个全新节点组成，其中每个新节点的值都设为其对应的原节点的值。新节点的 next 指针和 random 指针也都应指向复制链表中的新节点，并使原链表和复制链表中的这些指针能够表示相同的链表状态。复制链表中的指针都不应指向原链表中的节点。\n\n节点定义如下：\n```\nclass Node:\n    def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):\n        self.val = int(x)\n        self.next = next\n        self.random = random\n```\n\n**示例 1：**\n输入：head = [[7,null],[13,0],[11,4],[10,2],[1,0]]\n输出：[[7,null],[13,0],[11,4],[10,2],[1,0]]\n\n**示例 2：**\n输入：head = [[1,1],[2,1]]\n输出：[[1,1],[2,1]]\n\n**示例 3：**\n输入：head = [[3,null],[3,0],[3,null]]\n输出：[[3,null],[3,0],[3,null]]",
+  "tags": ["递归", "链表", "数学"],
+  "description": "给你两个非空链表，表示两个非负整数。它们每位数字都是按逆序存储的，并且每个节点只能存储一位数字。\n\n请你将两个数相加，并以相同形式返回一个表示和的链表。\n\n可以假设除了数字 0 之外，这两个数都不会以 0 开头。\n\n链表节点定义如下：\n```\nclass ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n```\n\n**示例 1：**\n输入：l1 = [2,4,3], l2 = [5,6,4]\n输出：[7,0,8]\n解释：342 + 465 = 807\n\n**示例 2：**\n输入：l1 = [0], l2 = [0]\n输出：[0]\n\n**示例 3：**\n输入：l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]\n输出：[8,9,9,9,0,0,0,1]",
   "examples": [
     {
-      "input": "head = [[7,null],[13,0],[11,4],[10,2],[1,0]]",
-      "output": "[[7,null],[13,0],[11,4],[10,2],[1,0]]",
-      "explanation": "每个节点的值和 random 指针都被正确复制。"
+      "input": "l1 = [2,4,3], l2 = [5,6,4]",
+      "output": "[7,0,8]",
+      "explanation": "342 + 465 = 807，链表逆序表示为 [7,0,8]。"
     },
     {
-      "input": "head = [[3,null],[3,0],[3,null]]",
-      "output": "[[3,null],[3,0],[3,null]]",
-      "explanation": "三个节点的值都是 3，random 指针指向第一个节点。"
+      "input": "l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]",
+      "output": "[8,9,9,9,0,0,0,1]",
+      "explanation": "9999999 + 9999 = 10009998，链表逆序表示为 [8,9,9,9,0,0,0,1]。"
     }
   ],
   "hints": {
-    "keywords": ["哈希表", "原地修改", "节点拆分"],
-    "approach": "方法一：使用哈希表记录原节点到新节点的映射。方法二：在原链表每个节点后面插入新节点，然后设置 random 指针，最后拆分链表。",
-    "time_complexity": "O(n)",
-    "space_complexity": "O(1)"
+    "keywords": ["进位", "哨兵节点", "模拟加法"],
+    "approach": "模拟竖式加法：同时遍历两个链表，逐位相加并处理进位，将结果存入新链表。",
+    "time_complexity": "O(max(m,n))",
+    "space_complexity": "O(max(m,n))"
   },
   "solution": {
-    "explanation": "原地修改法：1. 在每个原节点后面插入一个新节点，新节点的值与原节点相同。2. 遍历链表，设置新节点的 random 指针为原节点 random 指针的下一个节点。3. 将链表拆分为原链表和新链表。这种方法空间复杂度为 O(1)。",
+    "explanation": "使用哨兵节点简化操作。同时遍历两个链表，将对应位的值和进位相加，结果对 10 取余作为当前位的值，整除 10 作为进位。遍历结束后如果还有进位，需要新增一个节点。",
     "code": {
-      "python": "class Solution:\n    def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':\n        if not head:\n            return None\n        \n        # 第一步：在每个节点后面插入复制节点\n        curr = head\n        while curr:\n            new_node = Node(curr.val, curr.next)\n            curr.next = new_node\n            curr = new_node.next\n        \n        # 第二步：设置 random 指针\n        curr = head\n        while curr:\n            if curr.random:\n                curr.next.random = curr.random.next\n            curr = curr.next.next\n        \n        # 第三步：拆分链表\n        dummy = Node(0)\n        curr_new = dummy\n        curr = head\n        while curr:\n            curr_new.next = curr.next\n            curr.next = curr.next.next\n            curr_new = curr_new.next\n            curr = curr.next\n        return dummy.next"
+      "python": "class Solution:\n    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:\n        dummy = ListNode(0)\n        curr = dummy\n        carry = 0\n        while l1 or l2 or carry:\n            val = carry\n            if l1:\n                val += l1.val\n                l1 = l1.next\n            if l2:\n                val += l2.val\n                l2 = l2.next\n            carry, digit = divmod(val, 10)\n            curr.next = ListNode(digit)\n            curr = curr.next\n        return dummy.next"
     },
-    "complexity_analysis": "时间复杂度 O(n)，需要三次遍历链表。空间复杂度 O(1)，不使用额外的哈希表（除了返回的新链表本身）。"
+    "complexity_analysis": "时间复杂度 O(max(m,n))，其中 m 和 n 分别是两个链表的长度。空间复杂度 O(max(m,n))，新链表的长度最多为 max(m,n)+1。"
   },
   "related_problems": [],
   "frequency": "high"

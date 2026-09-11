@@ -1,35 +1,35 @@
 {
   "id": 25,
-  "leetcode_id": 19,
-  "title": "删除链表的倒数第 N 个结点",
-  "title_en": "Remove Nth Node From End of List",
-  "difficulty": "medium",
-  "tags": ["链表", "双指针"],
-  "description": "给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。\n\n链表节点定义如下：\n```\nclass ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n```\n\n**示例 1：**\n输入：head = [1,2,3,4,5], n = 2\n输出：[1,2,3,5]\n\n**示例 2：**\n输入：head = [1], n = 1\n输出：[]\n\n**示例 3：**\n输入：head = [1,2], n = 1\n输出：[1]\n\n**提示：**\n- 链表中结点的数目为 sz\n- 1 <= sz <= 30\n- 0 <= Node.val <= 100\n- 1 <= n <= sz",
+  "leetcode_id": 141,
+  "title": "环形链表",
+  "title_en": "Linked List Cycle",
+  "difficulty": "easy",
+  "tags": ["哈希表", "链表", "双指针"],
+  "description": "给你一个链表的头节点 head，判断链表中是否有环。\n\n如果链表中存在环，则返回 true。否则，返回 false。\n\n链表节点定义如下：\n```\nclass ListNode:\n    def __init__(self, x):\n        self.val = x\n        self.next = None\n```\n\n**示例 1：**\n输入：head = [3,2,0,-4]，pos = 1（尾节点连接到第二个节点）\n输出：true\n解释：链表中存在一个环，其尾部连接到第二个节点。\n\n**示例 2：**\n输入：head = [1,2]，pos = 0（尾节点连接到第一个节点）\n输出：true\n\n**示例 3：**\n输入：head = [1]，pos = -1\n输出：false\n解释：链表中没有环。",
   "examples": [
     {
-      "input": "head = [1,2,3,4,5], n = 2",
-      "output": "[1,2,3,5]",
-      "explanation": "删除倒数第 2 个节点（值为 4）。"
+      "input": "head = [3,2,0,-4], pos = 1",
+      "output": "true",
+      "explanation": "链表中存在环，尾节点连接到索引为 1 的节点（值为 2）。"
     },
     {
-      "input": "head = [1], n = 1",
-      "output": "[]",
-      "explanation": "链表只有一个节点，删除后为空链表。"
+      "input": "head = [1], pos = -1",
+      "output": "false",
+      "explanation": "链表只有一个节点，没有环。"
     }
   ],
   "hints": {
-    "keywords": ["双指针", "快慢指针", "一次遍历"],
-    "approach": "使用双指针法：让快指针先走 n 步，然后快慢指针同时前进，当快指针到达末尾时，慢指针指向待删除节点的前一个节点。",
-    "time_complexity": "O(L)",
+    "keywords": ["快慢指针", "Floyd判圈"],
+    "approach": "使用快慢指针法（Floyd 判圈算法）：快指针每次走两步，慢指针每次走一步，如果链表有环，两个指针终会相遇。",
+    "time_complexity": "O(n)",
     "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "使用哨兵节点 dummy 指向头部。让 fast 指针先走 n+1 步（使 fast 和 slow 之间间隔 n 个节点），然后同时移动 fast 和 slow。当 fast 到达 None 时，slow 正好在待删除节点的前一个位置，将其 next 指向下下个节点即可。",
+    "explanation": "使用快慢指针：slow 每次前进一步，fast 每次前进两步。如果链表中存在环，fast 指针最终会追上 slow 指针（两者相遇）；如果不存在环，fast 指针会先到达链表末尾（None）。",
     "code": {
-      "python": "class Solution:\n    def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:\n        dummy = ListNode(0, head)\n        fast = slow = dummy\n        # fast 先走 n+1 步\n        for _ in range(n + 1):\n            fast = fast.next\n        # 同时移动\n        while fast:\n            fast = fast.next\n            slow = slow.next\n        # 删除节点\n        slow.next = slow.next.next\n        return dummy.next"
+      "python": "class Solution:\n    def hasCycle(self, head: ListNode) -> bool:\n        if not head or not head.next:\n            return False\n        slow = head\n        fast = head.next\n        while slow != fast:\n            if not fast or not fast.next:\n                return False\n            slow = slow.next\n            fast = fast.next.next\n        return True"
     },
-    "complexity_analysis": "时间复杂度 O(L)，其中 L 是链表长度，只需一次遍历。空间复杂度 O(1)，只使用了常数个指针。"
+    "complexity_analysis": "时间复杂度 O(n)，其中 n 是链表中节点的数量。空间复杂度 O(1)，只使用了两个指针。"
   },
   "related_problems": [],
   "frequency": "high"

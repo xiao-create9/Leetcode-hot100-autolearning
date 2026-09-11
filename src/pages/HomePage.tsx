@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { problems } from '@/data'
 import { useProgressStore } from '@/stores/useProgressStore'
 import { useCheckinStore } from '@/stores/useCheckinStore'
 import StatCard from '@/components/StatCard'
@@ -10,10 +11,12 @@ export default function HomePage() {
 
   const stats = useMemo(() => {
     const entries = Object.values(progress)
+    const mastered = entries.filter((p) => p.status === 'mastered').length
+    const inProgress = entries.filter((p) => p.status === 'in_progress').length
     return {
-      mastered: entries.filter((p) => p.status === 'mastered').length,
-      inProgress: entries.filter((p) => p.status === 'in_progress').length,
-      notStarted: 98 - entries.length,
+      mastered,
+      inProgress,
+      notStarted: problems.length - mastered - inProgress,
     }
   }, [progress])
 

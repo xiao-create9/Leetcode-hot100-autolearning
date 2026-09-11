@@ -1,36 +1,41 @@
 {
   "id": 86,
-  "leetcode_id": 416,
-  "title": "分割等和子集",
-  "title_en": "Partition Equal Subset Sum",
+  "leetcode_id": 139,
+  "title": "单词拆分",
+  "title_en": "Word Break",
   "difficulty": "medium",
-  "tags": ["动态规划", "背包问题", "数组"],
-  "description": "给你一个只包含正整数的非空数组 nums。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。\n\n约束条件：\n- 1 <= nums.length <= 200\n- 1 <= nums[i] <= 100",
+  "tags": ["动态规划", "字符串", "哈希表"],
+  "description": "给你一个字符串 s 和一个字符串列表 wordDict 作为字典。如果可以利用字典中出现的一个或多个单词拼接出 s 则返回 true。注意：字典中的单词可以重复使用，且字典中不含重复的单词。\n\n约束条件：\n- 1 <= s.length <= 300\n- 1 <= wordDict.length <= 1000\n- 1 <= wordDict[i].length <= 20\n- s 和 wordDict[i] 仅由小写英文字母组成\n- wordDict 中的所有字符串互不相同",
   "examples": [
     {
-      "input": "nums = [1,5,11,5]",
+      "input": "s = \"leetcode\", wordDict = [\"leet\",\"code\"]",
       "output": "true",
-      "explanation": "数组可以分割为 [1, 5, 5] 和 [11]，两部分和均为 11。"
+      "explanation": "因为 \"leetcode\" 可以由 \"leet\" 和 \"code\" 拼接成。"
     },
     {
-      "input": "nums = [1,2,3,5]",
+      "input": "s = \"applepenapple\", wordDict = [\"apple\",\"pen\"]",
+      "output": "true",
+      "explanation": "因为 \"applepenapple\" 可以由 \"apple\"、\"pen\"、\"apple\" 拼接成。注意可以重复使用字典中的单词。"
+    },
+    {
+      "input": "s = \"catsandog\", wordDict = [\"cats\",\"dog\",\"sand\",\"and\",\"cat\"]",
       "output": "false",
-      "explanation": "数组不能分割为两个元素和相等的子集。"
+      "explanation": "无法用字典中的单词拼接出 \"catsandog\"。"
     }
   ],
   "hints": {
-    "keywords": ["0-1背包", "动态规划", "子集和"],
-    "approach": "问题转化为：能否从数组中选出一些数使得它们的和等于 total_sum / 2。这是一个 0-1 背包问题。",
-    "time_complexity": "O(n * target)",
-    "space_complexity": "O(target)"
+    "keywords": ["动态规划", "字符串匹配", "字典查找"],
+    "approach": "设 dp[i] 表示 s[0:i] 是否可以被拆分。对于每个位置 i，检查所有可能的前缀 s[j:i] 是否在字典中且 dp[j] 为 true。",
+    "time_complexity": "O(n^2 * m)",
+    "space_complexity": "O(n)"
   },
   "solution": {
-    "explanation": "0-1 背包问题：目标和为 total_sum / 2。设 dp[j] 表示是否能选出和为 j 的子集。对于每个数字 num，从 target 到 num 倒序遍历，dp[j] = dp[j] or dp[j - num]。如果 total_sum 为奇数，直接返回 false。",
+    "explanation": "动态规划：dp[i] 表示 s 的前 i 个字符能否被字典拆分。dp[0] = True（空字符串）。对于 i 从 1 到 n，枚举 j 从 0 到 i-1，如果 dp[j] 为 true 且 s[j:i] 在字典中，则 dp[i] = true。",
     "code": {
-      "python": "class Solution:\n    def canPartition(self, nums: list[int]) -> bool:\n        total = sum(nums)\n        if total % 2 != 0:\n            return False\n        target = total // 2\n        dp = [False] * (target + 1)\n        dp[0] = True\n        for num in nums:\n            for j in range(target, num - 1, -1):\n                dp[j] = dp[j] or dp[j - num]\n        return dp[target]"
+      "python": "class Solution:\n    def wordBreak(self, s: str, wordDict: list[str]) -> bool:\n        word_set = set(wordDict)\n        n = len(s)\n        dp = [False] * (n + 1)\n        dp[0] = True\n        for i in range(1, n + 1):\n            for j in range(i):\n                if dp[j] and s[j:i] in word_set:\n                    dp[i] = True\n                    break\n        return dp[n]"
     },
-    "complexity_analysis": "时间复杂度 O(n * target)，n 为数组长度，target 为总和的一半。空间复杂度 O(target)，dp 数组大小。"
+    "complexity_analysis": "时间复杂度 O(n^2 * m)，n 为字符串长度，m 为子串比较的平均开销。空间复杂度 O(n)，dp 数组和字典的空间。"
   },
-  "related_problems": [698, 1049, 494],
+  "related_problems": [140, 472],
   "frequency": "high"
 }

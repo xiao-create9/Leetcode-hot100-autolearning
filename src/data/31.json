@@ -1,35 +1,35 @@
 {
   "id": 31,
-  "leetcode_id": 146,
-  "title": "LRU 缓存",
-  "title_en": "LRU Cache",
-  "difficulty": "medium",
-  "tags": ["设计", "哈希表", "链表", "双向链表"],
-  "description": "请你设计并实现一个满足 LRU（最近最少使用）缓存约束的数据结构。\n\n实现 LRUCache 类：\n- LRUCache(int capacity) 以正整数作为容量 capacity 初始化 LRU 缓存\n- int get(int key) 如果关键字 key 存在于缓存中，则返回关键字的值，否则返回 -1\n- void put(int key, int value) 如果关键字 key 已经存在，则变更其数据值 value；如果不存在，则向缓存中插入该组关键字-值。如果插入关键字数量超过容量，则应该逐出最久未使用的关键字。\n\n函数 get 和 put 必须以 O(1) 的平均时间复杂度运行。\n\n节点定义如下：\n```\nclass DLinkedNode:\n    def __init__(self, key=0, value=0):\n        self.key = key\n        self.value = value\n        self.prev = None\n        self.next = None\n```\n\n**示例：**\n输入：\n[\"LRUCache\", \"put\", \"put\", \"get\", \"put\", \"get\", \"put\", \"get\", \"get\", \"get\"]\n[[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]\n输出：\n[null, null, null, 1, null, -1, null, -1, 3, 4]\n\n解释：\nLRUCache lRUCache = new LRUCache(2);\nlRUCache.put(1, 1); // 缓存是 {1=1}\nlRUCache.put(2, 2); // 缓存是 {1=1, 2=2}\nlRUCache.get(1);    // 返回 1\nlRUCache.put(3, 3); // LRU 关键字是 2，逐出关键字 2，缓存是 {1=1, 3=3}\nlRUCache.get(2);    // 返回 -1（未找到）\nlRUCache.put(4, 4); // LRU 关键字是 1，逐出关键字 1，缓存是 {4=4, 3=3}\nlRUCache.get(1);    // 返回 -1（未找到）\nlRUCache.get(3);    // 返回 3\nlRUCache.get(4);    // 返回 4",
+  "leetcode_id": 25,
+  "title": "K 个一组翻转链表",
+  "title_en": "Reverse Nodes in k-Group",
+  "difficulty": "hard",
+  "tags": ["递归", "链表"],
+  "description": "给你链表的头节点 head，每 k 个节点一组进行翻转，请你返回修改后的链表。\n\nk 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。\n\n你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。\n\n链表节点定义如下：\n```\nclass ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n```\n\n**示例 1：**\n输入：head = [1,2,3,4,5], k = 2\n输出：[2,1,4,3,5]\n\n**示例 2：**\n输入：head = [1,2,3,4,5], k = 3\n输出：[3,2,1,4,5]\n\n**提示：**\n- 链表中的节点数目为 n\n- 1 <= k <= n <= 5000\n- 0 <= Node.val <= 1000",
   "examples": [
     {
-      "input": "[\"LRUCache\",\"put\",\"put\",\"get\",\"put\",\"get\",\"put\",\"get\",\"get\",\"get\"]\n[[2],[1,1],[2,2],[1],[3,3],[2],[4,4],[1],[3],[4]]",
-      "output": "[null,null,null,1,null,-1,null,-1,3,4]",
-      "explanation": "LRU 缓存按照最近最少使用的策略淘汰数据。"
+      "input": "head = [1,2,3,4,5], k = 2",
+      "output": "[2,1,4,3,5]",
+      "explanation": "每两个节点为一组进行翻转，最后剩余的 5 保持原位。"
     },
     {
-      "input": "[\"LRUCache\",\"get\",\"put\",\"get\"]\n[[1],[0],[0,0],[0]]",
-      "output": "[null,-1,null,0]",
-      "explanation": "容量为 1 的缓存，先 get 不存在的 key 返回 -1，put 后再 get 返回值。"
+      "input": "head = [1,2,3,4,5], k = 3",
+      "output": "[3,2,1,4,5]",
+      "explanation": "前三个节点翻转为 [3,2,1]，后两个节点不足 k 个，保持原序。"
     }
   ],
   "hints": {
-    "keywords": ["哈希表", "双向链表", "O(1)操作"],
-    "approach": "使用哈希表 + 双向链表实现。哈希表实现 O(1) 查找，双向链表维护访问顺序。每次 get/put 时将节点移到链表头部，容量满时从尾部删除节点。",
-    "time_complexity": "O(1)",
-    "space_complexity": "O(capacity)"
+    "keywords": ["分组翻转", "递归", "链表操作"],
+    "approach": "每 k 个节点为一组，检查是否有足够节点，若有则翻转该组，然后递归处理后续节点。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "使用哈希表存储 key 到双向链表节点的映射，双向链表按访问时间排序（最近访问的在头部）。get 操作：查找哈希表，若存在则将节点移到头部并返回值。put 操作：若 key 已存在则更新值并移到头部；若不存在则创建新节点插入头部，若超过容量则删除尾部节点。使用哨兵头尾节点简化边界处理。",
+    "explanation": "1. 先检查从当前节点开始是否有 k 个节点，若不足则直接返回。2. 翻转这 k 个节点（标准链表翻转）。3. 原来的头节点变成了尾节点，将其 next 指向递归处理后续节点的结果。4. 返回翻转后的新头节点。",
     "code": {
-      "python": "class DLinkedNode:\n    def __init__(self, key=0, value=0):\n        self.key = key\n        self.value = value\n        self.prev = None\n        self.next = None\n\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.capacity = capacity\n        self.cache = {}\n        self.head = DLinkedNode()\n        self.tail = DLinkedNode()\n        self.head.next = self.tail\n        self.tail.prev = self.head\n    \n    def _remove_node(self, node):\n        node.prev.next = node.next\n        node.next.prev = node.prev\n    \n    def _add_to_head(self, node):\n        node.next = self.head.next\n        node.prev = self.head\n        self.head.next.prev = node\n        self.head.next = node\n    \n    def get(self, key: int) -> int:\n        if key not in self.cache:\n            return -1\n        node = self.cache[key]\n        self._remove_node(node)\n        self._add_to_head(node)\n        return node.value\n    \n    def put(self, key: int, value: int) -> None:\n        if key in self.cache:\n            node = self.cache[key]\n            node.value = value\n            self._remove_node(node)\n            self._add_to_head(node)\n        else:\n            node = DLinkedNode(key, value)\n            self.cache[key] = node\n            self._add_to_head(node)\n            if len(self.cache) > self.capacity:\n                lru = self.tail.prev\n                self._remove_node(lru)\n                del self.cache[lru.key]"
+      "python": "class Solution:\n    def reverseKGroup(self, head: ListNode, k: int) -> ListNode:\n        # 检查是否有 k 个节点\n        curr = head\n        count = 0\n        while curr and count < k:\n            curr = curr.next\n            count += 1\n        if count < k:\n            return head\n        \n        # 翻转 k 个节点\n        prev = None\n        curr = head\n        for _ in range(k):\n            next_temp = curr.next\n            curr.next = prev\n            prev = curr\n            curr = next_temp\n        \n        # head 现在是翻转后的尾部，连接后续部分\n        head.next = self.reverseKGroup(curr, k)\n        return prev"
     },
-    "complexity_analysis": "时间复杂度 O(1)，get 和 put 操作都是 O(1)。空间复杂度 O(capacity)，哈希表和双向链表最多存储 capacity 个节点。"
+    "complexity_analysis": "时间复杂度 O(n)，每个节点只被访问一次。空间复杂度 O(1)（迭代版本），递归版本由于递归栈需要 O(n/k) 的额外空间。"
   },
   "related_problems": [],
   "frequency": "high"

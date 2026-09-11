@@ -1,41 +1,36 @@
 {
   "id": 87,
-  "leetcode_id": 32,
-  "title": "最长有效括号",
-  "title_en": "Longest Valid Parentheses",
-  "difficulty": "hard",
-  "tags": ["动态规划", "栈", "字符串"],
-  "description": "给你一个只包含 '(' 和 ')' 的字符串，找出最长有效（格式正确且连续）括号子串的长度。\n\n约束条件：\n- 0 <= s.length <= 3 * 10^4\n- s[i] 为 '(' 或 ')'",
+  "leetcode_id": 300,
+  "title": "最长递增子序列",
+  "title_en": "Longest Increasing Subsequence",
+  "difficulty": "medium",
+  "tags": ["动态规划", "二分查找", "贪心算法"],
+  "description": "给你一个整数数组 nums，找到其中最长严格递增子序列的长度。子序列是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。\n\n约束条件：\n- 1 <= nums.length <= 2500\n- -10^4 <= nums[i] <= 10^4",
   "examples": [
     {
-      "input": "s = \"(()\"",
-      "output": "2",
-      "explanation": "最长有效括号子串是 \"()\"，长度为 2。"
-    },
-    {
-      "input": "s = \")()())\"",
+      "input": "nums = [10,9,2,5,3,7,101,18]",
       "output": "4",
-      "explanation": "最长有效括号子串是 \"()()\"，长度为 4。"
+      "explanation": "最长递增子序列是 [2,3,7,101]，长度为 4。"
     },
     {
-      "input": "s = \"\"",
-      "output": "0",
-      "explanation": "空字符串没有有效括号子串。"
+      "input": "nums = [0,1,0,3,2,3]",
+      "output": "4",
+      "explanation": "最长递增子序列是 [0,1,2,3]，长度为 4。"
     }
   ],
   "hints": {
-    "keywords": ["栈", "动态规划", "括号匹配"],
-    "approach": "方法一：栈中存储下标，遇到匹配时计算长度。方法二：动态规划，dp[i] 表示以 s[i] 结尾的最长有效括号长度。",
-    "time_complexity": "O(n)",
+    "keywords": ["动态规划", "二分查找", "耐心排序"],
+    "approach": "动态规划 O(n^2)：dp[i] 表示以 nums[i] 结尾的最长递增子序列长度。优化为 O(n log n)：维护一个 tails 数组，用二分查找找到合适的插入位置。",
+    "time_complexity": "O(n log n)",
     "space_complexity": "O(n)"
   },
   "solution": {
-    "explanation": "栈方法：栈底放 -1 作为哨兵。遍历字符串，遇到 '(' 将下标入栈。遇到 ')' 先出栈，如果栈为空，将当前下标入栈（作为新的基准）；如果栈不为空，计算当前下标与栈顶的差值即为有效长度，更新最大值。",
+    "explanation": "方法一（DP O(n^2)）：dp[i] = max(dp[j] + 1)，其中 j < i 且 nums[j] < nums[i]。方法二（贪心 + 二分 O(n log n)）：维护 tails 数组，tails[i] 表示长度为 i+1 的递增子序列的最小末尾元素。对于每个新元素，用二分查找在 tails 中找到第一个 >= 当前元素的位置并替换，如果当前元素大于所有 tails 元素则追加。",
     "code": {
-      "python": "class Solution:\n    def longestValidParentheses(self, s: str) -> int:\n        stack = [-1]\n        max_len = 0\n        for i, ch in enumerate(s):\n            if ch == '(':\n                stack.append(i)\n            else:\n                stack.pop()\n                if not stack:\n                    stack.append(i)\n                else:\n                    max_len = max(max_len, i - stack[-1])\n        return max_len"
+      "python": "import bisect\n\nclass Solution:\n    def lengthOfLIS(self, nums: list[int]) -> int:\n        tails = []\n        for num in nums:\n            pos = bisect.bisect_left(tails, num)\n            if pos == len(tails):\n                tails.append(num)\n            else:\n                tails[pos] = num\n        return len(tails)"
     },
-    "complexity_analysis": "时间复杂度 O(n)，遍历一次字符串。空间复杂度 O(n)，栈的空间。"
+    "complexity_analysis": "时间复杂度 O(n log n)，每个元素二分查找耗时 O(log n)。空间复杂度 O(n)，tails 数组最多 n 个元素。"
   },
-  "related_problems": [20, 22, 921, 1541],
+  "related_problems": [354, 673, 646],
   "frequency": "high"
 }

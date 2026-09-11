@@ -1,36 +1,36 @@
 {
   "id": 76,
-  "leetcode_id": 763,
-  "title": "划分字母区间",
-  "title_en": "Partition Labels",
-  "difficulty": "medium",
-  "tags": ["贪心算法", "哈希表", "双指针"],
-  "description": "给你一个字符串 s。把这个字符串划分为尽可能多的片段，同一字母最多出现在一个片段中。注意划分结果需要满足：将所有划分结果按顺序连接，得到的字符串仍然是 s。返回一个表示每个字符串片段长度的列表。\n\n约束条件：\n- 1 <= s.length <= 500\n- s 仅由小写英文字母组成",
+  "leetcode_id": 295,
+  "title": "数据流的中位数",
+  "title_en": "Find Median from Data Stream",
+  "difficulty": "hard",
+  "tags": ["堆", "设计", "双指针"],
+  "description": "中位数是有序整数列表中间的数。如果列表长度是偶数，中位数则是中间两个数的平均值。\n\n例如，[2,3,4] 的中位数是 3。[2,3] 的中位数是 (2 + 3) / 2 = 2.5。\n\n实现 MedianFinder 类：\n- MedianFinder() 初始化 MedianFinder 对象。\n- void addNum(int num) 将数据流中的整数 num 添加到数据结构中。\n- double findMedian() 返回目前所有元素的中位数。与实际答案相差 10^-5 以内的答案将被接受。\n\n示例：\n输入：\n[\"MedianFinder\",\"addNum\",\"addNum\",\"findMedian\",\"addNum\",\"findMedian\"]\n[[],[1],[2],[],[3],[]]\n输出：\n[null,null,null,1.5,null,2.0]\n\n解释：\nMedianFinder medianFinder = new MedianFinder();\nmedianFinder.addNum(1);    // arr = [1]\nmedianFinder.addNum(2);    // arr = [1, 2]\nmedianFinder.findMedian(); // 返回 1.5\nmedianFinder.addNum(3);    // arr = [1, 2, 3]\nmedianFinder.findMedian(); // 返回 2.0\n\n约束条件：\n- -10^5 <= num <= 10^5\n- 在调用 findMedian 之前，数据结构中至少有一个元素\n- 最多调用 5 * 10^4 次 addNum 和 findMedian",
   "examples": [
     {
-      "input": "s = \"ababcbacadefegdehijhklij\"",
-      "output": "[9,7,8]",
-      "explanation": "划分结果为 \"ababcbaca\"、\"defegde\"、\"hijhklij\"。每个字母最多出现在一个片段中。"
+      "input": "[\"MedianFinder\",\"addNum\",\"addNum\",\"findMedian\",\"addNum\",\"findMedian\"]\n[[],[1],[2],[],[3],[]]",
+      "output": "[null,null,null,1.5,null,2.0]",
+      "explanation": "添加 1 和 2 后中位数为 1.5，添加 3 后中位数为 2.0。"
     },
     {
-      "input": "s = \"eccbbbbdec\"",
-      "output": "[10]",
-      "explanation": "整个字符串只能作为一个片段，因为所有字母都相互关联。"
+      "input": "[\"MedianFinder\",\"addNum\",\"findMedian\",\"addNum\",\"findMedian\"]\n[[],[5],[],[10],[]]",
+      "output": "[null,null,5.0,null,7.5]",
+      "explanation": "添加 5 后中位数为 5.0，添加 10 后中位数为 (5+10)/2 = 7.5。"
     }
   ],
   "hints": {
-    "keywords": ["贪心", "记录最后出现位置", "双指针"],
-    "approach": "先记录每个字母最后出现的位置，然后遍历字符串，维护当前片段的结束位置。当遍历到结束位置时，说明当前片段可以结束。",
-    "time_complexity": "O(n)",
-    "space_complexity": "O(1)"
+    "keywords": ["双堆", "最大堆", "最小堆"],
+    "approach": "使用两个堆：一个最大堆存储较小的一半元素，一个最小堆存储较大的一半元素。保持两个堆的大小差不超过 1。中位数从堆顶元素获取。",
+    "time_complexity": "O(log n) for addNum, O(1) for findMedian",
+    "space_complexity": "O(n)"
   },
   "solution": {
-    "explanation": "贪心策略：首先用哈希表记录每个字母最后出现的位置。然后遍历字符串，维护当前片段的右边界 last，last 等于当前片段中所有字母最后出现位置的最大值。当遍历到 last 时，记录当前片段长度，并开始新的片段。",
+    "explanation": "使用一个最大堆（存较小的一半）和一个最小堆（存较大的一半）。添加元素时，先加入最大堆，然后将最大堆的堆顶弹出加入最小堆，保持最大堆元素都小于等于最小堆。如果最小堆元素多于最大堆，将最小堆堆顶移回最大堆。这样两个堆大小最多差 1，中位数从两个堆顶获取。",
     "code": {
-      "python": "class Solution:\n    def partitionLabels(self, s: str) -> list[int]:\n        last = {}\n        for i, ch in enumerate(s):\n            last[ch] = i\n        \n        result = []\n        start = 0\n        end = 0\n        for i, ch in enumerate(s):\n            end = max(end, last[ch])\n            if i == end:\n                result.append(end - start + 1)\n                start = i + 1\n        return result"
+      "python": "import heapq\n\nclass MedianFinder:\n    def __init__(self):\n        self.max_heap = []  # stores the smaller half (negated for max-heap behavior)\n        self.min_heap = []  # stores the larger half\n\n    def addNum(self, num: int) -> None:\n        heapq.heappush(self.max_heap, -num)\n        # Ensure max_heap's max <= min_heap's min\n        heapq.heappush(self.min_heap, -heapq.heappop(self.max_heap))\n        # Balance sizes: max_heap can have at most 1 more element\n        if len(self.min_heap) > len(self.max_heap):\n            heapq.heappush(self.max_heap, -heapq.heappop(self.min_heap))\n\n    def findMedian(self) -> float:\n        if len(self.max_heap) > len(self.min_heap):\n            return -self.max_heap[0]\n        return (-self.max_heap[0] + self.min_heap[0]) / 2.0"
     },
-    "complexity_analysis": "时间复杂度 O(n)，遍历字符串两次。空间复杂度 O(1)，哈希表最多存储 26 个字母。"
+    "complexity_analysis": "addNum 时间复杂度 O(log n)，需要堆的插入和弹出操作。findMedian 时间复杂度 O(1)，直接访问堆顶。空间复杂度 O(n)，需要存储所有元素。"
   },
-  "related_problems": [56, 228, 452],
+  "related_problems": [],
   "frequency": "high"
 }

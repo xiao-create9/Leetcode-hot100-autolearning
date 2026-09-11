@@ -1,36 +1,41 @@
 {
   "id": 3,
-  "leetcode_id": 283,
-  "title": "移动零",
-  "title_en": "Move Zeroes",
-  "difficulty": "easy",
-  "tags": ["数组", "双指针"],
-  "description": "给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。\n\n请注意，必须在不复制数组的情况下原地对数组进行操作。\n\n示例 1：\n输入：nums = [0,1,0,3,12]\n输出：[1,3,12,0,0]\n\n示例 2：\n输入：nums = [0]\n输出：[0]\n\n约束条件：\n- 1 <= nums.length <= 10^4\n- -2^31 <= nums[i] <= 2^31 - 1\n\n进阶：你能尽量减少完成的操作次数吗？",
+  "leetcode_id": 128,
+  "title": "最长连续序列",
+  "title_en": "Longest Consecutive Sequence",
+  "difficulty": "medium",
+  "tags": ["并查集", "数组", "哈希表"],
+  "description": "给定一个未排序的整数数组 nums，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。\n\n请你设计并实现时间复杂度为 O(n) 的算法解决此问题。\n\n**示例 1：**\n输入：nums = [100,4,200,1,3,2]\n输出：4\n解释：最长数字连续序列是 [1, 2, 3, 4]，它的长度为 4。\n\n**示例 2：**\n输入：nums = [0,3,7,2,5,8,4,6,0,1]\n输出：9\n解释：最长数字连续序列是 [0, 1, 2, 3, 4, 5, 6, 7, 8]，它的长度为 9。注意重复的 0 只算一次。\n\n**提示：**\n- 0 <= nums.length <= 10^5\n- -10^9 <= nums[i] <= 10^9",
   "examples": [
     {
-      "input": "nums = [0,1,0,3,12]",
-      "output": "[1,3,12,0,0]",
-      "explanation": "将所有非零元素按原顺序移到前面，零全部移到末尾。"
+      "input": "nums = [100,4,200,1,3,2]",
+      "output": "4",
+      "explanation": "最长数字连续序列是 [1, 2, 3, 4]，长度为 4。"
     },
     {
-      "input": "nums = [0]",
-      "output": "[0]",
-      "explanation": "只有一个零元素，无需移动。"
+      "input": "nums = [0,3,7,2,5,8,4,6,0,1]",
+      "output": "9",
+      "explanation": "去重后为 [0,1,2,3,4,5,6,7,8]，构成长度为 9 的连续序列。"
+    },
+    {
+      "input": "nums = []",
+      "output": "0",
+      "explanation": "空数组不存在任何连续序列，长度为 0。"
     }
   ],
   "hints": {
-    "keywords": ["双指针", "原地交换", "快慢指针"],
-    "approach": "使用双指针，一个指针指向当前可以放置非零元素的位置，另一个指针遍历数组。遇到非零元素就交换到前面。",
+    "keywords": ["哈希集合", "只从序列起点开始数", "去重"],
+    "approach": "把所有数字放进哈希集合，实现 O(1) 查询与自动去重。关键在于只从「序列起点」开始向后计数——若 num - 1 不在集合中，num 才是一段连续序列的起点，然后不断查 num + 1、num + 2 直到断开。这样每个数字最多被内层循环访问一次，避免了从每个数都往后数导致的 O(n^2)。",
     "time_complexity": "O(n)",
-    "space_complexity": "O(1)"
+    "space_complexity": "O(n)"
   },
   "solution": {
-    "explanation": "使用双指针法：维护一个慢指针 slow，表示下一个非零元素应该放置的位置。用快指针 fast 遍历整个数组，当 fast 指向的元素不为零时，将其与 slow 位置的元素交换，然后 slow 向前移动。这样可以保证非零元素的相对顺序不变，同时将所有零移动到末尾。",
+    "explanation": "1. 将 nums 全部放入集合，同时完成去重。2. 遍历集合中的每个数字，先用 num - 1 是否在集合中判断它是不是一段连续序列的起点：如果 num - 1 存在，说明从它开始数会与更靠前的起点重复，直接跳过。3. 对真正的起点，用 while 循环不断检查 curr + 1 是否在集合中，累加长度。4. 用全局最大值记录出现过的最长长度。因为内层 while 只在起点处触发，每个数字最多被访问两次，总时间为 O(n)。",
     "code": {
-      "python": "class Solution:\n    def moveZeroes(self, nums: list[int]) -> None:\n        \"\"\"\n        Do not return anything, modify nums in-place instead.\n        \"\"\"\n        slow = 0\n        for fast in range(len(nums)):\n            if nums[fast] != 0:\n                nums[slow], nums[fast] = nums[fast], nums[slow]\n                slow += 1"
+      "python": "class Solution:\n    def longestConsecutive(self, nums: list[int]) -> int:\n        num_set = set(nums)\n        longest = 0\n\n        for num in num_set:\n            # 只有 num - 1 不存在时，num 才是一段连续序列的起点\n            if num - 1 not in num_set:\n                curr = num\n                length = 1\n                while curr + 1 in num_set:\n                    curr += 1\n                    length += 1\n                longest = max(longest, length)\n\n        return longest"
     },
-    "complexity_analysis": "时间复杂度：O(n)，其中 n 是数组长度，只需遍历一次。空间复杂度：O(1)，只使用了常数级别的额外空间。"
+    "complexity_analysis": "时间复杂度 O(n)：构建集合为 O(n)，外层遍历 O(n)，内层 while 总共最多执行 n 次（每个数字只会在它所属序列的起点处被走到一次）。空间复杂度 O(n)：哈希集合最多存储 n 个不重复数字。"
   },
-  "related_problems": [27, 26],
+  "related_problems": [298, 674, 300],
   "frequency": "high"
 }

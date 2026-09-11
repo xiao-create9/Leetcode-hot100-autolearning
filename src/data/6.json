@@ -1,46 +1,41 @@
 {
   "id": 6,
-  "leetcode_id": 3,
-  "title": "无重复字符的最长子串",
-  "title_en": "Longest Substring Without Repeating Characters",
+  "leetcode_id": 15,
+  "title": "三数之和",
+  "title_en": "3Sum",
   "difficulty": "medium",
-  "tags": ["哈希表", "字符串", "滑动窗口"],
-  "description": "给定一个字符串 s，请你找出其中不含有重复字符的最长子串的长度。\n\n示例 1：\n输入：s = \"abcabcbb\"\n输出：3\n解释：因为无重复字符的最长子串是 \"abc\"，所以其长度为 3。\n\n示例 2：\n输入：s = \"bbbbb\"\n输出：1\n解释：因为无重复字符的最长子串是 \"b\"，所以其长度为 1。\n\n示例 3：\n输入：s = \"pwwkew\"\n输出：3\n解释：因为无重复字符的最长子串是 \"wke\"，所以其长度为 3。请注意，你的答案必须是子串的长度，\"pwke\" 是一个子序列，不是子串。\n\n约束条件：\n- 0 <= s.length <= 5 * 10^4\n- s 由英文字母、数字、符号和空格组成",
+  "tags": ["数组", "双指针", "排序"],
+  "description": "给你一个整数数组 nums，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k，同时还满足 nums[i] + nums[j] + nums[k] == 0。\n\n请你返回所有和为 0 且不重复的三元组。\n\n注意：答案中不可以包含重复的三元组。\n\n示例 1：\n输入：nums = [-1,0,1,2,-1,-4]\n输出：[[-1,-1,2],[-1,0,1]]\n解释：\nnums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0。\nnums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0。\n不同的三元组是 [-1,0,1] 和 [-1,-1,2]。\n注意输出的顺序和三元组的顺序并不重要。\n\n示例 2：\n输入：nums = [0,1,1]\n输出：[]\n解释：唯一可能的三元组和不为 0。\n\n示例 3：\n输入：nums = [0,0,0]\n输出：[[0,0,0]]\n解释：唯一可能的三元组和为 0。\n\n约束条件：\n- 3 <= nums.length <= 3000\n- -10^5 <= nums[i] <= 10^5",
   "examples": [
     {
-      "input": "s = \"abcabcbb\"",
-      "output": "3",
-      "explanation": "无重复字符的最长子串是 \"abc\"，长度为 3。"
+      "input": "nums = [-1,0,1,2,-1,-4]",
+      "output": "[[-1,-1,2],[-1,0,1]]",
+      "explanation": "排序后数组为 [-4,-1,-1,0,1,2]。找到两组满足条件的三元组。"
     },
     {
-      "input": "s = \"bbbbb\"",
-      "output": "1",
-      "explanation": "所有字符都相同，无重复字符的最长子串是 \"b\"，长度为 1。"
+      "input": "nums = [0,1,1]",
+      "output": "[]",
+      "explanation": "不存在三元组满足和为 0。"
     },
     {
-      "input": "s = \"pwwkew\"",
-      "output": "3",
-      "explanation": "无重复字符的最长子串是 \"wke\"，长度为 3。"
-    },
-    {
-      "input": "s = \"\"",
-      "output": "0",
-      "explanation": "空字符串的最长无重复子串长度为 0。"
+      "input": "nums = [0,0,0]",
+      "output": "[[0,0,0]]",
+      "explanation": "三个 0 的和为 0，是唯一满足条件的三元组。"
     }
   ],
   "hints": {
-    "keywords": ["滑动窗口", "哈希集合", "双指针"],
-    "approach": "使用滑动窗口维护一个不含重复字符的子串。右指针扩展窗口，当出现重复字符时，左指针收缩窗口直到没有重复。用哈希集合记录窗口内的字符。",
-    "time_complexity": "O(n)",
-    "space_complexity": "O(min(n, m))"
+    "keywords": ["排序", "双指针", "去重"],
+    "approach": "先对数组排序，然后固定第一个数，对剩余部分使用双指针寻找两数之和为目标值。注意跳过重复元素以避免重复三元组。",
+    "time_complexity": "O(n^2)",
+    "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "使用滑动窗口（双指针）配合哈希集合：\n1. 初始化左指针 left = 0，右指针 right = 0，最大长度 max_len = 0，哈希集合 char_set。\n2. 右指针向右移动，逐个将字符加入窗口。\n3. 如果 s[right] 已经在 char_set 中（出现重复），则不断将左指针的字符从集合中移除并左指针右移，直到重复字符被移除。\n4. 将 s[right] 加入集合，更新最大长度。\n5. 重复步骤 2-4 直到右指针遍历完字符串。\n\n优化：可以使用哈希表记录每个字符最后出现的位置，当发现重复时直接将左指针跳到重复字符上次出现位置的下一个位置。",
+    "explanation": "1. 首先对数组进行排序。\n2. 遍历数组，固定第一个数 nums[i]，然后在 i 之后的区间使用双指针寻找两个数，使得三数之和为 0。\n3. 对于固定的 nums[i]，左指针 left 指向 i+1，右指针 right 指向数组末尾。计算三数之和 sum = nums[i] + nums[left] + nums[right]。\n   - 如果 sum < 0，说明需要更大的数，left 右移。\n   - 如果 sum > 0，说明需要更小的数，right 左移。\n   - 如果 sum == 0，找到一组解，记录后同时移动左右指针。\n4. 去重处理：固定数时跳过相同值；找到解后，移动指针时跳过相同值。",
     "code": {
-      "python": "class Solution:\n    def lengthOfLongestSubstring(self, s: str) -> int:\n        char_index = {}  # 记录字符最后出现的位置\n        max_len = 0\n        left = 0\n        \n        for right, char in enumerate(s):\n            if char in char_index and char_index[char] >= left:\n                left = char_index[char] + 1\n            char_index[char] = right\n            max_len = max(max_len, right - left + 1)\n        \n        return max_len"
+      "python": "class Solution:\n    def threeSum(self, nums: list[int]) -> list[list[int]]:\n        nums.sort()\n        result = []\n        n = len(nums)\n        \n        for i in range(n - 2):\n            # 跳过重复的固定数\n            if i > 0 and nums[i] == nums[i - 1]:\n                continue\n            # 剪枝：如果当前最小的三数之和已经大于 0，后面不可能有解\n            if nums[i] + nums[i+1] + nums[i+2] > 0:\n                break\n            # 剪枝：如果当前数与最后两个数的和仍小于 0，当前数太小\n            if nums[i] + nums[n-1] + nums[n-2] < 0:\n                continue\n            \n            left, right = i + 1, n - 1\n            while left < right:\n                total = nums[i] + nums[left] + nums[right]\n                if total < 0:\n                    left += 1\n                elif total > 0:\n                    right -= 1\n                else:\n                    result.append([nums[i], nums[left], nums[right]])\n                    left += 1\n                    right -= 1\n                    # 跳过重复的左指针元素\n                    while left < right and nums[left] == nums[left - 1]:\n                        left += 1\n                    # 跳过重复的右指针元素\n                    while left < right and nums[right] == nums[right + 1]:\n                        right -= 1\n        \n        return result"
     },
-    "complexity_analysis": "时间复杂度：O(n)，其中 n 是字符串长度，左右指针各遍历一次。空间复杂度：O(min(n, m))，其中 m 是字符集大小，哈希表最多存储 min(n, m) 个字符。"
+    "complexity_analysis": "时间复杂度：O(n^2)，其中 n 是数组长度。排序需要 O(n log n)，外层循环 O(n)，内层双指针 O(n)，总计 O(n^2)。空间复杂度：O(1)，不考虑返回值和排序所需的空间（排序空间取决于具体实现，通常为 O(log n)）。"
   },
-  "related_problems": [159, 340, 395],
+  "related_problems": [1, 16, 259],
   "frequency": "high"
 }

@@ -1,35 +1,35 @@
 {
   "id": 47,
-  "leetcode_id": 200,
-  "title": "岛屿数量",
-  "title_en": "Number of Islands",
+  "leetcode_id": 105,
+  "title": "从前序与中序遍历序列构造二叉树",
+  "title_en": "Construct Binary Tree from Preorder and Inorder Traversal",
   "difficulty": "medium",
-  "tags": ["图论", "深度优先搜索", "广度优先搜索", "并查集"],
-  "description": "给你一个由 '1'（陆地）和 '0'（水）组成的二维网格，请你计算网格中岛屿的数量。岛屿总是被水包围，并且每座岛屿只能由水平方向和/或垂直方向上相邻的陆地连接形成。此外，你可以假设该网格的四条边均被水包围。\n\n示例 1：\n输入：grid = [\n  [\"1\",\"1\",\"1\",\"1\",\"0\"],\n  [\"1\",\"1\",\"0\",\"1\",\"0\"],\n  [\"1\",\"1\",\"0\",\"0\",\"0\"],\n  [\"0\",\"0\",\"0\",\"0\",\"0\"]\n]\n输出：1\n\n示例 2：\n输入：grid = [\n  [\"1\",\"1\",\"0\",\"0\",\"0\"],\n  [\"1\",\"1\",\"0\",\"0\",\"0\"],\n  [\"0\",\"0\",\"1\",\"0\",\"0\"],\n  [\"0\",\"0\",\"0\",\"1\",\"1\"]\n]\n输出：3\n\n约束条件：\n- m == grid.length\n- n == grid[i].length\n- 1 <= m, n <= 300\n- grid[i][j] 的值为 '0' 或 '1'",
+  "tags": ["树", "数组", "哈希表", "分治", "二叉树"],
+  "description": "给定两个整数数组 preorder 和 inorder，其中 preorder 是二叉树的前序遍历，inorder 是同一棵树的中序遍历，请构造二叉树并返回其根节点。\n\n二叉树节点定义如下：\n```\nclass TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n```\n\n**示例 1：**\n输入：preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]\n输出：[3,9,20,null,null,15,7]\n\n**示例 2：**\n输入：preorder = [-1], inorder = [-1]\n输出：[-1]\n\n**提示：**\n- 1 <= preorder.length <= 3000\n- inorder.length == preorder.length\n- -3000 <= preorder[i], inorder[i] <= 3000\n- preorder 和 inorder 均无重复元素\n- inorder 均出现在 preorder 中\n- preorder 保证为二叉树的前序遍历序列\n- inorder 保证为二叉树的中序遍历序列",
   "examples": [
     {
-      "input": "grid = [[\"1\",\"1\",\"1\",\"1\",\"0\"],[\"1\",\"1\",\"0\",\"1\",\"0\"],[\"1\",\"1\",\"0\",\"0\",\"0\"],[\"0\",\"0\",\"0\",\"0\",\"0\"]]",
-      "output": "1",
-      "explanation": "整个网格被水包围，只有一座岛屿。"
+      "input": "preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]",
+      "output": "[3,9,20,null,null,15,7]",
+      "explanation": "前序的第一个元素 3 是根节点，在中序中 3 左边是左子树 [9]，右边是右子树 [15,20,7]。"
     },
     {
-      "input": "grid = [[\"1\",\"1\",\"0\",\"0\",\"0\"],[\"1\",\"1\",\"0\",\"0\",\"0\"],[\"0\",\"0\",\"1\",\"0\",\"0\"],[\"0\",\"0\",\"0\",\"1\",\"1\"]]",
-      "output": "3",
-      "explanation": "网格中有三座岛屿：左上角一块、中间一块、右下角一块。"
+      "input": "preorder = [-1], inorder = [-1]",
+      "output": "[-1]",
+      "explanation": "只有一个节点的树。"
     }
   ],
   "hints": {
-    "keywords": ["DFS", "BFS", "网格遍历"],
-    "approach": "遍历整个网格，当遇到一个值为 '1' 的格子时，岛屿数量加1，然后使用 DFS 或 BFS 将与该格子相连的所有 '1' 都标记为 '0'（表示已访问），避免重复计数。",
-    "time_complexity": "O(m * n)",
-    "space_complexity": "O(m * n)"
+    "keywords": ["前序遍历", "中序遍历", "哈希表", "显式栈"],
+    "approach": "前序遍历的第一个元素是根节点。在中序遍历中找到根节点的位置，左边是左子树，右边是右子树。使用哈希表加速在中序数组中查找根节点位置。构树过程用显式栈代替递归：当树退化成一条链时（例如前序与中序都是升序序列，对应右斜树），递归深度等于节点数，题目上限 3000 已远超 Python 默认的 1000 层递归上限。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(n)"
   },
   "solution": {
-    "explanation": "使用深度优先搜索（DFS）遍历网格。对于每个未访问的陆地格子，启动一次 DFS，将所有与其相连的陆地标记为已访问（置为'0'），同时岛屿计数器加1。DFS 的过程中，向上下左右四个方向递归探索。",
+    "explanation": "1. 前序遍历的第一个元素是根节点。2. 在中序遍历中找到根节点的索引，左边是左子树的中序，右边是右子树的中序。3. 根据左子树的节点数 left_size，可以确定前序遍历中左右子树的范围：左子树占 [pre_start + 1, pre_start + left_size]，右子树占 [pre_start + left_size + 1, pre_end]。4. 用显式栈模拟这个分治过程：栈中保存「子树根节点 + 它在前序与中序中的区间」，出栈时算出左右子树大小，只要不为空就当场创建子节点，并把它连同自己的区间压栈，等后续处理。之所以不写成递归，是因为当树退化成一条链时递归深度等于节点数，而题目上限 3000 已远超 Python 默认的 1000 层递归上限，升序输入这类用例非常常见。使用哈希表存储中序遍历中值到索引的映射，将查找时间从 O(n) 降到 O(1)。",
     "code": {
-      "python": "class Solution:\n    def numIslands(self, grid: list[list[str]]) -> int:\n        if not grid or not grid[0]:\n            return 0\n        \n        rows, cols = len(grid), len(grid[0])\n        count = 0\n        \n        def dfs(r, c):\n            if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] == '0':\n                return\n            grid[r][c] = '0'\n            dfs(r + 1, c)\n            dfs(r - 1, c)\n            dfs(r, c + 1)\n            dfs(r, c - 1)\n        \n        for i in range(rows):\n            for j in range(cols):\n                if grid[i][j] == '1':\n                    count += 1\n                    dfs(i, j)\n        \n        return count"
+      "python": "class Solution:\n    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:\n        if not preorder:\n            return None\n\n        inorder_map = {val: idx for idx, val in enumerate(inorder)}\n        root = TreeNode(preorder[0])\n        # 栈元素：(子树根节点, 前序区间起点, 前序区间终点, 中序区间起点, 中序区间终点)\n        stack = [(root, 0, len(preorder) - 1, 0, len(inorder) - 1)]\n\n        while stack:\n            node, pre_start, pre_end, in_start, in_end = stack.pop()\n            root_idx = inorder_map[node.val]\n            left_size = root_idx - in_start\n            right_size = in_end - root_idx\n\n            if left_size > 0:\n                node.left = TreeNode(preorder[pre_start + 1])\n                stack.append((node.left, pre_start + 1, pre_start + left_size,\n                              in_start, root_idx - 1))\n            if right_size > 0:\n                node.right = TreeNode(preorder[pre_start + left_size + 1])\n                stack.append((node.right, pre_start + left_size + 1, pre_end,\n                              root_idx + 1, in_end))\n\n        return root"
     },
-    "complexity_analysis": "时间复杂度 O(m * n)，其中 m 和 n 分别为网格的行数和列数。每个格子最多被访问一次。空间复杂度 O(m * n)，在最坏情况下（整个网格都是陆地），递归调用的深度为 m * n。"
+    "complexity_analysis": "时间复杂度 O(n)，每个节点被访问一次，哈希表查找为 O(1)。空间复杂度 O(n)：哈希表占 O(n)，显式栈在最坏情况（树退化成链）下同样需要 O(n)。与递归写法量级相同，但栈内存位于堆上，不受 Python 默认递归深度上限（1000）的约束。"
   },
   "related_problems": [],
   "frequency": "high"

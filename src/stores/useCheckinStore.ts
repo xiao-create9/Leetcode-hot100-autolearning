@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { CheckinRecord } from '@/types/user'
+import { mapLegacyProblemId } from '@/utils/legacyProblemIds'
 
 interface CheckinState {
   records: Record<string, CheckinRecord>
@@ -67,6 +68,22 @@ export const useCheckinStore = create<CheckinState>()(
 
       loadData: (data) => set({ records: data }),
     }),
-    { name: 'leetcode-checkin' },
+    {
+      name: 'leetcode-checkin',
+      version: 2,
+      migrate: (persisted, version) => {
+        const state = persisted as Partial<CheckinState> | undefined
+        if (!state || version >= 2) return state as CheckinState
+
+        const migrated: Record<string, CheckinRecord> = {}
+        for (const [date, record] of Object.entries(state.records ?? {})) {
+          const problemIds = record.problemIds
+            .map((legacyId) => mapLegacyProblemId(legacyId))
+            .filter((id): id is number => id !== undefined)
+          migrated[date] = { ...record, problemIds: [...new Set(problemIds)] }
+        }
+        return { ...state, records: migrated } as CheckinState
+      },
+    },
   ),
 )

@@ -1,35 +1,35 @@
 {
   "id": 68,
-  "leetcode_id": 739,
-  "title": "每日温度",
-  "title_en": "Daily Temperatures",
-  "difficulty": "medium",
-  "tags": ["栈", "单调栈", "数组"],
-  "description": "给定一个整数数组 temperatures，表示每天的温度，返回一个数组 answer，其中 answer[i] 是指对于第 i 天，下一个更高温度出现在几天后。如果气温在这之后都不会升高，请在该位置用 0 来代替。\n\n示例 1：\n输入：temperatures = [73,74,75,71,69,72,76,73]\n输出：[1,1,4,2,1,1,0,0]\n\n示例 2：\n输入：temperatures = [30,40,50,60]\n输出：[1,1,1,0]\n\n示例 3：\n输入：temperatures = [30,60,90]\n输出：[1,1,0]\n\n约束条件：\n- 1 <= temperatures.length <= 10^5\n- 30 <= temperatures[i] <= 100",
+  "leetcode_id": 4,
+  "title": "寻找两个正序数组的中位数",
+  "title_en": "Median of Two Sorted Arrays",
+  "difficulty": "hard",
+  "tags": ["二分查找", "数组", "分治"],
+  "description": "给定两个大小分别为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。请你找出并返回这两个正序数组的中位数。算法的时间复杂度应该为 O(log(m+n))。\n\n示例 1：\n输入：nums1 = [1,3], nums2 = [2]\n输出：2.00000\n解释：合并数组 = [1,2,3]，中位数 2。\n\n示例 2：\n输入：nums1 = [1,2], nums2 = [3,4]\n输出：2.50000\n解释：合并数组 = [1,2,3,4]，中位数 (2 + 3) / 2 = 2.5。\n\n约束条件：\n- nums1.length == m\n- nums2.length == n\n- 0 <= m <= 1000\n- 0 <= n <= 1000\n- 1 <= m + n <= 2000\n- -10^6 <= nums1[i], nums2[i] <= 10^6",
   "examples": [
     {
-      "input": "temperatures = [73,74,75,71,69,72,76,73]",
-      "output": "[1,1,4,2,1,1,0,0]",
-      "explanation": "第0天73度，第1天74度更高，间隔1天。第2天75度，第6天76度更高，间隔4天。"
+      "input": "nums1 = [1,3], nums2 = [2]",
+      "output": "2.00000",
+      "explanation": "合并后的数组为 [1,2,3]，中位数为 2。"
     },
     {
-      "input": "temperatures = [30,40,50,60]",
-      "output": "[1,1,1,0]",
-      "explanation": "每天的温度都比前一天高，最后一天之后没有更高温度。"
+      "input": "nums1 = [1,2], nums2 = [3,4]",
+      "output": "2.50000",
+      "explanation": "合并后的数组为 [1,2,3,4]，中位数为 (2+3)/2 = 2.5。"
     }
   ],
   "hints": {
-    "keywords": ["单调栈", "栈", "逆序遍历"],
-    "approach": "使用单调递减栈。从后往前遍历，维护一个存储索引的栈，栈中元素对应的温度是单调递减的。对于每个温度，弹出栈中所有小于等于当前温度的元素，栈顶即为下一个更高温度的位置。",
-    "time_complexity": "O(n)",
-    "space_complexity": "O(n)"
+    "keywords": ["二分查找", "划分数组", "中位数"],
+    "approach": "使用二分查找在较短的数组上进行划分。将两个数组分别分成左右两部分，使得左半部分的元素总数等于右半部分（或比右半部分多1）。通过二分调整划分位置，确保左半部分的最大值小于等于右半部分的最小值。",
+    "time_complexity": "O(log(min(m, n)))",
+    "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "使用单调栈从后往前遍历。栈中存储温度的索引，保持栈中索引对应的温度单调递减。对于每个位置 i，不断弹出栈顶元素直到栈顶对应的温度大于 temperatures[i]，此时栈顶索引与 i 的差值就是答案。如果栈为空，说明之后没有更高温度。",
+    "explanation": "核心思想是在较短的数组上做二分查找，找到一个划分位置 i，使得 nums1[0..i-1] 和 nums2[0..j-1] 的所有元素都小于等于 nums1[i..] 和 nums2[j..] 的所有元素，其中 j = (m+n+1)/2 - i。这样中位数就是左半部分最大值和右半部分最小值的平均值（偶数长度时）或左半部分最大值（奇数长度时）。",
     "code": {
-      "python": "class Solution:\n    def dailyTemperatures(self, temperatures: list[int]) -> list[int]:\n        n = len(temperatures)\n        answer = [0] * n\n        stack = []  # stack of indices\n        \n        for i in range(n - 1, -1, -1):\n            while stack and temperatures[stack[-1]] <= temperatures[i]:\n                stack.pop()\n            if stack:\n                answer[i] = stack[-1] - i\n            stack.append(i)\n        \n        return answer"
+      "python": "class Solution:\n    def findMedianSortedArrays(self, nums1: list[int], nums2: list[int]) -> float:\n        if len(nums1) > len(nums2):\n            nums1, nums2 = nums2, nums1\n        \n        m, n = len(nums1), len(nums2)\n        left, right = 0, m\n        half = (m + n + 1) // 2\n        \n        while left <= right:\n            i = left + (right - left) // 2\n            j = half - i\n            \n            nums1_left = nums1[i - 1] if i > 0 else float('-inf')\n            nums1_right = nums1[i] if i < m else float('inf')\n            nums2_left = nums2[j - 1] if j > 0 else float('-inf')\n            nums2_right = nums2[j] if j < n else float('inf')\n            \n            if nums1_left <= nums2_right and nums2_left <= nums1_right:\n                if (m + n) % 2 == 1:\n                    return max(nums1_left, nums2_left)\n                else:\n                    return (max(nums1_left, nums2_left) + min(nums1_right, nums2_right)) / 2\n            elif nums1_left > nums2_right:\n                right = i - 1\n            else:\n                left = i + 1"
     },
-    "complexity_analysis": "时间复杂度 O(n)，每个元素最多入栈和出栈各一次。空间复杂度 O(n)，栈的空间。"
+    "complexity_analysis": "时间复杂度 O(log(min(m, n)))，在较短的数组上进行二分查找。空间复杂度 O(1)，只使用常数额外空间。"
   },
   "related_problems": [],
   "frequency": "high"

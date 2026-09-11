@@ -1,36 +1,41 @@
 {
   "id": 85,
-  "leetcode_id": 152,
-  "title": "乘积最大子数组",
-  "title_en": "Maximum Product Subarray",
+  "leetcode_id": 322,
+  "title": "零钱兑换",
+  "title_en": "Coin Change",
   "difficulty": "medium",
-  "tags": ["动态规划", "数组"],
-  "description": "给你一个整数数组 nums，请你找出数组中乘积最大的非空连续子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积。测试用例的答案是一个 32-位 整数。子数组是数组的连续子序列。\n\n约束条件：\n- 1 <= nums.length <= 2 * 10^4\n- -10 <= nums[i] <= 10\n- nums 的任何前缀或后缀的乘积都保证是一个 32-位 整数",
+  "tags": ["动态规划", "广度优先搜索", "完全背包"],
+  "description": "给你一个整数数组 coins，表示不同面额的硬币；以及一个整数 amount，表示总金额。计算并返回可以凑成总金额所需的最少的硬币个数。如果没有任何一种硬币组合能组成总金额，返回 -1。你可以认为每种硬币的数量是无限的。\n\n约束条件：\n- 1 <= coins.length <= 12\n- 1 <= coins[i] <= 2^31 - 1\n- 0 <= amount <= 10^4",
   "examples": [
     {
-      "input": "nums = [2,3,-2,4]",
-      "output": "6",
-      "explanation": "子数组 [2,3] 有最大乘积 6。"
+      "input": "coins = [1,2,5], amount = 11",
+      "output": "3",
+      "explanation": "11 = 5 + 5 + 1，使用 3 枚硬币。"
     },
     {
-      "input": "nums = [-2,0,-1]",
+      "input": "coins = [2], amount = 3",
+      "output": "-1",
+      "explanation": "无法用面额为 2 的硬币凑出金额 3。"
+    },
+    {
+      "input": "coins = [1], amount = 0",
       "output": "0",
-      "explanation": "结果不能为 2, 因为 [-2,-1] 不是子数组。"
+      "explanation": "金额为 0 时不需要硬币。"
     }
   ],
   "hints": {
-    "keywords": ["动态规划", "同时维护最大最小值", "负数处理"],
-    "approach": "由于存在负数，负数乘以最小值可能变成最大值。需要同时维护以当前元素结尾的最大乘积和最小乘积。",
-    "time_complexity": "O(n)",
-    "space_complexity": "O(1)"
+    "keywords": ["动态规划", "完全背包", "自底向上"],
+    "approach": "完全背包问题：设 dp[i] 为凑成金额 i 所需的最少硬币数，对于每种硬币 coin，dp[i] = min(dp[i], dp[i - coin] + 1)。",
+    "time_complexity": "O(amount * n)",
+    "space_complexity": "O(amount)"
   },
   "solution": {
-    "explanation": "动态规划：同时维护当前最大乘积 max_val 和最小乘积 min_val。对于每个新元素 num，如果 num 为负数，交换 max_val 和 min_val（因为负数乘最小值得到最大值）。然后 max_val = max(num, max_val * num)，min_val = min(num, min_val * num)。用全局变量记录最大结果。",
+    "explanation": "动态规划（完全背包）：初始化 dp[0] = 0，其余为正无穷。遍历金额 1 到 amount，对于每个金额，尝试每种硬币，如果 coin <= amount，更新 dp[amount] = min(dp[amount], dp[amount - coin] + 1)。最终 dp[amount] 若仍为正无穷则返回 -1。",
     "code": {
-      "python": "class Solution:\n    def maxProduct(self, nums: list[int]) -> int:\n        max_val = nums[0]\n        min_val = nums[0]\n        result = nums[0]\n        for i in range(1, len(nums)):\n            num = nums[i]\n            if num < 0:\n                max_val, min_val = min_val, max_val\n            max_val = max(num, max_val * num)\n            min_val = min(num, min_val * num)\n            result = max(result, max_val)\n        return result"
+      "python": "class Solution:\n    def coinChange(self, coins: list[int], amount: int) -> int:\n        dp = [float('inf')] * (amount + 1)\n        dp[0] = 0\n        for i in range(1, amount + 1):\n            for coin in coins:\n                if coin <= i:\n                    dp[i] = min(dp[i], dp[i - coin] + 1)\n        return dp[amount] if dp[amount] != float('inf') else -1"
     },
-    "complexity_analysis": "时间复杂度 O(n)，遍历一次数组。空间复杂度 O(1)，只使用常数额外空间。"
+    "complexity_analysis": "时间复杂度 O(amount * n)，其中 n 为硬币种类数。空间复杂度 O(amount)，dp 数组大小。"
   },
-  "related_problems": [53, 713, 1769],
+  "related_problems": [279, 377, 518],
   "frequency": "high"
 }

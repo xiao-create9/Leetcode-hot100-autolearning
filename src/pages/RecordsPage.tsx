@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { problems } from '@/data'
 import { useProgressStore } from '@/stores/useProgressStore'
 import { useCheckinStore } from '@/stores/useCheckinStore'
 import CheckinCalendar from '@/components/CheckinCalendar'
@@ -15,7 +16,7 @@ export default function RecordsPage() {
     return {
       mastered: entries.filter((p) => p.status === 'mastered').length,
       inProgress: entries.filter((p) => p.status === 'in_progress').length,
-      total: 98,
+      total: problems.length,
     }
   }, [progress])
 

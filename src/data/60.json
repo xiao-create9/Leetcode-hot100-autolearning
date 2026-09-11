@@ -1,35 +1,35 @@
 {
   "id": 60,
-  "leetcode_id": 74,
-  "title": "搜索二维矩阵",
-  "title_en": "Search a 2D Matrix",
+  "leetcode_id": 79,
+  "title": "单词搜索",
+  "title_en": "Word Search",
   "difficulty": "medium",
-  "tags": ["二分查找", "矩阵"],
-  "description": "给你一个满足下述两条属性的 m x n 整数矩阵：\n- 每行中的整数从左到右按非递减顺序排列。\n- 每行的第一个整数大于前一行的最后一个整数。\n\n给定一个整数 target，如果 target 在矩阵中，返回 true；否则返回 false。\n\n示例 1：\n输入：matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3\n输出：true\n\n示例 2：\n输入：matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 13\n输出：false\n\n约束条件：\n- m == matrix.length\n- n == matrix[i].length\n- 1 <= m, n <= 100\n- -10^4 <= matrix[i][j], target <= 10^4",
+  "tags": ["回溯", "矩阵", "深度优先搜索"],
+  "description": "给定一个 m x n 二维字符网格 board 和一个字符串单词 word。如果 word 存在于网格中，返回 true；否则返回 false。单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中「相邻」单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。\n\n示例 1：\n输入：board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCCED\"\n输出：true\n\n示例 2：\n输入：board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"SEE\"\n输出：true\n\n示例 3：\n输入：board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCB\"\n输出：false\n\n约束条件：\n- m == board.length\n- n == board[i].length\n- 1 <= m, n <= 6\n- 1 <= word.length <= 15\n- board 和 word 仅由大小写英文字母组成",
   "examples": [
     {
-      "input": "matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3",
+      "input": "board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCCED\"",
       "output": "true",
-      "explanation": "矩阵第一行包含目标值 3。"
+      "explanation": "可以从 (0,0) -> (0,1) -> (0,2) -> (1,2) -> (2,1) -> (2,0) 找到路径 ABCCED。"
     },
     {
-      "input": "matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 13",
+      "input": "board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCB\"",
       "output": "false",
-      "explanation": "矩阵中不包含 13。"
+      "explanation": "无法在网格中找到路径形成 ABCB，因为 B 不能被重复使用。"
     }
   ],
   "hints": {
-    "keywords": ["二分查找", "矩阵展开", "行列转换"],
-    "approach": "将二维矩阵视为一个有序的一维数组，使用一次二分查找。通过 mid // n 和 mid % n 将一维索引转换为二维坐标。",
-    "time_complexity": "O(log(m * n))",
-    "space_complexity": "O(1)"
+    "keywords": ["回溯", "DFS", "剪枝"],
+    "approach": "遍历网格的每个位置作为起点，使用 DFS 回溯搜索。在搜索过程中标记已访问的位置，防止重复使用。如果当前字符不匹配或越界则回溯。",
+    "time_complexity": "O(m * n * 4^L)",
+    "space_complexity": "O(L)"
   },
   "solution": {
-    "explanation": "由于矩阵的每行有序且每行第一个元素大于上一行最后一个元素，整个矩阵可以看作一个升序排列的一维数组。使用二分查找，将一维索引 mid 转换为二维坐标 (mid // n, mid % n)，然后与目标值比较。",
+    "explanation": "遍历网格的每个格子作为搜索起点。使用 DFS 回溯，从当前位置出发，向四个方向搜索下一个字符。用一个 visited 集合记录已访问的位置，避免重复使用。如果当前字符与 word 对应位置的字符不匹配则剪枝。当 word 的所有字符都匹配成功时返回 true。",
     "code": {
-      "python": "class Solution:\n    def searchMatrix(self, matrix: list[list[int]], target: int) -> bool:\n        if not matrix or not matrix[0]:\n            return False\n        m, n = len(matrix), len(matrix[0])\n        left, right = 0, m * n - 1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            val = matrix[mid // n][mid % n]\n            if val == target:\n                return True\n            elif val < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n        \n        return False"
+      "python": "class Solution:\n    def exist(self, board: list[list[str]], word: str) -> bool:\n        rows, cols = len(board), len(board[0])\n        \n        def backtrack(r, c, index):\n            if index == len(word):\n                return True\n            if r < 0 or r >= rows or c < 0 or c >= cols:\n                return False\n            if board[r][c] != word[index]:\n                return False\n            \n            temp = board[r][c]\n            board[r][c] = '#'\n            \n            found = (backtrack(r + 1, c, index + 1) or\n                     backtrack(r - 1, c, index + 1) or\n                     backtrack(r, c + 1, index + 1) or\n                     backtrack(r, c - 1, index + 1))\n            \n            board[r][c] = temp\n            return found\n        \n        for i in range(rows):\n            for j in range(cols):\n                if backtrack(i, j, 0):\n                    return True\n        return False"
     },
-    "complexity_analysis": "时间复杂度 O(log(m * n))，对整个矩阵做一次二分查找。空间复杂度 O(1)，只使用常数额外空间。"
+    "complexity_analysis": "时间复杂度 O(m * n * 4^L)，其中 m 和 n 是网格的行列数，L 是单词长度。每个格子作为起点最多有 4^L 种搜索路径。空间复杂度 O(L)，递归栈的深度最多为单词长度。"
   },
   "related_problems": [],
   "frequency": "high"

@@ -1,41 +1,36 @@
 {
   "id": 91,
-  "leetcode_id": 1143,
-  "title": "最长公共子序列",
-  "title_en": "Longest Common Subsequence",
+  "leetcode_id": 62,
+  "title": "不同路径",
+  "title_en": "Unique Paths",
   "difficulty": "medium",
-  "tags": ["动态规划", "字符串", "二维DP"],
-  "description": "给定两个字符串 text1 和 text2，返回这两个字符串的最长公共子序列的长度。如果不存在公共子序列，返回 0。子序列是指不改变剩余字符顺序的情况下，删除某些字符（也可以不删除）后组成的新字符串。例如，\"ace\" 是 \"abcde\" 的子序列，但 \"aec\" 不是。两个字符串的公共子序列是这两个字符串所共同拥有的子序列。\n\n约束条件：\n- 1 <= text1.length, text2.length <= 1000\n- text1 和 text2 仅由小写英文字符组成",
+  "tags": ["动态规划", "数学", "组合数学"],
+  "description": "一个机器人位于 m x n 网格的左上角（起始点在下图中标记为 \"Start\"）。机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 \"Finish\"）。问总共有多少条不同的路径？\n\n约束条件：\n- 1 <= m, n <= 100\n- 题目数据保证答案小于等于 2 * 10^9",
   "examples": [
     {
-      "input": "text1 = \"abcde\", text2 = \"ace\"",
-      "output": "3",
-      "explanation": "最长公共子序列是 \"ace\"，长度为 3。"
+      "input": "m = 3, n = 7",
+      "output": "28",
+      "explanation": "从左上角到右下角共有 28 条不同路径。"
     },
     {
-      "input": "text1 = \"abc\", text2 = \"abc\"",
+      "input": "m = 3, n = 2",
       "output": "3",
-      "explanation": "最长公共子序列是 \"abc\"，长度为 3。"
-    },
-    {
-      "input": "text1 = \"abc\", text2 = \"def\"",
-      "output": "0",
-      "explanation": "两个字符串没有公共子序列，返回 0。"
+      "explanation": "从左上角到右下角有 3 条路径：右->下->下、下->下->右、下->右->下。"
     }
   ],
   "hints": {
-    "keywords": ["动态规划", "二维DP", "字符串匹配"],
-    "approach": "dp[i][j] 表示 text1 前 i 个字符和 text2 前 j 个字符的最长公共子序列长度。如果 text1[i-1] == text2[j-1]，dp[i][j] = dp[i-1][j-1] + 1；否则 dp[i][j] = max(dp[i-1][j], dp[i][j-1])。",
+    "keywords": ["动态规划", "组合数", "网格路径"],
+    "approach": "dp[i][j] 表示到达位置 (i,j) 的路径数。dp[i][j] = dp[i-1][j] + dp[i][j-1]，即从上方和左方来的路径之和。",
     "time_complexity": "O(m * n)",
-    "space_complexity": "O(min(m, n))"
+    "space_complexity": "O(n)"
   },
   "solution": {
-    "explanation": "二维动态规划：构建 (m+1) x (n+1) 的 dp 表。遍历两个字符串，如果当前字符相等，则 dp[i][j] = dp[i-1][j-1] + 1；否则取左方和上方的最大值。可以使用滚动数组优化空间到 O(min(m,n))。",
+    "explanation": "动态规划：使用一维数组优化。dp[j] 表示到达当前行第 j 列的路径数。每行更新：dp[j] = dp[j] + dp[j-1]（上一行同列 + 当前行前一列）。也可以用组合数学 C(m+n-2, m-1) 直接计算。",
     "code": {
-      "python": "class Solution:\n    def longestCommonSubsequence(self, text1: str, text2: str) -> int:\n        m, n = len(text1), len(text2)\n        # 使用滚动数组优化空间\n        if m < n:\n            text1, text2 = text2, text1\n            m, n = n, m\n        prev = [0] * (n + 1)\n        curr = [0] * (n + 1)\n        for i in range(1, m + 1):\n            for j in range(1, n + 1):\n                if text1[i-1] == text2[j-1]:\n                    curr[j] = prev[j-1] + 1\n                else:\n                    curr[j] = max(prev[j], curr[j-1])\n            prev, curr = curr, [0] * (n + 1)\n        return prev[n]"
+      "python": "class Solution:\n    def uniquePaths(self, m: int, n: int) -> int:\n        dp = [1] * n\n        for i in range(1, m):\n            for j in range(1, n):\n                dp[j] += dp[j - 1]\n        return dp[n - 1]"
     },
-    "complexity_analysis": "时间复杂度 O(m * n)，遍历整个 dp 表。空间复杂度 O(min(m, n))，使用滚动数组优化。"
+    "complexity_analysis": "时间复杂度 O(m * n)，遍历整个网格。空间复杂度 O(n)，使用一维 dp 数组。"
   },
-  "related_problems": [583, 1092, 712],
+  "related_problems": [63, 64, 174],
   "frequency": "high"
 }

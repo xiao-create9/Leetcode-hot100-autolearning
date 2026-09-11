@@ -1,35 +1,35 @@
 {
   "id": 69,
-  "leetcode_id": 84,
-  "title": "柱状图中最大的矩形",
-  "title_en": "Largest Rectangle in Histogram",
-  "difficulty": "hard",
-  "tags": ["栈", "单调栈", "数组"],
-  "description": "给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1。求在该柱状图中，能够勾勒出来的矩形的最大面积。\n\n示例 1：\n输入：heights = [2,1,5,6,2,3]\n输出：10\n解释：最大的矩形为图中红色区域，面积为 10（高度为 2，宽度为 5，从索引 1 到索引 4）。\n\n示例 2：\n输入：heights = [2,4]\n输出：4\n\n约束条件：\n- 1 <= heights.length <= 10^5\n- 0 <= heights[i] <= 10^4",
+  "leetcode_id": 20,
+  "title": "有效的括号",
+  "title_en": "Valid Parentheses",
+  "difficulty": "easy",
+  "tags": ["栈", "字符串"],
+  "description": "给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s，判断字符串是否有效。有效字符串需满足：\n1. 左括号必须用相同类型的右括号闭合。\n2. 左括号必须以正确的顺序闭合。\n3. 每个右括号都有一个对应的相同类型的左括号。\n\n示例 1：\n输入：s = \"()\"\n输出：true\n\n示例 2：\n输入：s = \"()[]{}\"\n输出：true\n\n示例 3：\n输入：s = \"(]\"\n输出：false\n\n示例 4：\n输入：s = \"([])\"\n输出：true\n\n约束条件：\n- 1 <= s.length <= 10^4\n- s 仅由括号 '()[]{}' 组成",
   "examples": [
     {
-      "input": "heights = [2,1,5,6,2,3]",
-      "output": "10",
-      "explanation": "最大矩形面积为 10，对应高度为 2、宽度为 5 的矩形（从索引 1 到 4）。"
+      "input": "s = \"()\"",
+      "output": "true",
+      "explanation": "一对匹配的括号。"
     },
     {
-      "input": "heights = [2,4]",
-      "output": "4",
-      "explanation": "最大矩形面积为 4，对应高度为 4、宽度为 1 的矩形。"
+      "input": "s = \"(]\"",
+      "output": "false",
+      "explanation": "左圆括号与右方括号不匹配。"
     }
   ],
   "hints": {
-    "keywords": ["单调栈", "栈", "边界扩展"],
-    "approach": "使用单调递增栈。遍历每个柱子，当当前柱子高度小于栈顶时，弹出栈顶并计算以该柱子高度为矩形高度的最大面积。栈中维护的是递增高度的索引。",
+    "keywords": ["栈", "括号匹配", "哈希映射"],
+    "approach": "使用栈来匹配括号。遇到左括号时压栈，遇到右括号时弹栈检查是否匹配。最终栈为空则有效。",
     "time_complexity": "O(n)",
     "space_complexity": "O(n)"
   },
   "solution": {
-    "explanation": "使用单调递增栈来求解。遍历柱子高度，维护一个存储索引的栈，栈中索引对应的高度是单调递增的。当遇到一个比栈顶矮的柱子时，弹出栈顶元素，以该元素的高度为矩形高度，宽度为当前索引与新栈顶索引之差减 1，计算面积并更新最大值。遍历结束后处理栈中剩余元素。",
+    "explanation": "遍历字符串，使用栈存储左括号。遇到右括号时，弹出栈顶元素检查是否匹配。使用哈希表建立右括号到左括号的映射关系。遍历结束后，栈为空说明所有括号都正确匹配。",
     "code": {
-      "python": "class Solution:\n    def largestRectangleArea(self, heights: list[int]) -> int:\n        stack = []  # monotone increasing stack of indices\n        max_area = 0\n        heights.append(0)  # sentinel to flush remaining stack\n        \n        for i, h in enumerate(heights):\n            while stack and heights[stack[-1]] > h:\n                height = heights[stack.pop()]\n                width = i if not stack else i - stack[-1] - 1\n                max_area = max(max_area, height * width)\n            stack.append(i)\n        \n        return max_area"
+      "python": "class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []\n        mapping = {')': '(', '}': '{', ']': '['}\n        \n        for ch in s:\n            if ch in mapping:\n                if not stack or stack[-1] != mapping[ch]:\n                    return False\n                stack.pop()\n            else:\n                stack.append(ch)\n        \n        return len(stack) == 0"
     },
-    "complexity_analysis": "时间复杂度 O(n)，每个元素最多入栈和出栈各一次。空间复杂度 O(n)，栈的空间。"
+    "complexity_analysis": "时间复杂度 O(n)，遍历一次字符串。空间复杂度 O(n)，最坏情况下栈中存储所有左括号。"
   },
   "related_problems": [],
   "frequency": "high"

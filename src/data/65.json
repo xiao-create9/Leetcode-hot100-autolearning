@@ -1,35 +1,35 @@
 {
   "id": 65,
-  "leetcode_id": 20,
-  "title": "有效的括号",
-  "title_en": "Valid Parentheses",
-  "difficulty": "easy",
-  "tags": ["栈", "字符串"],
-  "description": "给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s，判断字符串是否有效。有效字符串需满足：\n1. 左括号必须用相同类型的右括号闭合。\n2. 左括号必须以正确的顺序闭合。\n3. 每个右括号都有一个对应的相同类型的左括号。\n\n示例 1：\n输入：s = \"()\"\n输出：true\n\n示例 2：\n输入：s = \"()[]{}\"\n输出：true\n\n示例 3：\n输入：s = \"(]\"\n输出：false\n\n示例 4：\n输入：s = \"([])\"\n输出：true\n\n约束条件：\n- 1 <= s.length <= 10^4\n- s 仅由括号 '()[]{}' 组成",
+  "leetcode_id": 34,
+  "title": "在排序数组中查找元素的第一个和最后一个位置",
+  "title_en": "Find First and Last Position of Element in Sorted Array",
+  "difficulty": "medium",
+  "tags": ["二分查找", "数组"],
+  "description": "给你一个按照非递减顺序排列的整数数组 nums，和一个目标值 target。请你找出给定目标值在数组中的开始位置和结束位置。如果数组中不存在目标值 target，返回 [-1, -1]。你必须设计并实现时间复杂度为 O(log n) 的算法解决此问题。\n\n示例 1：\n输入：nums = [5,7,7,8,8,10], target = 8\n输出：[3,4]\n\n示例 2：\n输入：nums = [5,7,7,8,8,10], target = 6\n输出：[-1,-1]\n\n示例 3：\n输入：nums = [], target = 0\n输出：[-1,-1]\n\n约束条件：\n- 0 <= nums.length <= 10^5\n- -10^9 <= nums[i] <= 10^9\n- nums 是一个非递减数组\n- -10^9 <= target <= 10^9",
   "examples": [
     {
-      "input": "s = \"()\"",
-      "output": "true",
-      "explanation": "一对匹配的括号。"
+      "input": "nums = [5,7,7,8,8,10], target = 8",
+      "output": "[3,4]",
+      "explanation": "目标值 8 在数组中的第一次出现位置是索引 3，最后一次出现位置是索引 4。"
     },
     {
-      "input": "s = \"(]\"",
-      "output": "false",
-      "explanation": "左圆括号与右方括号不匹配。"
+      "input": "nums = [5,7,7,8,8,10], target = 6",
+      "output": "[-1,-1]",
+      "explanation": "目标值 6 不在数组中。"
     }
   ],
   "hints": {
-    "keywords": ["栈", "括号匹配", "哈希映射"],
-    "approach": "使用栈来匹配括号。遇到左括号时压栈，遇到右括号时弹栈检查是否匹配。最终栈为空则有效。",
-    "time_complexity": "O(n)",
-    "space_complexity": "O(n)"
+    "keywords": ["二分查找", "左边界", "右边界"],
+    "approach": "使用两次二分查找分别找到目标值的左边界（第一次出现的位置）和右边界（最后一次出现的位置）。",
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "遍历字符串，使用栈存储左括号。遇到右括号时，弹出栈顶元素检查是否匹配。使用哈希表建立右括号到左括号的映射关系。遍历结束后，栈为空说明所有括号都正确匹配。",
+    "explanation": "分别使用两次二分查找来找目标值的左边界和右边界。找左边界时，当 nums[mid] == target 时继续向左收缩（right = mid - 1）。找右边界时，当 nums[mid] == target 时继续向右收缩（left = mid + 1）。最终根据左右边界的位置判断是否找到了目标值。",
     "code": {
-      "python": "class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []\n        mapping = {')': '(', '}': '{', ']': '['}\n        \n        for ch in s:\n            if ch in mapping:\n                if not stack or stack[-1] != mapping[ch]:\n                    return False\n                stack.pop()\n            else:\n                stack.append(ch)\n        \n        return len(stack) == 0"
+      "python": "class Solution:\n    def searchRange(self, nums: list[int], target: int) -> list[int]:\n        def find_left():\n            left, right = 0, len(nums) - 1\n            result = -1\n            while left <= right:\n                mid = left + (right - left) // 2\n                if nums[mid] == target:\n                    result = mid\n                    right = mid - 1\n                elif nums[mid] < target:\n                    left = mid + 1\n                else:\n                    right = mid - 1\n            return result\n        \n        def find_right():\n            left, right = 0, len(nums) - 1\n            result = -1\n            while left <= right:\n                mid = left + (right - left) // 2\n                if nums[mid] == target:\n                    result = mid\n                    left = mid + 1\n                elif nums[mid] < target:\n                    left = mid + 1\n                else:\n                    right = mid - 1\n            return result\n        \n        return [find_left(), find_right()]"
     },
-    "complexity_analysis": "时间复杂度 O(n)，遍历一次字符串。空间复杂度 O(n)，最坏情况下栈中存储所有左括号。"
+    "complexity_analysis": "时间复杂度 O(log n)，执行了两次二分查找。空间复杂度 O(1)，只使用常数额外空间。"
   },
   "related_problems": [],
   "frequency": "high"

@@ -1,36 +1,36 @@
 {
   "id": 74,
-  "leetcode_id": 55,
-  "title": "跳跃游戏",
-  "title_en": "Jump Game",
+  "leetcode_id": 215,
+  "title": "数组中的第 K 个最大元素",
+  "title_en": "Kth Largest Element in an Array",
   "difficulty": "medium",
-  "tags": ["贪心算法", "数组"],
-  "description": "给你一个非负整数数组 nums，你最初位于数组的第一个下标。数组中的每个元素代表你在该位置可以跳跃的最大长度。判断你是否能够到达最后一个下标，如果可以返回 true，否则返回 false。\n\n约束条件：\n- 1 <= nums.length <= 10^4\n- 0 <= nums[i] <= 10^5",
+  "tags": ["堆", "分治", "排序"],
+  "description": "给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。你必须设计并实现时间复杂度为 O(n) 的算法解决此问题。\n\n示例 1：\n输入：[3,2,1,5,6,4], k = 2\n输出：5\n\n示例 2：\n输入：[3,2,3,1,2,4,5,5,6], k = 4\n输出：4\n\n约束条件：\n- 1 <= k <= nums.length <= 10^5\n- -10^4 <= nums[i] <= 10^4",
   "examples": [
     {
-      "input": "nums = [2,3,1,1,4]",
-      "output": "true",
-      "explanation": "可以先跳 1 步，从下标 0 到达下标 1，然后再从下标 1 跳 3 步到达最后一个下标。"
+      "input": "nums = [3,2,1,5,6,4], k = 2",
+      "output": "5",
+      "explanation": "排序后数组为 [1,2,3,4,5,6]，第 2 个最大的元素是 5。"
     },
     {
-      "input": "nums = [3,2,1,0,4]",
-      "output": "false",
-      "explanation": "无论怎样总会到达下标 3 的位置，但该位置的跳跃长度为 0，所以永远不可能到达最后一个下标。"
+      "input": "nums = [3,2,3,1,2,4,5,5,6], k = 4",
+      "output": "4",
+      "explanation": "排序后数组为 [1,2,2,3,3,4,5,5,6]，第 4 个最大的元素是 4。"
     }
   ],
   "hints": {
-    "keywords": ["贪心", "最远可达位置", "覆盖范围"],
-    "approach": "维护一个变量表示当前能到达的最远位置，遍历数组更新最远位置。如果最远位置大于等于最后一个下标则返回 true。",
-    "time_complexity": "O(n)",
-    "space_complexity": "O(1)"
+    "keywords": ["最小堆", "快速选择", "分治"],
+    "approach": "方法一：维护一个大小为 k 的最小堆，遍历数组，堆满后只保留比堆顶大的元素，最终堆顶即为第 k 大元素。方法二：使用快速选择算法（QuickSelect），平均时间复杂度 O(n)。",
+    "time_complexity": "O(n log k)",
+    "space_complexity": "O(k)"
   },
   "solution": {
-    "explanation": "使用贪心算法，维护一个 max_reach 变量表示当前能到达的最远下标。遍历数组，如果当前位置 i 超过了 max_reach，说明无法到达当前位置，返回 false。否则更新 max_reach = max(max_reach, i + nums[i])。遍历结束后返回 true。",
+    "explanation": "使用大小为 k 的最小堆。遍历数组中的每个元素，将元素加入堆中。当堆的大小超过 k 时，弹出堆顶（当前堆中的最小值）。遍历结束后，堆中保留的就是最大的 k 个元素，堆顶即为第 k 大的元素。",
     "code": {
-      "python": "class Solution:\n    def canJump(self, nums: list[int]) -> bool:\n        max_reach = 0\n        for i in range(len(nums)):\n            if i > max_reach:\n                return False\n            max_reach = max(max_reach, i + nums[i])\n            if max_reach >= len(nums) - 1:\n                return True\n        return True"
+      "python": "import heapq\n\nclass Solution:\n    def findKthLargest(self, nums: list[int], k: int) -> int:\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n        return min_heap[0]"
     },
-    "complexity_analysis": "时间复杂度 O(n)，遍历一次数组。空间复杂度 O(1)，只用了常数额外空间。"
+    "complexity_analysis": "时间复杂度 O(n log k)，每个元素最多入堆和出堆一次，堆的大小为 k。空间复杂度 O(k)，堆的空间。"
   },
-  "related_problems": [45, 1306, 1871],
+  "related_problems": [],
   "frequency": "high"
 }
