@@ -1,36 +1,36 @@
 {
   "id": 80,
-  "leetcode_id": 198,
-  "title": "打家劫舍",
-  "title_en": "House Robber",
+  "leetcode_id": 763,
+  "title": "划分字母区间",
+  "title_en": "Partition Labels",
   "difficulty": "medium",
-  "tags": ["动态规划", "数组"],
-  "description": "你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统。如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。给定一个代表每个房屋存放金额的非负整数数组 nums，计算你在不触动警报装置的情况下，一夜之内能够偷窃到的最高金额。\n\n约束条件：\n- 1 <= nums.length <= 100\n- 0 <= nums[i] <= 400",
+  "tags": ["贪心算法", "哈希表", "双指针"],
+  "description": "给你一个字符串 s。把这个字符串划分为尽可能多的片段，同一字母最多出现在一个片段中。注意划分结果需要满足：将所有划分结果按顺序连接，得到的字符串仍然是 s。返回一个表示每个字符串片段长度的列表。\n\n约束条件：\n- 1 <= s.length <= 500\n- s 仅由小写英文字母组成",
   "examples": [
     {
-      "input": "nums = [1,2,3,1]",
-      "output": "4",
-      "explanation": "偷窃 1 号房屋（金额 = 1）和 3 号房屋（金额 = 3），总金额 = 1 + 3 = 4。"
+      "input": "s = \"ababcbacadefegdehijhklij\"",
+      "output": "[9,7,8]",
+      "explanation": "划分结果为 \"ababcbaca\"、\"defegde\"、\"hijhklij\"。每个字母最多出现在一个片段中。"
     },
     {
-      "input": "nums = [2,7,9,3,1]",
-      "output": "12",
-      "explanation": "偷窃 1 号房屋（金额 = 2），3 号房屋（金额 = 9）和 5 号房屋（金额 = 1），总金额 = 2 + 9 + 1 = 12。"
+      "input": "s = \"eccbbbbdec\"",
+      "output": "[10]",
+      "explanation": "整个字符串只能作为一个片段，因为所有字母都相互关联。"
     }
   ],
   "hints": {
-    "keywords": ["动态规划", "状态转移", "滚动数组"],
-    "approach": "对于每间房屋，选择偷或不偷。偷当前房屋则不能偷前一间，不偷当前房屋则继承前一间的结果。取两者最大值。",
+    "keywords": ["贪心", "记录最后出现位置", "双指针"],
+    "approach": "先记录每个字母最后出现的位置，然后遍历字符串，维护当前片段的结束位置。当遍历到结束位置时，说明当前片段可以结束。",
     "time_complexity": "O(n)",
     "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "动态规划：dp[i] = max(dp[i-1], dp[i-2] + nums[i])，表示在第 i 间房屋能偷到的最大金额。可以偷第 i 间（加上 dp[i-2]）或者不偷（继承 dp[i-1]）。使用两个变量优化空间。",
+    "explanation": "贪心策略：首先用哈希表记录每个字母最后出现的位置。然后遍历字符串，维护当前片段的右边界 last，last 等于当前片段中所有字母最后出现位置的最大值。当遍历到 last 时，记录当前片段长度，并开始新的片段。",
     "code": {
-      "python": "class Solution:\n    def rob(self, nums: list[int]) -> int:\n        if not nums:\n            return 0\n        if len(nums) == 1:\n            return nums[0]\n        prev2, prev1 = 0, 0\n        for num in nums:\n            curr = max(prev1, prev2 + num)\n            prev2 = prev1\n            prev1 = curr\n        return prev1"
+      "python": "class Solution:\n    def partitionLabels(self, s: str) -> list[int]:\n        last = {}\n        for i, ch in enumerate(s):\n            last[ch] = i\n        \n        result = []\n        start = 0\n        end = 0\n        for i, ch in enumerate(s):\n            end = max(end, last[ch])\n            if i == end:\n                result.append(end - start + 1)\n                start = i + 1\n        return result"
     },
-    "complexity_analysis": "时间复杂度 O(n)，遍历一次数组。空间复杂度 O(1)，使用滚动变量。"
+    "complexity_analysis": "时间复杂度 O(n)，遍历字符串两次。空间复杂度 O(1)，哈希表最多存储 26 个字母。"
   },
-  "related_problems": [213, 337, 740],
+  "related_problems": [56, 228, 452],
   "frequency": "high"
 }

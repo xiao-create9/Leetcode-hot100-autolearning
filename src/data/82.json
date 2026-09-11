@@ -1,41 +1,36 @@
 {
   "id": 82,
-  "leetcode_id": 322,
-  "title": "零钱兑换",
-  "title_en": "Coin Change",
-  "difficulty": "medium",
-  "tags": ["动态规划", "广度优先搜索", "完全背包"],
-  "description": "给你一个整数数组 coins，表示不同面额的硬币；以及一个整数 amount，表示总金额。计算并返回可以凑成总金额所需的最少的硬币个数。如果没有任何一种硬币组合能组成总金额，返回 -1。你可以认为每种硬币的数量是无限的。\n\n约束条件：\n- 1 <= coins.length <= 12\n- 1 <= coins[i] <= 2^31 - 1\n- 0 <= amount <= 10^4",
+  "leetcode_id": 118,
+  "title": "杨辉三角",
+  "title_en": "Pascal's Triangle",
+  "difficulty": "easy",
+  "tags": ["动态规划", "数组", "数学"],
+  "description": "给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。在杨辉三角中，每个数是它左上方和右上方的数的和。\n\n约束条件：\n- 1 <= numRows <= 30",
   "examples": [
     {
-      "input": "coins = [1,2,5], amount = 11",
-      "output": "3",
-      "explanation": "11 = 5 + 5 + 1，使用 3 枚硬币。"
+      "input": "numRows = 5",
+      "output": "[[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]",
+      "explanation": "生成杨辉三角的前 5 行。"
     },
     {
-      "input": "coins = [2], amount = 3",
-      "output": "-1",
-      "explanation": "无法用面额为 2 的硬币凑出金额 3。"
-    },
-    {
-      "input": "coins = [1], amount = 0",
-      "output": "0",
-      "explanation": "金额为 0 时不需要硬币。"
+      "input": "numRows = 1",
+      "output": "[[1]]",
+      "explanation": "只有第一行。"
     }
   ],
   "hints": {
-    "keywords": ["动态规划", "完全背包", "自底向上"],
-    "approach": "完全背包问题：设 dp[i] 为凑成金额 i 所需的最少硬币数，对于每种硬币 coin，dp[i] = min(dp[i], dp[i - coin] + 1)。",
-    "time_complexity": "O(amount * n)",
-    "space_complexity": "O(amount)"
+    "keywords": ["动态规划", "递推", "组合数学"],
+    "approach": "逐行构建，每行的首尾元素为 1，中间元素等于上一行相邻两个元素之和。",
+    "time_complexity": "O(numRows^2)",
+    "space_complexity": "O(numRows^2)"
   },
   "solution": {
-    "explanation": "动态规划（完全背包）：初始化 dp[0] = 0，其余为正无穷。遍历金额 1 到 amount，对于每个金额，尝试每种硬币，如果 coin <= amount，更新 dp[amount] = min(dp[amount], dp[amount - coin] + 1)。最终 dp[amount] 若仍为正无穷则返回 -1。",
+    "explanation": "动态规划构建杨辉三角。第 0 行为 [1]。对于第 i 行，首尾元素为 1，第 j 个元素（1 <= j <= i-1）等于上一行的第 j-1 和第 j 个元素之和。",
     "code": {
-      "python": "class Solution:\n    def coinChange(self, coins: list[int], amount: int) -> int:\n        dp = [float('inf')] * (amount + 1)\n        dp[0] = 0\n        for i in range(1, amount + 1):\n            for coin in coins:\n                if coin <= i:\n                    dp[i] = min(dp[i], dp[i - coin] + 1)\n        return dp[amount] if dp[amount] != float('inf') else -1"
+      "python": "class Solution:\n    def generate(self, numRows: int) -> list[list[int]]:\n        triangle = []\n        for i in range(numRows):\n            row = [1] * (i + 1)\n            for j in range(1, i):\n                row[j] = triangle[i-1][j-1] + triangle[i-1][j]\n            triangle.append(row)\n        return triangle"
     },
-    "complexity_analysis": "时间复杂度 O(amount * n)，其中 n 为硬币种类数。空间复杂度 O(amount)，dp 数组大小。"
+    "complexity_analysis": "时间复杂度 O(numRows^2)，需要填充 numRows 行，每行最多 numRows 个元素。空间复杂度 O(numRows^2)，存储整个三角形。"
   },
-  "related_problems": [279, 377, 518],
-  "frequency": "high"
+  "related_problems": [119, 120],
+  "frequency": "medium"
 }

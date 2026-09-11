@@ -1,41 +1,36 @@
 {
   "id": 98,
-  "leetcode_id": 287,
-  "title": "寻找重复数",
-  "title_en": "Find the Duplicate Number",
+  "leetcode_id": 75,
+  "title": "颜色分类",
+  "title_en": "Sort Colors",
   "difficulty": "medium",
-  "tags": ["数组", "双指针", "二分查找", "Floyd判圈"],
-  "description": "给定一个包含 n + 1 个整数的数组 nums，其数字都在 [1, n] 范围内（包括 1 和 n），可知至少存在一个重复的整数。假设 nums 只有一个重复的整数，返回这个重复的数。你必须设计并实现不修改数组 nums 且只用常量级 O(1) 额外空间的解决方案。\n\n约束条件：\n- 1 <= n <= 10^5\n- nums.length == n + 1\n- 1 <= nums[i] <= n\n- nums 中只有一个整数出现两次或多次，其余整数均只出现一次",
+  "tags": ["数组", "双指针", "排序"],
+  "description": "给定一个包含红色、白色和蓝色共 n 个元素的数组 nums，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色（0）、白色（1）、蓝色（2）顺序排列。我们使用整数 0、1 和 2 分别表示红色、白色和蓝色。必须在不使用库的 sort 函数的情况下解决这个问题。\n\n约束条件：\n- n == nums.length\n- 1 <= n <= 300\n- nums[i] 为 0、1 或 2",
   "examples": [
     {
-      "input": "nums = [1,3,4,2,2]",
-      "output": "2",
-      "explanation": "2 是重复出现的数字。"
+      "input": "nums = [2,0,2,1,1,0]",
+      "output": "[0,0,1,1,2,2]",
+      "explanation": "按照颜色排序后的结果。"
     },
     {
-      "input": "nums = [3,1,3,4,2]",
-      "output": "3",
-      "explanation": "3 是重复出现的数字。"
-    },
-    {
-      "input": "nums = [3,3,3,3,3]",
-      "output": "3",
-      "explanation": "3 是唯一出现的数字，且出现多次。"
+      "input": "nums = [2,0,1]",
+      "output": "[0,1,2]",
+      "explanation": "按照颜色排序后的结果。"
     }
   ],
   "hints": {
-    "keywords": ["Floyd判圈", "快慢指针", "环检测"],
-    "approach": "将数组视为链表：下标 i 指向 nums[i]。由于有重复数，一定存在环。使用 Floyd 判圈算法找到环的入口，即为重复数。",
+    "keywords": ["荷兰国旗问题", "三指针", "一次遍历"],
+    "approach": "荷兰国旗问题：使用三个指针 p0（指向 0 的右边界）、p2（指向 2 的左边界）和 curr（当前遍历指针）。一次遍历完成排序。",
     "time_complexity": "O(n)",
     "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "Floyd 判圈算法（龟兔赛跑）：将数组视为函数 f(i) = nums[i]，由于值域在 [1,n] 且长度为 n+1，必存在环。阶段一：慢指针每次走一步（slow = nums[slow]），快指针每次走两步（fast = nums[nums[fast]]），两者在环内相遇。阶段二：将快指针重置到起点，两指针每次各走一步，再次相遇的位置即为环的入口，也就是重复数。",
+    "explanation": "荷兰国旗算法（三指针）：p0 指向下一个 0 应该放的位置，p2 指向下一个 2 应该放的位置，curr 为当前遍历位置。当 nums[curr] == 0 时，与 nums[p0] 交换，p0 和 curr 都前进。当 nums[curr] == 2 时，与 nums[p2] 交换，p2 后退，curr 不动（因为交换过来的元素还需要检查）。当 nums[curr] == 1 时，curr 前进。",
     "code": {
-      "python": "class Solution:\n    def findDuplicate(self, nums: list[int]) -> int:\n        # 阶段一：找到快慢指针在环内的相遇点\n        slow = nums[0]\n        fast = nums[0]\n        while True:\n            slow = nums[slow]\n            fast = nums[nums[fast]]\n            if slow == fast:\n                break\n        \n        # 阶段二：找到环的入口\n        slow = nums[0]\n        while slow != fast:\n            slow = nums[slow]\n            fast = nums[fast]\n        \n        return slow"
+      "python": "class Solution:\n    def sortColors(self, nums: list[int]) -> None:\n        p0, curr = 0, 0\n        p2 = len(nums) - 1\n        while curr <= p2:\n            if nums[curr] == 0:\n                nums[p0], nums[curr] = nums[curr], nums[p0]\n                p0 += 1\n                curr += 1\n            elif nums[curr] == 2:\n                nums[p2], nums[curr] = nums[curr], nums[p2]\n                p2 -= 1\n            else:\n                curr += 1"
     },
-    "complexity_analysis": "时间复杂度 O(n)，快慢指针各遍历不超过 n 步。空间复杂度 O(1)，只使用常数额外空间。"
+    "complexity_analysis": "时间复杂度 O(n)，只遍历一次数组。空间复杂度 O(1)，原地排序。"
   },
-  "related_problems": [141, 142, 41],
+  "related_problems": [31, 280],
   "frequency": "high"
 }

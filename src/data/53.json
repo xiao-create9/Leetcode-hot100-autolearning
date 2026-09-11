@@ -1,35 +1,35 @@
 {
   "id": 53,
-  "leetcode_id": 17,
-  "title": "电话号码的字母组合",
-  "title_en": "Letter Combinations of a Phone Number",
+  "leetcode_id": 207,
+  "title": "课程表",
+  "title_en": "Course Schedule",
   "difficulty": "medium",
-  "tags": ["回溯", "字符串", "哈希表"],
-  "description": "给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按任意顺序返回。给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。\n\n2 -> abc\n3 -> def\n4 -> ghi\n5 -> jkl\n6 -> mno\n7 -> pqrs\n8 -> tuv\n9 -> wxyz\n\n示例 1：\n输入：digits = \"23\"\n输出：[\"ad\",\"ae\",\"af\",\"bd\",\"be\",\"bf\",\"cd\",\"ce\",\"cf\"]\n\n示例 2：\n输入：digits = \"\"\n输出：[]\n\n示例 3：\n输入：digits = \"2\"\n输出：[\"a\",\"b\",\"c\"]\n\n约束条件：\n- 0 <= digits.length <= 4\n- digits[i] 是范围 ['2', '9'] 的一个数字",
+  "tags": ["图论", "拓扑排序", "深度优先搜索", "广度优先搜索"],
+  "description": "你这个学期必须选修 numCourses 门课程，记为 0 到 numCourses - 1。在选修某些课程之前需要一些先修课程。先修关系用一个 prerequisites 数组给出，其中 prerequisites[i] = [ai, bi] 表示想要学习课程 ai 必须先完成课程 bi。\n\n请判断是否可能完成所有课程的学习。如果可以，返回 true；否则返回 false。\n\n示例 1：\n输入：numCourses = 2, prerequisites = [[1,0]]\n输出：true\n解释：总共有 2 门课程。学习课程 1 之前，你需要完成课程 0。所以这是可能的。\n\n示例 2：\n输入：numCourses = 2, prerequisites = [[1,0],[0,1]]\n输出：false\n解释：总共有 2 门课程。学习课程 1 之前你需要先完成课程 0，并且学习课程 0 之前你还应先完成课程 1。这是不可能的。\n\n约束条件：\n- 1 <= numCourses <= 2000\n- 0 <= prerequisites.length <= 5000\n- prerequisites[i].length == 2\n- 0 <= ai, bi < numCourses\n- prerequisites[i] 中的所有课程对互不相同",
   "examples": [
     {
-      "input": "digits = \"23\"",
-      "output": "[\"ad\",\"ae\",\"af\",\"bd\",\"be\",\"bf\",\"cd\",\"ce\",\"cf\"]",
-      "explanation": "数字2对应abc，数字3对应def，所有组合为 abc 和 def 的笛卡尔积。"
+      "input": "numCourses = 2, prerequisites = [[1,0]]",
+      "output": "true",
+      "explanation": "学习课程1之前需要完成课程0，没有循环依赖，可以完成所有课程。"
     },
     {
-      "input": "digits = \"\"",
-      "output": "[]",
-      "explanation": "输入为空字符串时，没有字母组合。"
+      "input": "numCourses = 2, prerequisites = [[1,0],[0,1]]",
+      "output": "false",
+      "explanation": "课程1依赖课程0，课程0又依赖课程1，形成循环依赖，无法完成所有课程。"
     }
   ],
   "hints": {
-    "keywords": ["回溯", "哈希映射", "组合"],
-    "approach": "使用回溯法，遍历每个数字对应的字母，逐位构建组合。当组合长度等于数字长度时加入结果。",
-    "time_complexity": "O(4^n * n)",
-    "space_complexity": "O(n)"
+    "keywords": ["拓扑排序", "入度", "BFS"],
+    "approach": "这是一个检测有向图中是否存在环的问题。使用拓扑排序（Kahn 算法），计算每个节点的入度，将入度为 0 的节点加入队列，逐步移除节点并更新邻居的入度。如果最终处理的节点数等于课程总数，则无环。",
+    "time_complexity": "O(V + E)",
+    "space_complexity": "O(V + E)"
   },
   "solution": {
-    "explanation": "首先用哈希表建立数字到字母的映射。使用回溯法，对于每个数字，遍历其对应的每个字母，将字母加入当前组合，然后递归处理下一个数字。当处理完所有数字时，将当前组合加入结果集。",
+    "explanation": "使用基于 BFS 的拓扑排序（Kahn 算法）。首先构建邻接表并计算每个节点的入度。将所有入度为 0 的节点加入队列。每次从队列中取出一个节点，将其所有邻居的入度减 1，如果邻居入度变为 0 则加入队列。最终如果处理的节点数等于课程总数，说明无环，可以完成所有课程。",
     "code": {
-      "python": "class Solution:\n    def letterCombinations(self, digits: str) -> list[str]:\n        if not digits:\n            return []\n        \n        phone = {\n            '2': 'abc', '3': 'def', '4': 'ghi', '5': 'jkl',\n            '6': 'mno', '7': 'pqrs', '8': 'tuv', '9': 'wxyz'\n        }\n        result = []\n        path = []\n        \n        def backtrack(index):\n            if index == len(digits):\n                result.append(''.join(path))\n                return\n            for ch in phone[digits[index]]:\n                path.append(ch)\n                backtrack(index + 1)\n                path.pop()\n        \n        backtrack(0)\n        return result"
+      "python": "from collections import deque, defaultdict\n\nclass Solution:\n    def canFinish(self, numCourses: int, prerequisites: list[list[int]]) -> bool:\n        graph = defaultdict(list)\n        in_degree = [0] * numCourses\n        \n        for course, prereq in prerequisites:\n            graph[prereq].append(course)\n            in_degree[course] += 1\n        \n        queue = deque()\n        for i in range(numCourses):\n            if in_degree[i] == 0:\n                queue.append(i)\n        \n        count = 0\n        while queue:\n            node = queue.popleft()\n            count += 1\n            for neighbor in graph[node]:\n                in_degree[neighbor] -= 1\n                if in_degree[neighbor] == 0:\n                    queue.append(neighbor)\n        \n        return count == numCourses"
     },
-    "complexity_analysis": "时间复杂度 O(4^n * n)，其中 n 是数字的个数。每个数字最多对应 4 个字母，共有 4^n 种组合，每种组合的长度为 n。空间复杂度 O(n)，递归栈的深度为 n。"
+    "complexity_analysis": "时间复杂度 O(V + E)，其中 V 是课程数，E 是先修关系数。需要遍历所有节点和边一次。空间复杂度 O(V + E)，用于存储邻接表和入度数组。"
   },
   "related_problems": [],
   "frequency": "high"

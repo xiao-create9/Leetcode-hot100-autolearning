@@ -1,35 +1,35 @@
 {
   "id": 32,
-  "leetcode_id": 94,
-  "title": "二叉树的中序遍历",
-  "title_en": "Binary Tree Inorder Traversal",
-  "difficulty": "easy",
-  "tags": ["栈", "树", "深度优先搜索", "二叉树"],
-  "description": "给定一个二叉树的根节点 root，返回它的中序遍历。\n\n二叉树节点定义如下：\n```\nclass TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n```\n\n**示例 1：**\n输入：root = [1,null,2,3]\n输出：[1,3,2]\n\n**示例 2：**\n输入：root = []\n输出：[]\n\n**示例 3：**\n输入：root = [1]\n输出：[1]\n\n**提示：**\n- 树中节点数目在范围 [0, 100] 内\n- -100 <= Node.val <= 100",
+  "leetcode_id": 138,
+  "title": "随机链表的复制",
+  "title_en": "Copy List with Random Pointer",
+  "difficulty": "medium",
+  "tags": ["哈希表", "链表"],
+  "description": "给你一个长度为 n 的链表，每个节点包含一个额外的随机指针 random，该指针可以指向链表中的任何节点或空节点。\n\n构造这个链表的深拷贝。深拷贝应该正好由 n 个全新节点组成，其中每个新节点的值都设为其对应的原节点的值。新节点的 next 指针和 random 指针也都应指向复制链表中的新节点，并使原链表和复制链表中的这些指针能够表示相同的链表状态。复制链表中的指针都不应指向原链表中的节点。\n\n节点定义如下：\n```\nclass Node:\n    def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):\n        self.val = int(x)\n        self.next = next\n        self.random = random\n```\n\n**示例 1：**\n输入：head = [[7,null],[13,0],[11,4],[10,2],[1,0]]\n输出：[[7,null],[13,0],[11,4],[10,2],[1,0]]\n\n**示例 2：**\n输入：head = [[1,1],[2,1]]\n输出：[[1,1],[2,1]]\n\n**示例 3：**\n输入：head = [[3,null],[3,0],[3,null]]\n输出：[[3,null],[3,0],[3,null]]",
   "examples": [
     {
-      "input": "root = [1,null,2,3]",
-      "output": "[1,3,2]",
-      "explanation": "中序遍历顺序为：左 -> 根 -> 右。"
+      "input": "head = [[7,null],[13,0],[11,4],[10,2],[1,0]]",
+      "output": "[[7,null],[13,0],[11,4],[10,2],[1,0]]",
+      "explanation": "每个节点的值和 random 指针都被正确复制。"
     },
     {
-      "input": "root = [1]",
-      "output": "[1]",
-      "explanation": "只有一个节点的树，中序遍历结果为 [1]。"
+      "input": "head = [[3,null],[3,0],[3,null]]",
+      "output": "[[3,null],[3,0],[3,null]]",
+      "explanation": "三个节点的值都是 3，random 指针指向第一个节点。"
     }
   ],
   "hints": {
-    "keywords": ["栈", "迭代", "Morris遍历"],
-    "approach": "方法一：递归实现，先遍历左子树，再访问根节点，最后遍历右子树。方法二：使用栈模拟递归过程。方法三：Morris 遍历，空间复杂度 O(1)。",
+    "keywords": ["哈希表", "原地修改", "节点拆分"],
+    "approach": "方法一：使用哈希表记录原节点到新节点的映射。方法二：在原链表每个节点后面插入新节点，然后设置 random 指针，最后拆分链表。",
     "time_complexity": "O(n)",
-    "space_complexity": "O(n)"
+    "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "使用栈实现迭代中序遍历：1. 从根节点开始，不断将左子节点压入栈中。2. 弹出栈顶节点，将其值加入结果。3. 转向该节点的右子树，重复步骤 1。",
+    "explanation": "原地修改法：1. 在每个原节点后面插入一个新节点，新节点的值与原节点相同。2. 遍历链表，设置新节点的 random 指针为原节点 random 指针的下一个节点。3. 将链表拆分为原链表和新链表。这种方法空间复杂度为 O(1)。",
     "code": {
-      "python": "class Solution:\n    def inorderTraversal(self, root: TreeNode) -> List[int]:\n        result = []\n        stack = []\n        curr = root\n        while curr or stack:\n            while curr:\n                stack.append(curr)\n                curr = curr.left\n            curr = stack.pop()\n            result.append(curr.val)\n            curr = curr.right\n        return result"
+      "python": "class Solution:\n    def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':\n        if not head:\n            return None\n        \n        # 第一步：在每个节点后面插入复制节点\n        curr = head\n        while curr:\n            new_node = Node(curr.val, curr.next)\n            curr.next = new_node\n            curr = new_node.next\n        \n        # 第二步：设置 random 指针\n        curr = head\n        while curr:\n            if curr.random:\n                curr.next.random = curr.random.next\n            curr = curr.next.next\n        \n        # 第三步：拆分链表\n        dummy = Node(0)\n        curr_new = dummy\n        curr = head\n        while curr:\n            curr_new.next = curr.next\n            curr.next = curr.next.next\n            curr_new = curr_new.next\n            curr = curr.next\n        return dummy.next"
     },
-    "complexity_analysis": "时间复杂度 O(n)，每个节点恰好被访问一次。空间复杂度 O(n)，栈的空间最多为树的高度，最坏情况为 O(n)。"
+    "complexity_analysis": "时间复杂度 O(n)，需要三次遍历链表。空间复杂度 O(1)，不使用额外的哈希表（除了返回的新链表本身）。"
   },
   "related_problems": [],
   "frequency": "high"

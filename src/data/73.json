@@ -1,36 +1,36 @@
 {
   "id": 73,
-  "leetcode_id": 121,
-  "title": "买卖股票的最佳时机",
-  "title_en": "Best Time to Buy and Sell Stock",
-  "difficulty": "easy",
-  "tags": ["贪心算法", "数组", "动态规划"],
-  "description": "给定一个数组 prices，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。你只能选择某一天买入这只股票，并选择在未来的某一个不同的日子卖出。设计一个算法来计算你所能获取的最大利润。返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0。\n\n约束条件：\n- 1 <= prices.length <= 10^5\n- 0 <= prices[i] <= 10^4",
+  "leetcode_id": 84,
+  "title": "柱状图中最大的矩形",
+  "title_en": "Largest Rectangle in Histogram",
+  "difficulty": "hard",
+  "tags": ["栈", "单调栈", "数组"],
+  "description": "给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1。求在该柱状图中，能够勾勒出来的矩形的最大面积。\n\n示例 1：\n输入：heights = [2,1,5,6,2,3]\n输出：10\n解释：最大的矩形为图中红色区域，面积为 10（高度为 2，宽度为 5，从索引 1 到索引 4）。\n\n示例 2：\n输入：heights = [2,4]\n输出：4\n\n约束条件：\n- 1 <= heights.length <= 10^5\n- 0 <= heights[i] <= 10^4",
   "examples": [
     {
-      "input": "prices = [7,1,5,3,6,4]",
-      "output": "5",
-      "explanation": "在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 = 6）的时候卖出，最大利润 = 6 - 1 = 5。注意利润不能是 7 - 1 = 6, 因为卖出价格需要大于买入价格。"
+      "input": "heights = [2,1,5,6,2,3]",
+      "output": "10",
+      "explanation": "最大矩形面积为 10，对应高度为 2、宽度为 5 的矩形（从索引 1 到 4）。"
     },
     {
-      "input": "prices = [7,6,4,3,1]",
-      "output": "0",
-      "explanation": "在这种情况下, 没有交易完成, 所以最大利润为 0。"
+      "input": "heights = [2,4]",
+      "output": "4",
+      "explanation": "最大矩形面积为 4，对应高度为 4、宽度为 1 的矩形。"
     }
   ],
   "hints": {
-    "keywords": ["贪心", "一次遍历", "维护最小值"],
-    "approach": "遍历数组，维护当前遇到的最小价格，同时计算当前价格与最小价格的差值，更新最大利润。",
+    "keywords": ["单调栈", "栈", "边界扩展"],
+    "approach": "使用单调递增栈。遍历每个柱子，当当前柱子高度小于栈顶时，弹出栈顶并计算以该柱子高度为矩形高度的最大面积。栈中维护的是递增高度的索引。",
     "time_complexity": "O(n)",
-    "space_complexity": "O(1)"
+    "space_complexity": "O(n)"
   },
   "solution": {
-    "explanation": "核心思路是贪心算法：维护一个变量 min_price 记录到目前为止的最低价格，同时维护 max_profit 记录最大利润。遍历价格数组，对于每一天的价格，计算 price - min_price 作为当天卖出的利润，更新最大利润。如果当天价格低于 min_price，则更新 min_price。",
+    "explanation": "使用单调递增栈来求解。遍历柱子高度，维护一个存储索引的栈，栈中索引对应的高度是单调递增的。当遇到一个比栈顶矮的柱子时，弹出栈顶元素，以该元素的高度为矩形高度，宽度为当前索引与新栈顶索引之差减 1，计算面积并更新最大值。遍历结束后处理栈中剩余元素。",
     "code": {
-      "python": "class Solution:\n    def maxProfit(self, prices: list[int]) -> int:\n        min_price = float('inf')\n        max_profit = 0\n        for price in prices:\n            if price < min_price:\n                min_price = price\n            elif price - min_price > max_profit:\n                max_profit = price - min_price\n        return max_profit"
+      "python": "class Solution:\n    def largestRectangleArea(self, heights: list[int]) -> int:\n        stack = []  # monotone increasing stack of indices\n        max_area = 0\n        heights.append(0)  # sentinel to flush remaining stack\n        \n        for i, h in enumerate(heights):\n            while stack and heights[stack[-1]] > h:\n                height = heights[stack.pop()]\n                width = i if not stack else i - stack[-1] - 1\n                max_area = max(max_area, height * width)\n            stack.append(i)\n        \n        return max_area"
     },
-    "complexity_analysis": "时间复杂度 O(n)，只需遍历一次数组。空间复杂度 O(1)，只使用了常数额外空间。"
+    "complexity_analysis": "时间复杂度 O(n)，每个元素最多入栈和出栈各一次。空间复杂度 O(n)，栈的空间。"
   },
-  "related_problems": [122, 123, 188, 309],
+  "related_problems": [],
   "frequency": "high"
 }

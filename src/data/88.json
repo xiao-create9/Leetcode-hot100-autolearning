@@ -1,36 +1,36 @@
 {
   "id": 88,
-  "leetcode_id": 62,
-  "title": "不同路径",
-  "title_en": "Unique Paths",
+  "leetcode_id": 152,
+  "title": "乘积最大子数组",
+  "title_en": "Maximum Product Subarray",
   "difficulty": "medium",
-  "tags": ["动态规划", "数学", "组合数学"],
-  "description": "一个机器人位于 m x n 网格的左上角（起始点在下图中标记为 \"Start\"）。机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 \"Finish\"）。问总共有多少条不同的路径？\n\n约束条件：\n- 1 <= m, n <= 100\n- 题目数据保证答案小于等于 2 * 10^9",
+  "tags": ["动态规划", "数组"],
+  "description": "给你一个整数数组 nums，请你找出数组中乘积最大的非空连续子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积。测试用例的答案是一个 32-位 整数。子数组是数组的连续子序列。\n\n约束条件：\n- 1 <= nums.length <= 2 * 10^4\n- -10 <= nums[i] <= 10\n- nums 的任何前缀或后缀的乘积都保证是一个 32-位 整数",
   "examples": [
     {
-      "input": "m = 3, n = 7",
-      "output": "28",
-      "explanation": "从左上角到右下角共有 28 条不同路径。"
+      "input": "nums = [2,3,-2,4]",
+      "output": "6",
+      "explanation": "子数组 [2,3] 有最大乘积 6。"
     },
     {
-      "input": "m = 3, n = 2",
-      "output": "3",
-      "explanation": "从左上角到右下角有 3 条路径：右->下->下、下->下->右、下->右->下。"
+      "input": "nums = [-2,0,-1]",
+      "output": "0",
+      "explanation": "结果不能为 2, 因为 [-2,-1] 不是子数组。"
     }
   ],
   "hints": {
-    "keywords": ["动态规划", "组合数", "网格路径"],
-    "approach": "dp[i][j] 表示到达位置 (i,j) 的路径数。dp[i][j] = dp[i-1][j] + dp[i][j-1]，即从上方和左方来的路径之和。",
-    "time_complexity": "O(m * n)",
-    "space_complexity": "O(n)"
+    "keywords": ["动态规划", "同时维护最大最小值", "负数处理"],
+    "approach": "由于存在负数，负数乘以最小值可能变成最大值。需要同时维护以当前元素结尾的最大乘积和最小乘积。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "动态规划：使用一维数组优化。dp[j] 表示到达当前行第 j 列的路径数。每行更新：dp[j] = dp[j] + dp[j-1]（上一行同列 + 当前行前一列）。也可以用组合数学 C(m+n-2, m-1) 直接计算。",
+    "explanation": "动态规划：同时维护当前最大乘积 max_val 和最小乘积 min_val。对于每个新元素 num，如果 num 为负数，交换 max_val 和 min_val（因为负数乘最小值得到最大值）。然后 max_val = max(num, max_val * num)，min_val = min(num, min_val * num)。用全局变量记录最大结果。",
     "code": {
-      "python": "class Solution:\n    def uniquePaths(self, m: int, n: int) -> int:\n        dp = [1] * n\n        for i in range(1, m):\n            for j in range(1, n):\n                dp[j] += dp[j - 1]\n        return dp[n - 1]"
+      "python": "class Solution:\n    def maxProduct(self, nums: list[int]) -> int:\n        max_val = nums[0]\n        min_val = nums[0]\n        result = nums[0]\n        for i in range(1, len(nums)):\n            num = nums[i]\n            if num < 0:\n                max_val, min_val = min_val, max_val\n            max_val = max(num, max_val * num)\n            min_val = min(num, min_val * num)\n            result = max(result, max_val)\n        return result"
     },
-    "complexity_analysis": "时间复杂度 O(m * n)，遍历整个网格。空间复杂度 O(n)，使用一维 dp 数组。"
+    "complexity_analysis": "时间复杂度 O(n)，遍历一次数组。空间复杂度 O(1)，只使用常数额外空间。"
   },
-  "related_problems": [63, 64, 174],
+  "related_problems": [53, 713, 1769],
   "frequency": "high"
 }

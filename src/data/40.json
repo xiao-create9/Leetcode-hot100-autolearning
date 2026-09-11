@@ -1,35 +1,35 @@
 {
   "id": 40,
-  "leetcode_id": 230,
-  "title": "二叉搜索树中第 K 小的元素",
-  "title_en": "Kth Smallest Element in a BST",
-  "difficulty": "medium",
-  "tags": ["树", "深度优先搜索", "二叉搜索树", "二叉树"],
-  "description": "给定一个二叉搜索树的根节点 root 和一个整数 k，请你设计一个算法查找其中第 k 个最小的元素（从 1 开始计数）。\n\n二叉树节点定义如下：\n```\nclass TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n```\n\n**示例 1：**\n输入：root = [3,1,4,null,2], k = 1\n输出：1\n\n**示例 2：**\n输入：root = [5,3,6,2,4,null,null,1], k = 3\n输出：3\n\n**提示：**\n- 树中的节点数为 n\n- 1 <= k <= n <= 10^4\n- 0 <= Node.val <= 10^4",
+  "leetcode_id": 543,
+  "title": "二叉树的直径",
+  "title_en": "Diameter of Binary Tree",
+  "difficulty": "easy",
+  "tags": ["树", "深度优先搜索", "二叉树"],
+  "description": "给你一棵二叉树的根节点，返回该树的直径。\n\n二叉树的直径是指树中任意两个节点之间最长路径的长度。这条路径可能经过也可能不经过根节点 root。\n\n两节点之间路径的长度是以它们之间边的数目表示。\n\n二叉树节点定义如下：\n```\nclass TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n```\n\n**示例 1：**\n输入：root = [1,2,3,4,5]\n输出：3\n解释：3，取路径 [4,2,1,3] 或 [5,2,1,3] 的长度。\n\n**示例 2：**\n输入：root = [1,2]\n输出：1",
   "examples": [
     {
-      "input": "root = [3,1,4,null,2], k = 1",
-      "output": "1",
-      "explanation": "BST 中第 1 小的元素是 1。"
+      "input": "root = [1,2,3,4,5]",
+      "output": "3",
+      "explanation": "最长路径是 4->2->1->3 或 5->2->1->3，长度为 3。"
     },
     {
-      "input": "root = [5,3,6,2,4,null,null,1], k = 3",
-      "output": "3",
-      "explanation": "BST 中第 3 小的元素是 3。"
+      "input": "root = [1,2]",
+      "output": "1",
+      "explanation": "最长路径是 1->2，长度为 1。"
     }
   ],
   "hints": {
-    "keywords": ["中序遍历", "BST", "迭代"],
-    "approach": "BST 的中序遍历是有序的。使用迭代中序遍历，访问到第 k 个节点时直接返回。",
-    "time_complexity": "O(H + k)",
-    "space_complexity": "O(H)"
+    "keywords": ["DFS", "后序遍历", "深度"],
+    "approach": "对于每个节点，经过该节点的最长路径 = 左子树深度 + 右子树深度。在递归计算深度的同时，更新全局最大直径。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(h)"
   },
   "solution": {
-    "explanation": "利用 BST 中序遍历有序的性质：使用迭代中序遍历（栈模拟），每弹出一个节点就将 k 减 1，当 k 为 0 时返回当前节点的值。",
+    "explanation": "使用 DFS 后序遍历。对于每个节点，计算其左子树深度和右子树深度，经过该节点的直径为 left_depth + right_depth。在遍历过程中维护全局最大直径。节点的深度 = max(左子树深度, 右子树深度) + 1。",
     "code": {
-      "python": "class Solution:\n    def kthSmallest(self, root: TreeNode, k: int) -> int:\n        stack = []\n        curr = root\n        while curr or stack:\n            while curr:\n                stack.append(curr)\n                curr = curr.left\n            curr = stack.pop()\n            k -= 1\n            if k == 0:\n                return curr.val\n            curr = curr.right"
+      "python": "class Solution:\n    def diameterOfBinaryTree(self, root: TreeNode) -> int:\n        self.ans = 0\n        \n        def depth(node):\n            if not node:\n                return 0\n            left = depth(node.left)\n            right = depth(node.right)\n            self.ans = max(self.ans, left + right)\n            return max(left, right) + 1\n        \n        depth(root)\n        return self.ans"
     },
-    "complexity_analysis": "时间复杂度 O(H + k)，其中 H 是树的高度，最坏情况下为 O(n)。空间复杂度 O(H)，栈的空间。"
+    "complexity_analysis": "时间复杂度 O(n)，每个节点被访问一次。空间复杂度 O(h)，其中 h 是树的高度，递归栈的空间。"
   },
   "related_problems": [],
   "frequency": "high"

@@ -1,35 +1,35 @@
 {
   "id": 66,
-  "leetcode_id": 155,
-  "title": "最小栈",
-  "title_en": "Min Stack",
+  "leetcode_id": 33,
+  "title": "搜索旋转排序数组",
+  "title_en": "Search in Rotated Sorted Array",
   "difficulty": "medium",
-  "tags": ["栈", "设计"],
-  "description": "设计一个支持 push、pop、top 操作，并能在常数时间内检索到最小元素的栈。实现 MinStack 类：\n- MinStack() 初始化堆栈对象。\n- void push(int val) 将元素推入堆栈。\n- void pop() 删除堆栈顶部的元素。\n- int top() 获取堆栈顶部的元素。\n- int getMin() 获取堆栈中的最小元素。\n\n示例：\n输入：\n[\"MinStack\",\"push\",\"push\",\"push\",\"getMin\",\"pop\",\"top\",\"getMin\"]\n[[],[-2],[0],[-3],[],[],[],[]]\n输出：\n[null,null,null,null,-3,null,0,-2]\n\n解释：\nMinStack minStack = new MinStack();\nminStack.push(-2);\nminStack.push(0);\nminStack.push(-3);\nminStack.getMin();   --> 返回 -3.\nminStack.pop();\nminStack.top();      --> 返回 0.\nminStack.getMin();   --> 返回 -2.\n\n约束条件：\n- -2^31 <= val <= 2^31 - 1\n- pop、top 和 getMin 操作总是在非空栈上调用\n- 最多调用 3 * 10^4 次 push、pop、top 和 getMin",
+  "tags": ["二分查找", "数组"],
+  "description": "整数数组 nums 按升序排列，数组中的值互不相同。在传递给函数之前，nums 在预先未知的某个下标 k（0 <= k < nums.length）上进行了旋转，使数组变为 [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标从 0 开始计数）。例如，[0,1,2,4,5,6,7] 在下标 3 处经旋转后可能变为 [4,5,6,7,0,1,2]。\n\n给你旋转后的数组 nums 和一个整数 target，如果 nums 中存在这个目标值 target，则返回它的下标，否则返回 -1。你必须设计一个时间复杂度为 O(log n) 的算法解决此问题。\n\n示例 1：\n输入：nums = [4,5,6,7,0,1,2], target = 0\n输出：4\n\n示例 2：\n输入：nums = [4,5,6,7,0,1,2], target = 3\n输出：-1\n\n示例 3：\n输入：nums = [1], target = 0\n输出：-1\n\n约束条件：\n- 1 <= nums.length <= 5000\n- -10^4 <= nums[i] <= 10^4\n- nums 中的每个值都独一无二\n- 题目数据保证 nums 在预先未知的某个下标上进行了旋转\n- -10^4 <= target <= 10^4",
   "examples": [
     {
-      "input": "[\"MinStack\",\"push\",\"push\",\"push\",\"getMin\",\"pop\",\"top\",\"getMin\"]\n[[],[-2],[0],[-3],[],[],[],[]]",
-      "output": "[null,null,null,null,-3,null,0,-2]",
-      "explanation": "依次压入 -2, 0, -3，最小值为 -3。弹出 -3 后栈顶为 0，最小值为 -2。"
+      "input": "nums = [4,5,6,7,0,1,2], target = 0",
+      "output": "4",
+      "explanation": "目标值 0 在数组中的索引为 4。"
     },
     {
-      "input": "[\"MinStack\",\"push\",\"push\",\"getMin\",\"pop\",\"getMin\"]\n[[],[1],[2],[],[],[]]",
-      "output": "[null,null,null,1,null,1]",
-      "explanation": "压入 1 和 2 后，最小值为 1。弹出 2 后，最小值仍为 1。"
+      "input": "nums = [4,5,6,7,0,1,2], target = 3",
+      "output": "-1",
+      "explanation": "目标值 3 不在数组中。"
     }
   ],
   "hints": {
-    "keywords": ["辅助栈", "栈设计", "O(1)查询"],
-    "approach": "使用一个辅助栈来维护当前栈中的最小值。每次 push 时，将当前最小值同步压入辅助栈。pop 时同步弹出辅助栈栈顶。getMin 直接返回辅助栈栈顶。",
-    "time_complexity": "O(1)",
-    "space_complexity": "O(n)"
+    "keywords": ["二分查找", "旋转数组", "分段有序"],
+    "approach": "二分查找时，先判断哪一半是有序的。如果左半部分有序且 target 在左半部分范围内，在左半部分搜索；否则在右半部分搜索。反之亦然。",
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "使用两个栈：一个主栈用于存储所有元素，一个辅助栈用于维护每个状态下的最小值。push 时，主栈压入 val，辅助栈压入 min(val, 辅助栈栈顶)。pop 时两个栈同时弹出。getMin 返回辅助栈栈顶。这样所有操作都是 O(1)。",
+    "explanation": "在旋转排序数组中进行二分查找。关键观察是：二分后，至少有一半是有序的。判断哪一半有序：如果 nums[left] <= nums[mid]，则左半部分有序。在有序的那一半中判断 target 是否在范围内，如果在则在该半搜索，否则在另一半搜索。",
     "code": {
-      "python": "class MinStack:\n    def __init__(self):\n        self.stack = []\n        self.min_stack = []\n\n    def push(self, val: int) -> None:\n        self.stack.append(val)\n        if not self.min_stack:\n            self.min_stack.append(val)\n        else:\n            self.min_stack.append(min(val, self.min_stack[-1]))\n\n    def pop(self) -> None:\n        self.stack.pop()\n        self.min_stack.pop()\n\n    def top(self) -> int:\n        return self.stack[-1]\n\n    def getMin(self) -> int:\n        return self.min_stack[-1]"
+      "python": "class Solution:\n    def search(self, nums: list[int], target: int) -> int:\n        left, right = 0, len(nums) - 1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            \n            if nums[left] <= nums[mid]:  # left half is sorted\n                if nums[left] <= target < nums[mid]:\n                    right = mid - 1\n                else:\n                    left = mid + 1\n            else:  # right half is sorted\n                if nums[mid] < target <= nums[right]:\n                    left = mid + 1\n                else:\n                    right = mid - 1\n        \n        return -1"
     },
-    "complexity_analysis": "所有操作的时间复杂度均为 O(1)。空间复杂度 O(n)，辅助栈需要与主栈相同大小的空间。"
+    "complexity_analysis": "时间复杂度 O(log n)，每次将搜索范围缩小一半。空间复杂度 O(1)，只使用常数额外空间。"
   },
   "related_problems": [],
   "frequency": "high"

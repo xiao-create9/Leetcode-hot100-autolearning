@@ -1,35 +1,35 @@
 {
   "id": 54,
-  "leetcode_id": 39,
-  "title": "组合总和",
-  "title_en": "Combination Sum",
+  "leetcode_id": 208,
+  "title": "实现 Trie (前缀树)",
+  "title_en": "Implement Trie (Prefix Tree)",
   "difficulty": "medium",
-  "tags": ["回溯", "数组"],
-  "description": "给你一个无重复元素的整数数组 candidates 和一个目标整数 target，找出 candidates 中可以使数字和为目标数 target 的所有不同组合，并以列表形式返回。你可以按任意顺序返回这些组合。candidates 中的同一个数字可以无限制重复被选取。如果至少一个数字的被选数量不同，则两种组合是不同的。\n\n示例 1：\n输入：candidates = [2,3,6,7], target = 7\n输出：[[2,2,3],[7]]\n解释：2 和 3 可以形成一组候选，2 + 2 + 3 = 7。注意 2 可以使用多次。7 也是一个候选。7 = 7。仅有这两种组合。\n\n示例 2：\n输入：candidates = [2,3,5], target = 8\n输出：[[2,2,2,2],[2,3,3],[3,5]]\n\n示例 3：\n输入：candidates = [2], target = 1\n输出：[]\n\n约束条件：\n- 1 <= candidates.length <= 30\n- 2 <= candidates[i] <= 40\n- candidates 的所有元素互不相同\n- 1 <= target <= 40",
+  "tags": ["设计", "字典树", "字符串"],
+  "description": "Trie（发音类似 「try」）或者说 前缀树 是一种树形数据结构，用于高效地存储和检索字符串。这种数据结构有相当多的应用场景，例如自动补完和拼写检查。\n\n请你实现 Trie 类：\n- Trie() 初始化前缀树对象。\n- void insert(String word) 向前缀树中插入字符串 word。\n- boolean search(String word) 如果字符串 word 在前缀树中，返回 true（即，在检索之前已经插入）；否则返回 false。\n- boolean startsWith(String prefix) 如果之前插入的字符串 word 的前缀之一为 prefix，返回 true；否则返回 false。\n\n示例：\n输入：\n[\"Trie\", \"insert\", \"search\", \"search\", \"startsWith\", \"insert\", \"search\"]\n[[], [\"apple\"], [\"apple\"], [\"app\"], [\"app\"], [\"app\"], [\"app\"]]\n输出：\n[null, null, true, false, true, null, true]\n\n约束条件：\n- 1 <= word.length, prefix.length <= 2000\n- word 和 prefix 仅由小写英文字母组成\n- insert、search 和 startsWith 调用次数总计不超过 3 * 10^4 次",
   "examples": [
     {
-      "input": "candidates = [2,3,6,7], target = 7",
-      "output": "[[2,2,3],[7]]",
-      "explanation": "有两种组合可以使数字和为 7：2+2+3=7 和 7=7。"
+      "input": "[\"Trie\", \"insert\", \"search\", \"search\", \"startsWith\", \"insert\", \"search\"]\n[[], [\"apple\"], [\"apple\"], [\"app\"], [\"app\"], [\"app\"], [\"app\"]]",
+      "output": "[null, null, true, false, true, null, true]",
+      "explanation": "插入 \"apple\" 后，search(\"apple\") 返回 true，search(\"app\") 返回 false（因为 \"app\" 未被插入）。startsWith(\"app\") 返回 true。插入 \"app\" 后，search(\"app\") 返回 true。"
     },
     {
-      "input": "candidates = [2,3,5], target = 8",
-      "output": "[[2,2,2,2],[2,3,3],[3,5]]",
-      "explanation": "有三种组合可以使数字和为 8。"
+      "input": "[\"Trie\", \"insert\", \"search\", \"startsWith\"]\n[[], [\"hello\"], [\"hell\"], [\"hell\"]]",
+      "output": "[null, null, false, true]",
+      "explanation": "插入 \"hello\" 后，search(\"hell\") 返回 false（\"hell\" 未被完整插入），但 startsWith(\"hell\") 返回 true（\"hello\" 以 \"hell\" 为前缀）。"
     }
   ],
   "hints": {
-    "keywords": ["回溯", "剪枝", "组合枚举"],
-    "approach": "使用回溯法，从当前位置开始尝试每个候选数字（可以重复选择），维护剩余目标值。当剩余值为 0 时找到一个有效组合，当剩余值小于 0 时剪枝。",
-    "time_complexity": "O(n^(target/min))",
-    "space_complexity": "O(target/min)"
+    "keywords": ["字典树", "前缀树", "树形结构"],
+    "approach": "使用树形结构实现，每个节点包含一个子节点字典和一个布尔标记（表示是否为某个字符串的结尾）。插入时逐字符创建节点，搜索时逐字符查找并在最后检查结束标记。",
+    "time_complexity": "O(m)，其中 m 是操作字符串的长度",
+    "space_complexity": "O(N * M)，其中 N 是插入的字符串数量，M 是字符串的平均长度"
   },
   "solution": {
-    "explanation": "使用回溯法搜索所有可能的组合。为了防止重复组合，每次递归时只从当前索引开始选择。对于每个候选数字，可以选择使用一次或多次。当剩余目标值为 0 时，将当前路径加入结果集；当剩余目标值小于 0 时，剪枝回溯。",
+    "explanation": "定义 TrieNode 类，每个节点包含 children 字典和 is_end 标记。insert 操作逐字符遍历，不存在则创建新节点，最后标记 is_end。search 操作逐字符查找，最后返回 is_end。startsWith 操作与 search 类似，但只需确认前缀路径存在即可，不需要检查 is_end。",
     "code": {
-      "python": "class Solution:\n    def combinationSum(self, candidates: list[int], target: int) -> list[list[int]]:\n        result = []\n        path = []\n        candidates.sort()\n        \n        def backtrack(start, remaining):\n            if remaining == 0:\n                result.append(path[:])\n                return\n            for i in range(start, len(candidates)):\n                if candidates[i] > remaining:\n                    break\n                path.append(candidates[i])\n                backtrack(i, remaining - candidates[i])\n                path.pop()\n        \n        backtrack(0, target)\n        return result"
+      "python": "class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word: str) -> None:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word: str) -> bool:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def startsWith(self, prefix: str) -> bool:\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True"
     },
-    "complexity_analysis": "时间复杂度 O(n^(target/min))，其中 n 是候选数字的个数，min 是候选数字中的最小值。空间复杂度 O(target/min)，递归的最大深度。"
+    "complexity_analysis": "每个操作的时间复杂度为 O(m)，其中 m 是字符串的长度。空间复杂度取决于插入的所有字符总数，最坏情况下为 O(N * M)，其中 N 是字符串数量，M 是平均长度。"
   },
   "related_problems": [],
   "frequency": "high"

@@ -1,35 +1,35 @@
 {
   "id": 71,
-  "leetcode_id": 347,
-  "title": "前 K 个高频元素",
-  "title_en": "Top K Frequent Elements",
+  "leetcode_id": 394,
+  "title": "字符串解码",
+  "title_en": "Decode String",
   "difficulty": "medium",
-  "tags": ["堆", "哈希表", "桶排序"],
-  "description": "给你一个整数数组 nums 和一个整数 k，请你返回其中出现频率前 k 高的元素。你可以按任意顺序返回答案。\n\n示例 1：\n输入：nums = [1,1,1,2,2,3], k = 2\n输出：[1,2]\n\n示例 2：\n输入：nums = [1], k = 1\n输出：[1]\n\n约束条件：\n- 1 <= nums.length <= 10^5\n- k 的取值范围是 [1, 数组中不相同的元素的个数]\n- 题目数据保证答案唯一，换句话说，数组中前 k 个高频元素的集合是唯一的\n\n进阶：你所设计算法的时间复杂度必须优于 O(n log n)，其中 n 是数组大小。",
+  "tags": ["栈", "递归", "字符串"],
+  "description": "给定一个经过编码的字符串，返回它解码后的字符串。编码规则为: k[encoded_string]，表示其中的 encoded_string 正好重复 k 次。注意 k 保证为正整数。你可以认为输入字符串总是有效的；输入字符串中没有额外的空格，且输入的方括号总是符合格式要求的。此外，你可以认为原始数据不包含数字，所有数字只表示重复的次数 k，例如不会出现像 3a 或 2[4] 的输入。\n\n示例 1：\n输入：s = \"3[a]2[bc]\"\n输出：\"aaabcbc\"\n\n示例 2：\n输入：s = \"3[a2[c]]\"\n输出：\"accaccacc\"\n\n示例 3：\n输入：s = \"2[abc]3[cd]ef\"\n输出：\"abcabccdcdcdef\"\n\n约束条件：\n- 1 <= s.length <= 30\n- s 由小写英文字母、数字和方括号 '[]' 组成\n- s 保证是一个有效的输入\n- s 中所有整数的取值范围为 [1, 300]",
   "examples": [
     {
-      "input": "nums = [1,1,1,2,2,3], k = 2",
-      "output": "[1,2]",
-      "explanation": "1 出现 3 次，2 出现 2 次，3 出现 1 次。前 2 个高频元素是 1 和 2。"
+      "input": "s = \"3[a]2[bc]\"",
+      "output": "aaabcbc",
+      "explanation": "\"3[a]\" 解码为 \"aaa\"，\"2[bc]\" 解码为 \"bcbc\"，连接后为 \"aaabcbc\"。"
     },
     {
-      "input": "nums = [1], k = 1",
-      "output": "[1]",
-      "explanation": "只有元素 1，出现 1 次。"
+      "input": "s = \"3[a2[c]]\"",
+      "output": "accaccacc",
+      "explanation": "内层 \"2[c]\" 解码为 \"cc\"，\"a2[c]\" 解码为 \"acc\"，外层 \"3[acc]\" 解码为 \"accaccacc\"。"
     }
   ],
   "hints": {
-    "keywords": ["最小堆", "哈希表", "桶排序"],
-    "approach": "先用哈希表统计每个元素的频率，然后使用大小为 k 的最小堆维护频率最高的 k 个元素。或者使用桶排序，以频率为桶的索引。",
-    "time_complexity": "O(n log k)",
+    "keywords": ["栈", "递归", "嵌套处理"],
+    "approach": "使用栈处理嵌套的编码字符串。遇到数字时解析完整的数字，遇到 '[' 时将当前字符串和数字压栈，遇到 ']' 时弹栈并重复字符串，遇到字母时追加到当前字符串。",
+    "time_complexity": "O(n * k)",
     "space_complexity": "O(n)"
   },
   "solution": {
-    "explanation": "首先使用哈希表统计每个数字出现的频率。然后使用大小为 k 的最小堆，遍历频率哈希表，将元素按频率加入堆中。当堆大小超过 k 时弹出频率最小的元素。最终堆中剩余的 k 个元素就是频率最高的 k 个元素。",
+    "explanation": "使用栈来处理嵌套结构。维护一个数字栈和一个字符串栈。当遇到 '[' 时，将当前的重复次数和已构建的字符串分别压入对应栈中。遇到 ']' 时，弹出栈顶的重复次数和之前的字符串，将当前字符串重复指定次数后拼接。遍历数字字符时构建完整的数字。",
     "code": {
-      "python": "import heapq\nfrom collections import Counter\n\nclass Solution:\n    def topKFrequent(self, nums: list[int], k: int) -> list[int]:\n        count = Counter(nums)\n        min_heap = []\n        \n        for num, freq in count.items():\n            heapq.heappush(min_heap, (freq, num))\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n        \n        return [num for freq, num in min_heap]"
+      "python": "class Solution:\n    def decodeString(self, s: str) -> str:\n        stack = []\n        current_str = ''\n        current_num = 0\n        \n        for ch in s:\n            if ch.isdigit():\n                current_num = current_num * 10 + int(ch)\n            elif ch == '[':\n                stack.append((current_str, current_num))\n                current_str = ''\n                current_num = 0\n            elif ch == ']':\n                prev_str, num = stack.pop()\n                current_str = prev_str + current_str * num\n            else:\n                current_str += ch\n        \n        return current_str"
     },
-    "complexity_analysis": "时间复杂度 O(n log k)，统计频率需要 O(n)，堆操作需要 O(n log k)。空间复杂度 O(n)，哈希表和堆的空间。"
+    "complexity_analysis": "时间复杂度 O(n * k)，其中 n 是字符串长度，k 是最大嵌套重复次数。空间复杂度 O(n)，栈的最大深度取决于嵌套层数。"
   },
   "related_problems": [],
   "frequency": "high"

@@ -1,36 +1,41 @@
 {
   "id": 96,
-  "leetcode_id": 75,
-  "title": "颜色分类",
-  "title_en": "Sort Colors",
-  "difficulty": "medium",
-  "tags": ["数组", "双指针", "排序"],
-  "description": "给定一个包含红色、白色和蓝色共 n 个元素的数组 nums，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色（0）、白色（1）、蓝色（2）顺序排列。我们使用整数 0、1 和 2 分别表示红色、白色和蓝色。必须在不使用库的 sort 函数的情况下解决这个问题。\n\n约束条件：\n- n == nums.length\n- 1 <= n <= 300\n- nums[i] 为 0、1 或 2",
+  "leetcode_id": 136,
+  "title": "只出现一次的数字",
+  "title_en": "Single Number",
+  "difficulty": "easy",
+  "tags": ["位运算", "数组", "异或"],
+  "description": "给你一个非空整数数组 nums，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。你必须设计并实现线性时间复杂度的算法来解决此问题，且该算法只使用常量额外空间。\n\n约束条件：\n- 1 <= nums.length <= 3 * 10^4\n- -3 * 10^4 <= nums[i] <= 3 * 10^4\n- 除了某个元素只出现一次外，其余每个元素都出现两次",
   "examples": [
     {
-      "input": "nums = [2,0,2,1,1,0]",
-      "output": "[0,0,1,1,2,2]",
-      "explanation": "按照颜色排序后的结果。"
+      "input": "nums = [2,2,1]",
+      "output": "1",
+      "explanation": "只有 1 出现一次。"
     },
     {
-      "input": "nums = [2,0,1]",
-      "output": "[0,1,2]",
-      "explanation": "按照颜色排序后的结果。"
+      "input": "nums = [4,1,2,1,2]",
+      "output": "4",
+      "explanation": "只有 4 出现一次。"
+    },
+    {
+      "input": "nums = [1]",
+      "output": "1",
+      "explanation": "只有一个元素，即为答案。"
     }
   ],
   "hints": {
-    "keywords": ["荷兰国旗问题", "三指针", "一次遍历"],
-    "approach": "荷兰国旗问题：使用三个指针 p0（指向 0 的右边界）、p2（指向 2 的左边界）和 curr（当前遍历指针）。一次遍历完成排序。",
+    "keywords": ["异或", "位运算", "自反性"],
+    "approach": "利用异或运算的性质：a ^ a = 0，a ^ 0 = a。将所有元素异或，出现两次的会抵消，最终结果就是只出现一次的元素。",
     "time_complexity": "O(n)",
     "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "荷兰国旗算法（三指针）：p0 指向下一个 0 应该放的位置，p2 指向下一个 2 应该放的位置，curr 为当前遍历位置。当 nums[curr] == 0 时，与 nums[p0] 交换，p0 和 curr 都前进。当 nums[curr] == 2 时，与 nums[p2] 交换，p2 后退，curr 不动（因为交换过来的元素还需要检查）。当 nums[curr] == 1 时，curr 前进。",
+    "explanation": "位运算 - 异或：遍历数组将所有元素进行异或运算。由于相同数字异或为 0，0 异或任何数等于该数本身，最终结果就是只出现一次的数字。",
     "code": {
-      "python": "class Solution:\n    def sortColors(self, nums: list[int]) -> None:\n        p0, curr = 0, 0\n        p2 = len(nums) - 1\n        while curr <= p2:\n            if nums[curr] == 0:\n                nums[p0], nums[curr] = nums[curr], nums[p0]\n                p0 += 1\n                curr += 1\n            elif nums[curr] == 2:\n                nums[p2], nums[curr] = nums[curr], nums[p2]\n                p2 -= 1\n            else:\n                curr += 1"
+      "python": "class Solution:\n    def singleNumber(self, nums: list[int]) -> int:\n        result = 0\n        for num in nums:\n            result ^= num\n        return result"
     },
-    "complexity_analysis": "时间复杂度 O(n)，只遍历一次数组。空间复杂度 O(1)，原地排序。"
+    "complexity_analysis": "时间复杂度 O(n)，遍历一次数组。空间复杂度 O(1)，只使用一个变量。"
   },
-  "related_problems": [31, 280],
+  "related_problems": [137, 260, 389],
   "frequency": "high"
 }

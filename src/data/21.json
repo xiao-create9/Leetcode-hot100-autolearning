@@ -1,36 +1,41 @@
 {
   "id": 21,
-  "leetcode_id": 141,
-  "title": "环形链表",
-  "title_en": "Linked List Cycle",
-  "difficulty": "easy",
-  "tags": ["哈希表", "链表", "双指针"],
-  "description": "给你一个链表的头节点 head，判断链表中是否有环。\n\n如果链表中存在环，则返回 true。否则，返回 false。\n\n链表节点定义如下：\n```\nclass ListNode:\n    def __init__(self, x):\n        self.val = x\n        self.next = None\n```\n\n**示例 1：**\n输入：head = [3,2,0,-4]，pos = 1（尾节点连接到第二个节点）\n输出：true\n解释：链表中存在一个环，其尾部连接到第二个节点。\n\n**示例 2：**\n输入：head = [1,2]，pos = 0（尾节点连接到第一个节点）\n输出：true\n\n**示例 3：**\n输入：head = [1]，pos = -1\n输出：false\n解释：链表中没有环。",
+  "leetcode_id": 240,
+  "title": "搜索二维矩阵 II",
+  "title_en": "Search a 2D Matrix II",
+  "difficulty": "medium",
+  "tags": ["数组", "二分查找", "分治", "矩阵"],
+  "description": "编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target。该矩阵具有以下特性：\n\n- 每行的元素从左到右升序排列。\n- 每列的元素从上到下升序排列。\n\n**示例 1：**\n输入：matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 5\n输出：true\n\n**示例 2：**\n输入：matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 20\n输出：false\n\n**提示：**\n- m == matrix.length\n- n == matrix[i].length\n- 1 <= n, m <= 300\n- -10^9 <= matrix[i][j] <= 10^9\n- 每行的所有元素从左到右升序排列\n- 每列的所有元素从上到下升序排列\n- -10^9 <= target <= 10^9",
   "examples": [
     {
-      "input": "head = [3,2,0,-4], pos = 1",
+      "input": "matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 5",
       "output": "true",
-      "explanation": "链表中存在环，尾节点连接到索引为 1 的节点（值为 2）。"
+      "explanation": "5 位于第二行第二列，存在则返回 true。"
     },
     {
-      "input": "head = [1], pos = -1",
+      "input": "matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 20",
       "output": "false",
-      "explanation": "链表只有一个节点，没有环。"
+      "explanation": "矩阵中不存在 20，返回 false。"
+    },
+    {
+      "input": "matrix = [[-5]], target = -5",
+      "output": "true",
+      "explanation": "单元素矩阵，命中即返回 true。"
     }
   ],
   "hints": {
-    "keywords": ["快慢指针", "Floyd判圈"],
-    "approach": "使用快慢指针法（Floyd 判圈算法）：快指针每次走两步，慢指针每次走一步，如果链表有环，两个指针终会相遇。",
-    "time_complexity": "O(n)",
+    "keywords": ["右上角起点", "Z 字形查找", "每步排除一行或一列"],
+    "approach": "本题的矩阵只是行内有序、列内有序，整体拉平后并不有序，所以不能像 lc74 那样直接二分。正确的切入点是右上角（或左下角）：从右上角出发，当前值大于 target 时，说明这一列当前值及其下方的值都更大，可以整列排除，左移一列；当前值小于 target 时，说明这一行当前值及其左方的值都更小，可以整行排除，下移一行。每步都能砍掉一行或一列，最多走 m + n 步。",
+    "time_complexity": "O(m + n)",
     "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "使用快慢指针：slow 每次前进一步，fast 每次前进两步。如果链表中存在环，fast 指针最终会追上 slow 指针（两者相遇）；如果不存在环，fast 指针会先到达链表末尾（None）。",
+    "explanation": "Z 字形查找：1. 先处理空矩阵与空行的边界情况。2. 把指针放在右上角，即 r = 0、c = cols - 1。选择右上角是因为它是「所在行的最大值」同时又是「所在列的最小值」，两个方向的单调性相反，才能靠一次比较决定排除哪一侧。3. 循环中取出 matrix[r][c]：等于 target 直接返回 true；大于 target 则 c -= 1 排除当前列；小于 target 则 r += 1 排除当前行。4. 当行指针越出下边界或列指针越出左边界时，说明所有行列都被排除完，返回 false。",
     "code": {
-      "python": "class Solution:\n    def hasCycle(self, head: ListNode) -> bool:\n        if not head or not head.next:\n            return False\n        slow = head\n        fast = head.next\n        while slow != fast:\n            if not fast or not fast.next:\n                return False\n            slow = slow.next\n            fast = fast.next.next\n        return True"
+      "python": "class Solution:\n    def searchMatrix(self, matrix: list[list[int]], target: int) -> bool:\n        if not matrix or not matrix[0]:\n            return False\n\n        rows, cols = len(matrix), len(matrix[0])\n        # 从右上角开始：它是所在行的最大值、所在列的最小值\n        r, c = 0, cols - 1\n\n        while r < rows and c >= 0:\n            val = matrix[r][c]\n            if val == target:\n                return True\n            if val > target:\n                c -= 1  # 当前列下方的值都更大，排除整列\n            else:\n                r += 1  # 当前行左方的值都更小，排除整行\n\n        return False"
     },
-    "complexity_analysis": "时间复杂度 O(n)，其中 n 是链表中节点的数量。空间复杂度 O(1)，只使用了两个指针。"
+    "complexity_analysis": "时间复杂度 O(m + n)：每次比较都会让行指针下移或列指针左移，行指针最多移动 m 次、列指针最多移动 n 次，因此比较次数不超过 m + n。空间复杂度 O(1)：只使用两个指针变量，与矩阵规模无关。"
   },
-  "related_problems": [],
-  "frequency": "high"
+  "related_problems": [74, 378, 668],
+  "frequency": "medium"
 }

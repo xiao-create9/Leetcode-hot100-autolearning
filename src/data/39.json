@@ -1,33 +1,33 @@
 {
   "id": 39,
-  "leetcode_id": 98,
-  "title": "验证二叉搜索树",
-  "title_en": "Validate Binary Search Tree",
-  "difficulty": "medium",
-  "tags": ["树", "深度优先搜索", "二叉搜索树", "二叉树"],
-  "description": "给你一个二叉树的根节点 root，请你判断其是否是一个有效的二叉搜索树。\n\n有效二叉搜索树定义如下：\n- 节点的左子树只包含严格小于当前节点的数。\n- 节点的右子树只包含严格大于当前节点的数。\n- 左子树和右子树也必须是二叉搜索树。\n\n二叉树节点定义如下：\n```\nclass TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n```\n\n**示例 1：**\n输入：root = [2,1,3]\n输出：true\n\n**示例 2：**\n输入：root = [5,1,4,null,null,3,6]\n输出：false\n解释：根节点的值是 5，但右子树中有值为 3 的节点，不满足 BST 性质。\n\n**提示：**\n- 树中节点数目范围在 [1, 10^4] 内\n- -2^31 <= Node.val <= 2^31 - 1",
+  "leetcode_id": 101,
+  "title": "对称二叉树",
+  "title_en": "Symmetric Tree",
+  "difficulty": "easy",
+  "tags": ["树", "深度优先搜索", "广度优先搜索", "二叉树"],
+  "description": "给你一个二叉树的根节点 root，检查它是否轴对称。\n\n二叉树节点定义如下：\n```\nclass TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n```\n\n**示例 1：**\n输入：root = [1,2,2,3,4,4,3]\n输出：true\n\n**示例 2：**\n输入：root = [1,2,2,null,3,null,3]\n输出：false\n\n**提示：**\n- 树中节点数目在范围 [1, 1000] 内\n- -100 <= Node.val <= 100",
   "examples": [
     {
-      "input": "root = [2,1,3]",
+      "input": "root = [1,2,2,3,4,4,3]",
       "output": "true",
-      "explanation": "节点 1 < 2 < 3，满足 BST 性质。"
+      "explanation": "二叉树关于中心轴对称。"
     },
     {
-      "input": "root = [5,1,4,null,null,3,6]",
+      "input": "root = [1,2,2,null,3,null,3]",
       "output": "false",
-      "explanation": "根节点 5 的右子树中节点 3 < 5，不满足 BST 性质。"
+      "explanation": "二叉树不是对称的。"
     }
   ],
   "hints": {
-    "keywords": ["中序遍历", "递归", "上下界"],
-    "approach": "方法一：递归时传递合法的上下界范围，确保每个节点的值在范围内。方法二：中序遍历 BST 应得到严格递增序列。",
+    "keywords": ["递归", "镜像比较", "BFS"],
+    "approach": "递归比较：判断两棵子树是否镜像对称，即左子树的左节点等于右子树的右节点，左子树的右节点等于右子树的左节点。",
     "time_complexity": "O(n)",
     "space_complexity": "O(h)"
   },
   "solution": {
-    "explanation": "递归验证法：对每个节点，维护其合法值的上下界。左子树所有节点的值必须小于当前节点值，右子树所有节点的值必须大于当前节点值。递归传递更新后的上下界。",
+    "explanation": "定义辅助函数 isMirror(left, right) 判断两棵树是否镜像对称。递归条件：1. 两棵树都为空，返回 true。2. 一棵为空另一棵不为空，返回 false。3. 两棵树的根节点值相同，且左树的左子树与右树的右子树镜像，左树的右子树与右树的左子树镜像。最终检查 root 的左右子树是否镜像对称。",
     "code": {
-      "python": "class Solution:\n    def isValidBST(self, root: TreeNode) -> bool:\n        def validate(node, low=float('-inf'), high=float('inf')):\n            if not node:\n                return True\n            if node.val <= low or node.val >= high:\n                return False\n            return (validate(node.left, low, node.val) and\n                    validate(node.right, node.val, high))\n        return validate(root)"
+      "python": "class Solution:\n    def isSymmetric(self, root: TreeNode) -> bool:\n        def isMirror(left, right):\n            if not left and not right:\n                return True\n            if not left or not right:\n                return False\n            return (left.val == right.val and\n                    isMirror(left.left, right.right) and\n                    isMirror(left.right, right.left))\n        return isMirror(root.left, root.right) if root else True"
     },
     "complexity_analysis": "时间复杂度 O(n)，每个节点被访问一次。空间复杂度 O(h)，其中 h 是树的高度，递归栈的空间。"
   },

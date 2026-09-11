@@ -1,36 +1,36 @@
 {
   "id": 20,
-  "leetcode_id": 234,
-  "title": "回文链表",
-  "title_en": "Palindrome Linked List",
-  "difficulty": "easy",
-  "tags": ["栈", "递归", "链表", "双指针"],
-  "description": "给你一个单链表的头节点 head，请你判断该链表是否为回文链表。如果是，返回 true；否则，返回 false。\n\n链表节点定义如下：\n```\nclass ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n```\n\n**示例 1：**\n输入：head = [1,2,2,1]\n输出：true\n\n**示例 2：**\n输入：head = [1,2]\n输出：false\n\n**提示：**\n- 链表中节点数目在范围 [1, 10^5] 内\n- 0 <= Node.val <= 9",
+  "leetcode_id": 48,
+  "title": "旋转图像",
+  "title_en": "Rotate Image",
+  "difficulty": "medium",
+  "tags": ["数组", "数学", "矩阵"],
+  "description": "给定一个 n x n 的矩阵 matrix 表示一个图像，请你将图像顺时针旋转 90 度。\n\n你必须在原地旋转图像，即直接修改输入的矩阵，不能使用另一个矩阵来旋转图像。\n\n示例 1：\n输入：matrix = [[1,2,3],[4,5,6],[7,8,9]]\n输出：[[7,4,1],[8,5,2],[9,6,3]]\n\n示例 2：\n输入：matrix = [[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]]\n输出：[[15,13,2,5],[14,3,4,1],[12,6,8,9],[16,7,10,11]]\n\n约束条件：\n- n == matrix.length == matrix[i].length\n- 1 <= n <= 20\n- -1000 <= matrix[i][j] <= 1000",
   "examples": [
     {
-      "input": "head = [1,2,2,1]",
-      "output": "true",
-      "explanation": "链表从前往后读和从后往前读都是 1,2,2,1。"
+      "input": "matrix = [[1,2,3],[4,5,6],[7,8,9]]",
+      "output": "[[7,4,1],[8,5,2],[9,6,3]]",
+      "explanation": "将矩阵顺时针旋转 90 度。第一行 [1,2,3] 变为最后一列。"
     },
     {
-      "input": "head = [1,2]",
-      "output": "false",
-      "explanation": "链表从前往后读是 1,2，从后往前读是 2,1，不相同。"
+      "input": "matrix = [[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]]",
+      "output": "[[15,13,2,5],[14,3,4,1],[12,6,8,9],[16,7,10,11]]",
+      "explanation": "4x4 矩阵顺时针旋转 90 度。"
     }
   ],
   "hints": {
-    "keywords": ["快慢指针", "反转链表", "中点"],
-    "approach": "使用快慢指针找到链表中点，然后反转后半部分链表，再比较前后两半是否相同。",
-    "time_complexity": "O(n)",
+    "keywords": ["转置", "翻转", "矩阵旋转"],
+    "approach": "顺时针旋转 90 度可以分解为两步：先沿主对角线转置（行变列、列变行），然后水平翻转每一行（左右镜像）。",
+    "time_complexity": "O(n^2)",
     "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "1. 使用快慢指针找到链表中点：快指针每次走两步，慢指针每次走一步，当快指针到达末尾时，慢指针在中点。2. 反转后半部分链表。3. 比较前半部分和反转后的后半部分是否相同。4. （可选）恢复链表结构。",
+    "explanation": "两次变换实现 90 度顺时针旋转：\n\n1. 沿主对角线转置：matrix[i][j] 与 matrix[j][i] 交换。\n   [[1,2,3],       [[1,4,7],\n    [4,5,6],  ->    [2,5,8],\n    [7,8,9]]        [3,6,9]]\n\n2. 每行水平翻转（左右镜像）：\n   [[1,4,7],       [[7,4,1],\n    [2,5,8],  ->    [8,5,2],\n    [3,6,9]]        [9,6,3]]\n\n这等价于顺时针旋转 90 度。\n\n也可以用另一种分解：先上下翻转，再沿主对角线转置。",
     "code": {
-      "python": "class Solution:\n    def isPalindrome(self, head: ListNode) -> bool:\n        if not head or not head.next:\n            return True\n        \n        # 找中点\n        slow = fast = head\n        while fast and fast.next:\n            slow = slow.next\n            fast = fast.next.next\n        \n        # 反转后半部分\n        prev = None\n        curr = slow\n        while curr:\n            next_temp = curr.next\n            curr.next = prev\n            prev = curr\n            curr = next_temp\n        \n        # 比较前后两半\n        left, right = head, prev\n        while right:\n            if left.val != right.val:\n                return False\n            left = left.next\n            right = right.next\n        return True"
+      "python": "class Solution:\n    def rotate(self, matrix: List[List[int]]) -> None:\n        \"\"\"\n        Do not return anything, modify matrix in-place instead.\n        \"\"\"\n        n = len(matrix)\n        \n        # 沿主对角线转置\n        for i in range(n):\n            for j in range(i + 1, n):\n                matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]\n        \n        # 每行水平翻转\n        for i in range(n):\n            matrix[i].reverse()"
     },
-    "complexity_analysis": "时间复杂度 O(n)，需要遍历链表两次（找中点和比较）。空间复杂度 O(1)，只使用了常数个指针变量。"
+    "complexity_analysis": "时间复杂度 O(n^2)：转置和翻转各遍历半个或整个矩阵。空间复杂度 O(1)：原地操作，只使用常数额外空间。"
   },
-  "related_problems": [],
+  "related_problems": [832, 2022, 1260],
   "frequency": "high"
 }

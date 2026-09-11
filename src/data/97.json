@@ -1,41 +1,36 @@
 {
   "id": 97,
-  "leetcode_id": 31,
-  "title": "下一个排列",
-  "title_en": "Next Permutation",
-  "difficulty": "medium",
-  "tags": ["数组", "双指针", "排列"],
-  "description": "整数数组的一个排列就是将其所有成员以序列或线性顺序排列。例如，arr = [1,2,3]，以下这些都可以视作 arr 的排列：[1,2,3]、[1,3,2]、[3,1,2]、[2,3,1]。下一个排列是指一个整数所有排列中字典序下一个更大的排列。如果不存在下一个更大的排列，则将数组重新排列为最小的排列（即升序排列）。必须原地修改，只允许使用额外常数空间。\n\n约束条件：\n- 1 <= nums.length <= 100\n- 0 <= nums[i] <= 100",
+  "leetcode_id": 169,
+  "title": "多数元素",
+  "title_en": "Majority Element",
+  "difficulty": "easy",
+  "tags": ["数组", "哈希表", "分治", "Boyer-Moore投票算法"],
+  "description": "给定一个大小为 n 的数组 nums，返回其中的多数元素。多数元素是指在数组中出现次数大于 n/2 的元素。你可以假设数组是非空的，且给定的数组总是存在多数元素。\n\n约束条件：\n- n == nums.length\n- 1 <= n <= 5 * 10^4\n- -10^9 <= nums[i] <= 10^9",
   "examples": [
     {
-      "input": "nums = [1,2,3]",
-      "output": "[1,3,2]",
-      "explanation": "[1,2,3] 的下一个排列是 [1,3,2]。"
+      "input": "nums = [3,2,3]",
+      "output": "3",
+      "explanation": "3 出现了 2 次，超过 n/2 = 1.5。"
     },
     {
-      "input": "nums = [3,2,1]",
-      "output": "[1,2,3]",
-      "explanation": "[3,2,1] 是最大的排列，下一个排列应回到最小排列 [1,2,3]。"
-    },
-    {
-      "input": "nums = [1,1,5]",
-      "output": "[1,5,1]",
-      "explanation": "[1,1,5] 的下一个排列是 [1,5,1]。"
+      "input": "nums = [2,2,1,1,1,2,2]",
+      "output": "2",
+      "explanation": "2 出现了 4 次，超过 n/2 = 3.5。"
     }
   ],
   "hints": {
-    "keywords": ["从右向左扫描", "寻找拐点", "交换与反转"],
-    "approach": "从右向左找到第一个 nums[i] < nums[i+1] 的位置 i，再从右向左找到第一个 nums[j] > nums[i] 的位置 j，交换两者，然后将 i 之后的部分反转。",
+    "keywords": ["Boyer-Moore投票", "计数", "抵消"],
+    "approach": "Boyer-Moore 投票算法：维护一个候选众数和计数器。遇到相同元素计数加 1，不同元素计数减 1。计数为 0 时更换候选众数。",
     "time_complexity": "O(n)",
     "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "算法步骤：1）从右向左找到第一个相邻升序对 (i, i+1)，即 nums[i] < nums[i+1]。2）如果找不到，说明是降序排列，直接反转整个数组。3）从右向左找到第一个大于 nums[i] 的元素 nums[j]。4）交换 nums[i] 和 nums[j]。5）将 i+1 到末尾的部分反转（变为升序）。这个结果就是字典序下一个更大的排列。",
+    "explanation": "Boyer-Moore 投票算法：由于多数元素出现次数大于 n/2，它与其他元素两两抵消后一定剩余。遍历数组，如果计数为 0，将当前元素设为候选者。如果当前元素等于候选者则计数加 1，否则减 1。最终候选者即为多数元素。",
     "code": {
-      "python": "class Solution:\n    def nextPermutation(self, nums: list[int]) -> None:\n        n = len(nums)\n        # 步骤1：从右向左找到第一个 nums[i] < nums[i+1]\n        i = n - 2\n        while i >= 0 and nums[i] >= nums[i + 1]:\n            i -= 1\n        \n        if i >= 0:\n            # 步骤3：从右向左找到第一个大于 nums[i] 的元素\n            j = n - 1\n            while nums[j] <= nums[i]:\n                j -= 1\n            # 步骤4：交换\n            nums[i], nums[j] = nums[j], nums[i]\n        \n        # 步骤5：反转 i+1 到末尾\n        left, right = i + 1, n - 1\n        while left < right:\n            nums[left], nums[right] = nums[right], nums[left]\n            left += 1\n            right -= 1"
+      "python": "class Solution:\n    def majorityElement(self, nums: list[int]) -> int:\n        candidate = None\n        count = 0\n        for num in nums:\n            if count == 0:\n                candidate = num\n            count += 1 if num == candidate else -1\n        return candidate"
     },
-    "complexity_analysis": "时间复杂度 O(n)，最多遍历数组两次。空间复杂度 O(1)，原地修改。"
+    "complexity_analysis": "时间复杂度 O(n)，遍历一次数组。空间复杂度 O(1)，只使用两个变量。"
   },
-  "related_problems": [46, 47, 60],
+  "related_problems": [229],
   "frequency": "high"
 }

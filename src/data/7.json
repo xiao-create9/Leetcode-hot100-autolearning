@@ -1,36 +1,36 @@
 {
   "id": 7,
-  "leetcode_id": 438,
-  "title": "找到字符串中所有字母异位词",
-  "title_en": "Find All Anagrams in a String",
-  "difficulty": "medium",
-  "tags": ["哈希表", "字符串", "滑动窗口"],
-  "description": "给定两个字符串 s 和 p，找到 s 中所有 p 的异位词的子串，返回这些子串的起始索引。不考虑答案输出的顺序。\n\n异位词指由相同字母重排列形成的字符串（包括相同的字符串）。\n\n示例 1：\n输入：s = \"cbaebabacd\", p = \"abc\"\n输出：[0,6]\n解释：\n起始索引等于 0 的子串是 \"cba\"，它是 \"abc\" 的异位词。\n起始索引等于 6 的子串是 \"bac\"，它是 \"abc\" 的异位词。\n\n示例 2：\n输入：s = \"abab\", p = \"ab\"\n输出：[0,1,2]\n解释：\n起始索引等于 0 的子串是 \"ab\"，它是 \"ab\" 的异位词。\n起始索引等于 1 的子串是 \"ba\"，它是 \"ab\" 的异位词。\n起始索引等于 2 的子串是 \"ab\"，它是 \"ab\" 的异位词。\n\n约束条件：\n- 1 <= s.length, p.length <= 3 * 10^4\n- s 和 p 仅包含小写英文字母",
+  "leetcode_id": 42,
+  "title": "接雨水",
+  "title_en": "Trapping Rain Water",
+  "difficulty": "hard",
+  "tags": ["栈", "数组", "双指针", "动态规划", "单调栈"],
+  "description": "给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，输入用数组表示。计算按此排列的柱子，下雨之后能接多少雨水。\n\n**示例 1：**\n输入：height = [0,1,0,2,1,0,1,3,2,1,2,1]\n输出：6\n解释：上面是由数组 [0,1,0,2,1,0,1,3,2,1,2,1] 表示的高度图，在这种情况下，可以接 6 个单位的雨水。\n\n**示例 2：**\n输入：height = [4,2,0,3,2,5]\n输出：9\n\n**提示：**\n- n == height.length\n- 1 <= n <= 2 * 10^4\n- 0 <= height[i] <= 10^5",
   "examples": [
     {
-      "input": "s = \"cbaebabacd\", p = \"abc\"",
-      "output": "[0, 6]",
-      "explanation": "s 中 \"cba\" 和 \"bac\" 是 p 的异位词，起始索引分别为 0 和 6。"
+      "input": "height = [0,1,0,2,1,0,1,3,2,1,2,1]",
+      "output": "6",
+      "explanation": "雨水分别积在下标 2、4、5、6、8 处的凹陷中，合计 6 个单位。"
     },
     {
-      "input": "s = \"abab\", p = \"ab\"",
-      "output": "[0, 1, 2]",
-      "explanation": "s 中 \"ab\"、\"ba\"、\"ab\" 都是 p 的异位词，起始索引分别为 0、1、2。"
+      "input": "height = [4,2,0,3,2,5]",
+      "output": "9",
+      "explanation": "左墙 4、右墙 5 之间的凹陷可积水 9 个单位。"
     }
   ],
   "hints": {
-    "keywords": ["滑动窗口", "字符频率", "哈希表"],
-    "approach": "使用固定大小的滑动窗口，窗口大小等于 p 的长度。维护窗口内字符频率与 p 的字符频率的比较，当两者相等时记录起始位置。可以用一个计数器记录需要匹配的字符数来优化。",
+    "keywords": ["逐列结算", "左右最高柱", "双指针"],
+    "approach": "每一列上方能积的水 = min(它左侧最高柱, 它右侧最高柱) - 它自身高度。朴素做法是先预处理左右两个最大值数组（O(n) 空间）；进一步用双指针从两端向中间收缩，只维护 left_max 与 right_max 两个变量：哪一侧当前柱子更矮就结算哪一侧，因为水位由较矮的那面墙决定，另一侧即便还没扫完也一定不低于它。",
     "time_complexity": "O(n)",
     "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "使用固定大小的滑动窗口：\n1. 统计字符串 p 中每个字符的频率，存入数组 p_count。\n2. 使用大小为 len(p) 的滑动窗口在 s 上滑动。维护窗口内字符频率 s_count。\n3. 当窗口大小达到 len(p) 时，比较 s_count 和 p_count，如果相等则当前窗口左端点是一个答案。\n4. 窗口右移时，加入右边新字符，移除左边旧字符，更新频率数组。\n\n优化：使用一个 diff_count 变量记录窗口与 p 之间频率不同的字符数，避免每次都完整比较两个频率数组。",
+    "explanation": "双指针法：1. left 指向左端、right 指向右端，left_max 与 right_max 分别记录已扫描部分的最大高度。2. 每轮比较 height[left] 与 height[right]：若 height[left] < height[right]，则左指针处的水位最多由 left_max 决定——因为右侧已经存在一根不低于 height[right] 的柱子挡着，所以可以放心结算左侧；反之结算右侧。3. 结算时，若当前柱子高度不小于已知的该侧最大值，就更新最大值（此处不积水），否则累加 max - 当前高度。4. 两指针相遇时结束。整个过程只遍历一次数组，且只用常数个变量。",
     "code": {
-      "python": "class Solution:\n    def findAnagrams(self, s: str, p: str) -> list[int]:\n        from collections import Counter\n        \n        len_s, len_p = len(s), len(p)\n        if len_s < len_p:\n            return []\n        \n        p_count = Counter(p)\n        s_count = Counter()\n        result = []\n        \n        for i in range(len_s):\n            # 添加右端字符\n            s_count[s[i]] += 1\n            \n            # 移除左端超出窗口的字符\n            if i >= len_p:\n                left_char = s[i - len_p]\n                s_count[left_char] -= 1\n                if s_count[left_char] == 0:\n                    del s_count[left_char]\n            \n            # 比较窗口频率与 p 的频率\n            if s_count == p_count:\n                result.append(i - len_p + 1)\n        \n        return result"
+      "python": "class Solution:\n    def trap(self, height: list[int]) -> int:\n        if not height:\n            return 0\n\n        left, right = 0, len(height) - 1\n        left_max = right_max = 0\n        water = 0\n\n        while left < right:\n            if height[left] < height[right]:\n                # 右侧存在更高的墙，左指针处的水位由 left_max 决定\n                if height[left] >= left_max:\n                    left_max = height[left]\n                else:\n                    water += left_max - height[left]\n                left += 1\n            else:\n                if height[right] >= right_max:\n                    right_max = height[right]\n                else:\n                    water += right_max - height[right]\n                right -= 1\n\n        return water"
     },
-    "complexity_analysis": "时间复杂度：O(n)，其中 n 是字符串 s 的长度。每个字符最多被加入和移除窗口各一次。空间复杂度：O(1)，因为字符集大小固定（26 个小写字母），频率数组/哈希表的空间是常数级。"
+    "complexity_analysis": "时间复杂度 O(n)：左右指针相向而行，合计恰好遍历数组一次。空间复杂度 O(1)：只使用 left、right、left_max、right_max、water 五个变量，相比预处理左右最大值数组的 O(n) 空间更优。"
   },
-  "related_problems": [242, 49, 3, 76],
+  "related_problems": [84, 238, 407],
   "frequency": "high"
 }

@@ -1,36 +1,36 @@
 {
   "id": 81,
-  "leetcode_id": 279,
-  "title": "完全平方数",
-  "title_en": "Perfect Squares",
-  "difficulty": "medium",
-  "tags": ["动态规划", "广度优先搜索", "数学"],
-  "description": "给你一个整数 n，返回和为 n 的完全平方数的最少数量。完全平方数是一个整数，其值等于另一个整数的平方。换句话说，其值等于一个整数自乘的积。例如，1、4、9 和 16 都是完全平方数，而 3 和 11 不是。\n\n约束条件：\n- 1 <= n <= 10^4",
+  "leetcode_id": 70,
+  "title": "爬楼梯",
+  "title_en": "Climbing Stairs",
+  "difficulty": "easy",
+  "tags": ["动态规划", "数学", "记忆化搜索"],
+  "description": "假设你正在爬楼梯。需要 n 阶你才能到达楼顶。每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶？\n\n约束条件：\n- 1 <= n <= 45",
   "examples": [
     {
-      "input": "n = 12",
-      "output": "3",
-      "explanation": "12 = 4 + 4 + 4，由 3 个完全平方数组成。"
+      "input": "n = 2",
+      "output": "2",
+      "explanation": "有两种方法可以爬到楼顶：1 阶 + 1 阶；2 阶。"
     },
     {
-      "input": "n = 13",
-      "output": "2",
-      "explanation": "13 = 4 + 9，由 2 个完全平方数组成。"
+      "input": "n = 3",
+      "output": "3",
+      "explanation": "有三种方法可以爬到楼顶：1 阶 + 1 阶 + 1 阶；1 阶 + 2 阶；2 阶 + 1 阶。"
     }
   ],
   "hints": {
-    "keywords": ["动态规划", "完全背包", "BFS"],
-    "approach": "将问题转化为完全背包问题：物品为所有完全平方数 1, 4, 9, ...，背包容量为 n，求装满背包的最少物品数。",
-    "time_complexity": "O(n * sqrt(n))",
-    "space_complexity": "O(n)"
+    "keywords": ["动态规划", "斐波那契数列", "状态转移"],
+    "approach": "到达第 n 阶的方法数等于到达第 n-1 阶和第 n-2 阶的方法数之和，即斐波那契数列。",
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)"
   },
   "solution": {
-    "explanation": "动态规划：设 dp[i] 表示和为 i 的完全平方数的最少数量。对于每个 i，枚举所有完全平方数 j*j <= i，dp[i] = min(dp[i], dp[i - j*j] + 1)。初始化 dp[0] = 0。",
+    "explanation": "动态规划：设 dp[i] 表示到达第 i 阶的方法数。dp[i] = dp[i-1] + dp[i-2]。初始化 dp[1] = 1, dp[2] = 2。可以使用滚动变量优化空间到 O(1)。",
     "code": {
-      "python": "class Solution:\n    def numSquares(self, n: int) -> int:\n        dp = [float('inf')] * (n + 1)\n        dp[0] = 0\n        for i in range(1, n + 1):\n            j = 1\n            while j * j <= i:\n                dp[i] = min(dp[i], dp[i - j * j] + 1)\n                j += 1\n        return dp[n]"
+      "python": "class Solution:\n    def climbStairs(self, n: int) -> int:\n        if n <= 2:\n            return n\n        prev1, prev2 = 2, 1\n        for i in range(3, n + 1):\n            curr = prev1 + prev2\n            prev2 = prev1\n            prev1 = curr\n        return prev1"
     },
-    "complexity_analysis": "时间复杂度 O(n * sqrt(n))，外层遍历 n，内层最多 sqrt(n) 个完全平方数。空间复杂度 O(n)，dp 数组大小。"
+    "complexity_analysis": "时间复杂度 O(n)，遍历到 n。空间复杂度 O(1)，只用两个变量。"
   },
-  "related_problems": [322, 343],
+  "related_problems": [746, 509, 377],
   "frequency": "high"
 }

@@ -1,35 +1,35 @@
 {
   "id": 72,
-  "leetcode_id": 295,
-  "title": "数据流的中位数",
-  "title_en": "Find Median from Data Stream",
-  "difficulty": "hard",
-  "tags": ["堆", "设计", "双指针"],
-  "description": "中位数是有序整数列表中间的数。如果列表长度是偶数，中位数则是中间两个数的平均值。\n\n例如，[2,3,4] 的中位数是 3。[2,3] 的中位数是 (2 + 3) / 2 = 2.5。\n\n实现 MedianFinder 类：\n- MedianFinder() 初始化 MedianFinder 对象。\n- void addNum(int num) 将数据流中的整数 num 添加到数据结构中。\n- double findMedian() 返回目前所有元素的中位数。与实际答案相差 10^-5 以内的答案将被接受。\n\n示例：\n输入：\n[\"MedianFinder\",\"addNum\",\"addNum\",\"findMedian\",\"addNum\",\"findMedian\"]\n[[],[1],[2],[],[3],[]]\n输出：\n[null,null,null,1.5,null,2.0]\n\n解释：\nMedianFinder medianFinder = new MedianFinder();\nmedianFinder.addNum(1);    // arr = [1]\nmedianFinder.addNum(2);    // arr = [1, 2]\nmedianFinder.findMedian(); // 返回 1.5\nmedianFinder.addNum(3);    // arr = [1, 2, 3]\nmedianFinder.findMedian(); // 返回 2.0\n\n约束条件：\n- -10^5 <= num <= 10^5\n- 在调用 findMedian 之前，数据结构中至少有一个元素\n- 最多调用 5 * 10^4 次 addNum 和 findMedian",
+  "leetcode_id": 739,
+  "title": "每日温度",
+  "title_en": "Daily Temperatures",
+  "difficulty": "medium",
+  "tags": ["栈", "单调栈", "数组"],
+  "description": "给定一个整数数组 temperatures，表示每天的温度，返回一个数组 answer，其中 answer[i] 是指对于第 i 天，下一个更高温度出现在几天后。如果气温在这之后都不会升高，请在该位置用 0 来代替。\n\n示例 1：\n输入：temperatures = [73,74,75,71,69,72,76,73]\n输出：[1,1,4,2,1,1,0,0]\n\n示例 2：\n输入：temperatures = [30,40,50,60]\n输出：[1,1,1,0]\n\n示例 3：\n输入：temperatures = [30,60,90]\n输出：[1,1,0]\n\n约束条件：\n- 1 <= temperatures.length <= 10^5\n- 30 <= temperatures[i] <= 100",
   "examples": [
     {
-      "input": "[\"MedianFinder\",\"addNum\",\"addNum\",\"findMedian\",\"addNum\",\"findMedian\"]\n[[],[1],[2],[],[3],[]]",
-      "output": "[null,null,null,1.5,null,2.0]",
-      "explanation": "添加 1 和 2 后中位数为 1.5，添加 3 后中位数为 2.0。"
+      "input": "temperatures = [73,74,75,71,69,72,76,73]",
+      "output": "[1,1,4,2,1,1,0,0]",
+      "explanation": "第0天73度，第1天74度更高，间隔1天。第2天75度，第6天76度更高，间隔4天。"
     },
     {
-      "input": "[\"MedianFinder\",\"addNum\",\"findMedian\",\"addNum\",\"findMedian\"]\n[[],[5],[],[10],[]]",
-      "output": "[null,null,5.0,null,7.5]",
-      "explanation": "添加 5 后中位数为 5.0，添加 10 后中位数为 (5+10)/2 = 7.5。"
+      "input": "temperatures = [30,40,50,60]",
+      "output": "[1,1,1,0]",
+      "explanation": "每天的温度都比前一天高，最后一天之后没有更高温度。"
     }
   ],
   "hints": {
-    "keywords": ["双堆", "最大堆", "最小堆"],
-    "approach": "使用两个堆：一个最大堆存储较小的一半元素，一个最小堆存储较大的一半元素。保持两个堆的大小差不超过 1。中位数从堆顶元素获取。",
-    "time_complexity": "O(log n) for addNum, O(1) for findMedian",
+    "keywords": ["单调栈", "栈", "逆序遍历"],
+    "approach": "使用单调递减栈。从后往前遍历，维护一个存储索引的栈，栈中元素对应的温度是单调递减的。对于每个温度，弹出栈中所有小于等于当前温度的元素，栈顶即为下一个更高温度的位置。",
+    "time_complexity": "O(n)",
     "space_complexity": "O(n)"
   },
   "solution": {
-    "explanation": "使用一个最大堆（存较小的一半）和一个最小堆（存较大的一半）。添加元素时，先加入最大堆，然后将最大堆的堆顶弹出加入最小堆，保持最大堆元素都小于等于最小堆。如果最小堆元素多于最大堆，将最小堆堆顶移回最大堆。这样两个堆大小最多差 1，中位数从两个堆顶获取。",
+    "explanation": "使用单调栈从后往前遍历。栈中存储温度的索引，保持栈中索引对应的温度单调递减。对于每个位置 i，不断弹出栈顶元素直到栈顶对应的温度大于 temperatures[i]，此时栈顶索引与 i 的差值就是答案。如果栈为空，说明之后没有更高温度。",
     "code": {
-      "python": "import heapq\n\nclass MedianFinder:\n    def __init__(self):\n        self.max_heap = []  # stores the smaller half (negated for max-heap behavior)\n        self.min_heap = []  # stores the larger half\n\n    def addNum(self, num: int) -> None:\n        heapq.heappush(self.max_heap, -num)\n        # Ensure max_heap's max <= min_heap's min\n        heapq.heappush(self.min_heap, -heapq.heappop(self.max_heap))\n        # Balance sizes: max_heap can have at most 1 more element\n        if len(self.min_heap) > len(self.max_heap):\n            heapq.heappush(self.max_heap, -heapq.heappop(self.min_heap))\n\n    def findMedian(self) -> float:\n        if len(self.max_heap) > len(self.min_heap):\n            return -self.max_heap[0]\n        return (-self.max_heap[0] + self.min_heap[0]) / 2.0"
+      "python": "class Solution:\n    def dailyTemperatures(self, temperatures: list[int]) -> list[int]:\n        n = len(temperatures)\n        answer = [0] * n\n        stack = []  # stack of indices\n        \n        for i in range(n - 1, -1, -1):\n            while stack and temperatures[stack[-1]] <= temperatures[i]:\n                stack.pop()\n            if stack:\n                answer[i] = stack[-1] - i\n            stack.append(i)\n        \n        return answer"
     },
-    "complexity_analysis": "addNum 时间复杂度 O(log n)，需要堆的插入和弹出操作。findMedian 时间复杂度 O(1)，直接访问堆顶。空间复杂度 O(n)，需要存储所有元素。"
+    "complexity_analysis": "时间复杂度 O(n)，每个元素最多入栈和出栈各一次。空间复杂度 O(n)，栈的空间。"
   },
   "related_problems": [],
   "frequency": "high"

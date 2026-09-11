@@ -1,35 +1,35 @@
 {
   "id": 35,
-  "leetcode_id": 101,
-  "title": "对称二叉树",
-  "title_en": "Symmetric Tree",
-  "difficulty": "easy",
-  "tags": ["树", "深度优先搜索", "广度优先搜索", "二叉树"],
-  "description": "给你一个二叉树的根节点 root，检查它是否轴对称。\n\n二叉树节点定义如下：\n```\nclass TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n```\n\n**示例 1：**\n输入：root = [1,2,2,3,4,4,3]\n输出：true\n\n**示例 2：**\n输入：root = [1,2,2,null,3,null,3]\n输出：false\n\n**提示：**\n- 树中节点数目在范围 [1, 1000] 内\n- -100 <= Node.val <= 100",
+  "leetcode_id": 146,
+  "title": "LRU 缓存",
+  "title_en": "LRU Cache",
+  "difficulty": "medium",
+  "tags": ["设计", "哈希表", "链表", "双向链表"],
+  "description": "请你设计并实现一个满足 LRU（最近最少使用）缓存约束的数据结构。\n\n实现 LRUCache 类：\n- LRUCache(int capacity) 以正整数作为容量 capacity 初始化 LRU 缓存\n- int get(int key) 如果关键字 key 存在于缓存中，则返回关键字的值，否则返回 -1\n- void put(int key, int value) 如果关键字 key 已经存在，则变更其数据值 value；如果不存在，则向缓存中插入该组关键字-值。如果插入关键字数量超过容量，则应该逐出最久未使用的关键字。\n\n函数 get 和 put 必须以 O(1) 的平均时间复杂度运行。\n\n节点定义如下：\n```\nclass DLinkedNode:\n    def __init__(self, key=0, value=0):\n        self.key = key\n        self.value = value\n        self.prev = None\n        self.next = None\n```\n\n**示例：**\n输入：\n[\"LRUCache\", \"put\", \"put\", \"get\", \"put\", \"get\", \"put\", \"get\", \"get\", \"get\"]\n[[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]\n输出：\n[null, null, null, 1, null, -1, null, -1, 3, 4]\n\n解释：\nLRUCache lRUCache = new LRUCache(2);\nlRUCache.put(1, 1); // 缓存是 {1=1}\nlRUCache.put(2, 2); // 缓存是 {1=1, 2=2}\nlRUCache.get(1);    // 返回 1\nlRUCache.put(3, 3); // LRU 关键字是 2，逐出关键字 2，缓存是 {1=1, 3=3}\nlRUCache.get(2);    // 返回 -1（未找到）\nlRUCache.put(4, 4); // LRU 关键字是 1，逐出关键字 1，缓存是 {4=4, 3=3}\nlRUCache.get(1);    // 返回 -1（未找到）\nlRUCache.get(3);    // 返回 3\nlRUCache.get(4);    // 返回 4",
   "examples": [
     {
-      "input": "root = [1,2,2,3,4,4,3]",
-      "output": "true",
-      "explanation": "二叉树关于中心轴对称。"
+      "input": "[\"LRUCache\",\"put\",\"put\",\"get\",\"put\",\"get\",\"put\",\"get\",\"get\",\"get\"]\n[[2],[1,1],[2,2],[1],[3,3],[2],[4,4],[1],[3],[4]]",
+      "output": "[null,null,null,1,null,-1,null,-1,3,4]",
+      "explanation": "LRU 缓存按照最近最少使用的策略淘汰数据。"
     },
     {
-      "input": "root = [1,2,2,null,3,null,3]",
-      "output": "false",
-      "explanation": "二叉树不是对称的。"
+      "input": "[\"LRUCache\",\"get\",\"put\",\"get\"]\n[[1],[0],[0,0],[0]]",
+      "output": "[null,-1,null,0]",
+      "explanation": "容量为 1 的缓存，先 get 不存在的 key 返回 -1，put 后再 get 返回值。"
     }
   ],
   "hints": {
-    "keywords": ["递归", "镜像比较", "BFS"],
-    "approach": "递归比较：判断两棵子树是否镜像对称，即左子树的左节点等于右子树的右节点，左子树的右节点等于右子树的左节点。",
-    "time_complexity": "O(n)",
-    "space_complexity": "O(h)"
+    "keywords": ["哈希表", "双向链表", "O(1)操作"],
+    "approach": "使用哈希表 + 双向链表实现。哈希表实现 O(1) 查找，双向链表维护访问顺序。每次 get/put 时将节点移到链表头部，容量满时从尾部删除节点。",
+    "time_complexity": "O(1)",
+    "space_complexity": "O(capacity)"
   },
   "solution": {
-    "explanation": "定义辅助函数 isMirror(left, right) 判断两棵树是否镜像对称。递归条件：1. 两棵树都为空，返回 true。2. 一棵为空另一棵不为空，返回 false。3. 两棵树的根节点值相同，且左树的左子树与右树的右子树镜像，左树的右子树与右树的左子树镜像。最终检查 root 的左右子树是否镜像对称。",
+    "explanation": "使用哈希表存储 key 到双向链表节点的映射，双向链表按访问时间排序（最近访问的在头部）。get 操作：查找哈希表，若存在则将节点移到头部并返回值。put 操作：若 key 已存在则更新值并移到头部；若不存在则创建新节点插入头部，若超过容量则删除尾部节点。使用哨兵头尾节点简化边界处理。",
     "code": {
-      "python": "class Solution:\n    def isSymmetric(self, root: TreeNode) -> bool:\n        def isMirror(left, right):\n            if not left and not right:\n                return True\n            if not left or not right:\n                return False\n            return (left.val == right.val and\n                    isMirror(left.left, right.right) and\n                    isMirror(left.right, right.left))\n        return isMirror(root.left, root.right) if root else True"
+      "python": "class DLinkedNode:\n    def __init__(self, key=0, value=0):\n        self.key = key\n        self.value = value\n        self.prev = None\n        self.next = None\n\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.capacity = capacity\n        self.cache = {}\n        self.head = DLinkedNode()\n        self.tail = DLinkedNode()\n        self.head.next = self.tail\n        self.tail.prev = self.head\n    \n    def _remove_node(self, node):\n        node.prev.next = node.next\n        node.next.prev = node.prev\n    \n    def _add_to_head(self, node):\n        node.next = self.head.next\n        node.prev = self.head\n        self.head.next.prev = node\n        self.head.next = node\n    \n    def get(self, key: int) -> int:\n        if key not in self.cache:\n            return -1\n        node = self.cache[key]\n        self._remove_node(node)\n        self._add_to_head(node)\n        return node.value\n    \n    def put(self, key: int, value: int) -> None:\n        if key in self.cache:\n            node = self.cache[key]\n            node.value = value\n            self._remove_node(node)\n            self._add_to_head(node)\n        else:\n            node = DLinkedNode(key, value)\n            self.cache[key] = node\n            self._add_to_head(node)\n            if len(self.cache) > self.capacity:\n                lru = self.tail.prev\n                self._remove_node(lru)\n                del self.cache[lru.key]"
     },
-    "complexity_analysis": "时间复杂度 O(n)，每个节点被访问一次。空间复杂度 O(h)，其中 h 是树的高度，递归栈的空间。"
+    "complexity_analysis": "时间复杂度 O(1)，get 和 put 操作都是 O(1)。空间复杂度 O(capacity)，哈希表和双向链表最多存储 capacity 个节点。"
   },
   "related_problems": [],
   "frequency": "high"
